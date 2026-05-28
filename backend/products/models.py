@@ -25,8 +25,28 @@ class Product(models.Model):
     specs = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    stock = models.PositiveIntegerField(default=0, help_text="Количество товара в наличии")
+    low_stock_threshold = models.PositiveIntegerField(default=5, help_text="При каком остатке считать товар 'почти распродан'")
+
     def __str__(self):
         return self.name
+    
+    def is_available(self, quantity=1):
+        """Проверка доступности товара"""
+        return self.stock >= quantity
+    
+    def decrease_stock(self, quantity):
+        """Уменьшить остаток (при продаже)"""
+        if self.stock >= quantity:
+            self.stock -= quantity
+            self.save(update_fields=['stock'])
+            return True
+        return False
+    
+    def increase_stock(self, quantity):
+        """Увеличить остаток (при возврате/пополнении)"""
+        self.stock += quantity
+        self.save(update_fields=['stock'])
 
 
 class CartItem(models.Model):

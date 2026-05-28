@@ -1,17 +1,23 @@
 # store_with_AI
 <a href='https://github.com/kdsuniq/store_with_AI/wiki/Документация'>Документация</a>
 
-Инструкция по сбеорке проекта
+# Инструкция по сбеорке проекта
 
 ```
 cd frontend
 ```
+
+```
+npm i
+```
+
 ```
 npm run dev
 ```
 
+В новом терминале
 ```
-cd ../backend
+cd backend
 ```
 
 ```
