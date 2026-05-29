@@ -419,8 +419,12 @@ function AccountPage({ auth, setAuth }) {
   const [insights, setInsights] = useState('')
   const [stats, setStats] = useState(null)
   const [msg, setMsg] = useState('')
+  
+  // ⭐ Состояния для редактирования
   const [editingProduct, setEditingProduct] = useState(null)
   const [editingStockValue, setEditingStockValue] = useState('')
+  const [editingPriceValue, setEditingPriceValue] = useState('')  // ⭐ НОВОЕ
+  const [editingField, setEditingField] = useState(null)  // ⭐ 'stock' или 'price'
   const [generatingDesc, setGeneratingDesc] = useState(false)
 
   const load = async () => {
@@ -453,6 +457,44 @@ function AccountPage({ auth, setAuth }) {
     load()
   }
 
+  const generateDescription = async () => {
+    if (!form.name.trim()) return setMsg('Введите название товара перед генерацией')
+    
+    setGeneratingDesc(true)
+    setMsg('')
+    
+    try {
+      const selected = categories.find((c) => c.id === form.category_id)
+      const res = await apiFetch('/ai/generate-description/', {
+        method: 'POST',
+        body: { 
+          name: form.name, 
+          category: selected?.name || '', 
+          specs: parseSpecs(form.specsText) 
+        },
+      })
+      
+      if (!res.ok) {
+        setMsg(extractError(res.data))
+      } else {
+        const description = res.data.description
+        if (typeof description === 'object') {
+          setForm((p) => ({ 
+            ...p, 
+            description: description.full_description || description.short_description 
+          }))
+        } else {
+          setForm((p) => ({ ...p, description: description || p.description }))
+        }
+        setMsg('Описание сгенерировано')
+      }
+    } catch (err) {
+      setMsg('Ошибка генерации')
+    } finally {
+      setGeneratingDesc(false)
+    }
+  }
+
   const addProduct = async (e) => {
     e.preventDefault()
     
@@ -481,14 +523,11 @@ function AccountPage({ auth, setAuth }) {
     load()
   }
   
+  // ⭐ Редактирование количества
   const startEditingStock = (product) => {
     setEditingProduct(product.id)
     setEditingStockValue(product.stock.toString())
-  }
-  
-  const cancelEditingStock = () => {
-    setEditingProduct(null)
-    setEditingStockValue('')
+    setEditingField('stock')
   }
   
   const saveStockUpdate = async (productId) => {
@@ -518,8 +557,51 @@ function AccountPage({ auth, setAuth }) {
     
     setMsg('Остаток успешно обновлен')
     load()
+    cancelEditing()
+  }
+  
+  // ⭐ НОВОЕ: Редактирование цены
+  const startEditingPrice = (product) => {
+    setEditingProduct(product.id)
+    setEditingPriceValue(product.price.toString())
+    setEditingField('price')
+  }
+  
+  const savePriceUpdate = async (productId) => {
+    const newPrice = parseFloat(editingPriceValue)
+    
+    if (isNaN(newPrice)) {
+      setMsg('Введите корректную цену')
+      return
+    }
+    
+    if (newPrice < 0) {
+      setMsg('Цена не может быть отрицательной')
+      return
+    }
+    
+    const res = await apiFetch(`/products/my-products/${productId}/`, {
+      method: 'PATCH',
+      body: { price: newPrice },
+      auth,
+      setAuth,
+    })
+    
+    if (!res.ok) {
+      setMsg(extractError(res.data))
+      return
+    }
+    
+    setMsg('Цена успешно обновлена')
+    load()
+    cancelEditing()
+  }
+  
+  const cancelEditing = () => {
     setEditingProduct(null)
     setEditingStockValue('')
+    setEditingPriceValue('')
+    setEditingField(null)
   }
 
   const loadInsights = async () => {
@@ -539,47 +621,6 @@ function AccountPage({ auth, setAuth }) {
     if (!res.ok) return setMsg(extractError(res.data))
     setMsg('Статус заказа обновлен')
     load()
-  }
-
-  const generateDescription = async () => {
-    if (!form.name.trim()) {
-      setMsg('Введите название товара перед генерацией')
-      return
-    }
-    
-    setGeneratingDesc(true)  // ⭐ Включаем загрузку
-    setMsg('')
-    
-    try {
-      const selected = categories.find((c) => c.id === form.category_id)
-      const res = await apiFetch('/ai/generate-description/', {
-        method: 'POST',
-        body: { 
-          name: form.name, 
-          category: selected?.name || '', 
-          specs: parseSpecs(form.specsText) 
-        },
-      })
-      
-      if (!res.ok) {
-        setMsg(extractError(res.data))
-      } else {
-        const description = res.data.description
-        if (typeof description === 'object') {
-          setForm((p) => ({ 
-            ...p, 
-            description: description.full_description || description.short_description 
-          }))
-        } else {
-          setForm((p) => ({ ...p, description: description || p.description }))
-        }
-        setMsg('✅ Описание сгенерировано')
-      }
-    } catch (err) {
-      setMsg('❌ Ошибка генерации')
-    } finally {
-      setGeneratingDesc(false)  // ⭐ Выключаем загрузку
-    }
   }
 
   return (
@@ -627,13 +668,13 @@ function AccountPage({ auth, setAuth }) {
           <textarea required rows={6} placeholder="Описание" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           <div className="actions-row">
             <button 
-  className="btn btn-outline" 
-  type="button" 
-  onClick={generateDescription}
-  disabled={generatingDesc}
->
-  {generatingDesc ? '⏳ Генерация...' : '✨ Сгенерировать описание AI'}
-</button>
+              className="btn btn-outline" 
+              type="button" 
+              onClick={generateDescription}
+              disabled={generatingDesc}
+            >
+              {generatingDesc ? 'Генерация...' : 'Сгенерировать описание AI'}
+            </button>
             <button className="btn btn-accent" type="submit">Опубликовать товар</button>
           </div>
         </form>
@@ -646,11 +687,42 @@ function AccountPage({ auth, setAuth }) {
             <article className="product-card" key={p.id}>
               <div className="mock-photo" />
               <h3>{p.name}</h3>
-              <p className="price">{p.price} ₽</p>
               
+              {/* ⭐ Редактирование цены */}
+              <div className="price-info">
+                {editingProduct === p.id && editingField === 'price' ? (
+                  <div className="edit-field">
+                    <input 
+                      type="number" 
+                      value={editingPriceValue}
+                      onChange={(e) => setEditingPriceValue(e.target.value)}
+                      min="0"
+                      step="0.01"
+                      autoFocus
+                    />
+                    <div className="edit-buttons">
+                      <button className="btn-save" onClick={() => savePriceUpdate(p.id)}>Сохранить</button>
+                      <button className="btn-cancel" onClick={cancelEditing}>Отмена</button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="price">
+                    {p.price} ₽
+                    <button 
+                      className="btn-edit-small" 
+                      onClick={() => startEditingPrice(p)}
+                      title="Редактировать цену"
+                    >
+                      ✏️
+                    </button>
+                  </p>
+                )}
+              </div>
+              
+              {/* ⭐ Редактирование количества */}
               <div className="stock-info">
-                {editingProduct === p.id ? (
-                  <div className="stock-edit">
+                {editingProduct === p.id && editingField === 'stock' ? (
+                  <div className="edit-field">
                     <input 
                       type="number" 
                       value={editingStockValue}
@@ -659,19 +731,9 @@ function AccountPage({ auth, setAuth }) {
                       step="1"
                       autoFocus
                     />
-                    <div className="stock-edit-buttons">
-                      <button 
-                        className="btn-save-stock"
-                        onClick={() => saveStockUpdate(p.id)}
-                      >
-                        Сохранить
-                      </button>
-                      <button 
-                        className="btn-cancel-stock"
-                        onClick={cancelEditingStock}
-                      >
-                        Отмена
-                      </button>
+                    <div className="edit-buttons">
+                      <button className="btn-save" onClick={() => saveStockUpdate(p.id)}>Сохранить</button>
+                      <button className="btn-cancel" onClick={cancelEditing}>Отмена</button>
                     </div>
                   </div>
                 ) : (
@@ -682,11 +744,11 @@ function AccountPage({ auth, setAuth }) {
                     }
                     {p.stock === 0 && <span className="out"> закончился</span>}
                     <button 
-                      className="btn-edit-stock" 
+                      className="btn-edit-small" 
                       onClick={() => startEditingStock(p)}
                       title="Изменить количество"
                     >
-                      Редактировать
+                      ✏️
                     </button>
                   </p>
                 )}

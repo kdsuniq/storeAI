@@ -649,3 +649,79 @@ textarea:disabled {
   background-color: #f5f5f5;
   cursor: not-allowed;
 }
+/* Стили для редактирования цены и количества */
+.price-info {
+  margin: 8px 0;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.btn-edit-small {
+  background: #eef2ff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.btn-edit-small:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.edit-field input {
+  width: 100%;
+  padding: 8px;
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-save {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-save:hover {
+  background: #45a049;
+}
+
+.btn-cancel {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-cancel:hover {
+  background: #da190b;
+}
