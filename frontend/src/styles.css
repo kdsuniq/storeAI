@@ -725,3 +725,74 @@ textarea:disabled {
 .btn-cancel:hover {
   background: #da190b;
 }
+/* AI Price Widget */
+.ai-price-widget {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid var(--line);
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.widget-icon {
+  font-size: 24px;
+}
+
+.ai-price-widget h3 {
+  margin: 0;
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+.widget-hint {
+  color: #666;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+}
+
+.price-analysis-banner {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin: 10px 0;
+}
+
+.price-range {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.8rem;
+}
+
+.min-price { color: #2e7d32; font-weight: bold; }
+.max-price { color: #c62828; font-weight: bold; }
+.avg-price { color: #ed6c02; font-weight: bold; }
+
+.insight {
+  font-size: 0.75rem;
+  color: #555;
+  margin: 8px 0 0 0;
+}
+
+.understanding-bubble {
+  background: #e3f2fd;
+  padding: 10px 14px;
+  border-radius: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.understanding-bubble .icon {
+  font-size: 18px;
+}
+
+.understanding-bubble p {
+  margin: 0
+}

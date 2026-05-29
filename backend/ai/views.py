@@ -13,7 +13,9 @@ from .services import (
     build_market_insights_prompt,
     build_product_prompt,
     build_chat_prompt,
-    parse_json_response
+    parse_json_response,
+    get_ai_price_recommendations,
+    get_price_analysis
 )
 
 logger = logging.getLogger(__name__)
@@ -40,7 +42,7 @@ class AIChatView(APIView):
     )
     def post(self, request):
         message = request.data.get("message")
-        response_format = request.data.get("format", "structured")  # structured или json
+        response_format = request.data.get("format", "structured")
         
         if not message:
             return Response(
@@ -57,7 +59,6 @@ class AIChatView(APIView):
         prompt = build_chat_prompt(message, response_format)
         answer = ask_ai_sync(prompt, response_format=response_format)
         
-        # Если запрошен JSON формат, пробуем распарсить
         if response_format == "json":
             parsed = parse_json_response(answer)
             if parsed:
@@ -118,12 +119,10 @@ class AIDescriptionView(APIView):
         )
         answer = ask_ai_sync(prompt, response_format="json")
         
-        # Парсим JSON ответ
         parsed = parse_json_response(answer)
         if parsed:
             return Response({"description": parsed})
         
-        # Fallback если не JSON
         return Response({
             "description": {
                 "short_description": answer[:200],
@@ -143,7 +142,6 @@ class MarketInsightsView(APIView):
         seller_products = Product.objects.filter(owner=request.user)
         seller_product_ids = list(seller_products.values_list("id", flat=True))
         
-        # Статистика по добавлениям в корзину
         cart_stats = (
             CartItem.objects.filter(product_id__in=seller_product_ids)
             .values("product__name", "product__id")
@@ -151,11 +149,9 @@ class MarketInsightsView(APIView):
             .order_by("-total_qty")[:10]
         )
         
-        # Общая статистика
         cart_items = CartItem.objects.filter(product_id__in=seller_product_ids)
         total_cart_additions = cart_items.aggregate(total=Sum("quantity"))["total"] or 0
         
-        # Статистика по остаткам
         products_low_stock = seller_products.filter(stock__gt=0, stock__lte=F('low_stock_threshold')).count()
         products_out_of_stock = seller_products.filter(stock=0).count()
         products_in_stock = seller_products.filter(stock__gt=0).count()
@@ -172,7 +168,6 @@ class MarketInsightsView(APIView):
             ],
         }
         
-        # Генерируем AI инсайты
         if seller_products.count() > 0:
             prompt = build_market_insights_prompt(raw_stats)
             ai_response = ask_ai_sync(prompt, response_format="json")
@@ -202,59 +197,9 @@ class MarketInsightsView(APIView):
         })
 
 
-class AIProductRecommendationView(APIView):
-    """Рекомендация товаров на основе корзины пользователя"""
-    
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        # Получаем товары из корзины пользователя
-        cart_items = CartItem.objects.filter(user=request.user).select_related('product')
-        
-        if not cart_items.exists():
-            return Response({
-                "recommendations": [],
-                "message": "Добавьте товары в корзину для получения рекомендаций"
-            })
-        
-        # Формируем список товаров в корзине
-        cart_products = [
-            {
-                "name": item.product.name,
-                "category": item.product.category.name if item.product.category else "Unknown",
-                "price": float(item.product.price)
-            }
-            for item in cart_items
-        ]
-        
-        prompt = (
-            f"Пользователь добавил в корзину: {json.dumps(cart_products, ensure_ascii=False)}\n\n"
-            "Рекомендуй 3-5 похожих товаров, которые могут его заинтересовать.\n"
-            "Верни JSON формата:\n"
-            "{\n"
-            '  "recommendations": [\n'
-            '    {"name": "название", "reason": "почему рекомендуем"}\n'
-            "  ],\n"
-            '  "cross_sell": ["товар для дополнительной продажи"]\n'
-            "}"
-        )
-        
-        answer = ask_ai_sync(prompt, response_format="json")
-        parsed = parse_json_response(answer)
-        
-        return Response(parsed or {
-            "recommendations": [],
-            "cross_sell": [],
-            "message": "Рекомендации временно недоступны"
-        })
-    
-
-# ai/views.py - добавить в конец файла
-
 class AIRecommendationsView(APIView):
-    """
-    AI рекомендации товаров на основе запроса пользователя
-    """
+    """AI рекомендации товаров на основе запроса пользователя"""
+    
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -272,9 +217,15 @@ class AIRecommendationsView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Простая заглушка для теста, пока не настроили полноценные рекомендации
-        return Response({
-            "recommendations": [],
-            "summary": "Функция рекомендаций настраивается. Попробуйте позже.",
-            "follow_up_question": "Что именно вы ищете?"
-        })
+        recommendations = get_ai_price_recommendations(user_query)
+        return Response(recommendations, status=status.HTTP_200_OK)
+
+
+class AIPriceAnalysisView(APIView):
+    """Анализ ценового диапазона магазина"""
+    
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        analysis = get_price_analysis()
+        return Response(analysis, status=status.HTTP_200_OK)

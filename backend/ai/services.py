@@ -217,3 +217,194 @@ def ask_ai_sync(
 @lru_cache(maxsize=50)
 def ask_ai_cached(prompt: str, response_format: str = "structured") -> str:
     return ask_ai_sync(prompt, response_format)
+
+
+# ========== НОВЫЕ ФУНКЦИИ ДЛЯ ПОИСКА ПО ЦЕНЕ ==========
+
+from products.models import Product
+
+
+def get_products_with_prices(limit: int = 100) -> List[Dict]:
+    """
+    Получает товары с ценами для AI анализа
+    """
+    products = Product.objects.select_related('category').filter(stock__gt=0)[:limit]
+    
+    return [
+        {
+            "id": str(p.id),
+            "name": p.name,
+            "price": float(p.price),
+            "category": p.category.name if p.category else "Без категории",
+            "description": p.description[:150],
+            "specs": p.specs,
+            "stock": p.stock
+        }
+        for p in products
+    ]
+
+
+def build_price_recommendation_prompt(user_query: str, products: List[Dict]) -> str:
+    """
+    Создает промпт для рекомендации товаров с учетом цены
+    """
+    if not products:
+        return "Нет товаров для анализа"
+    
+    products_text = "\n".join([
+        f"{i+1}. {p['name']} - {p['price']}₽ | {p['category']}\n"
+        f"   Описание: {p['description'][:80]}..."
+        for i, p in enumerate(products[:40])
+    ])
+    
+    return f"""
+Ты AI-помощник интернет-магазина. Пользователь хочет купить товар.
+
+ЗАПРОС ПОЛЬЗОВАТЕЛЯ: "{user_query}"
+
+ДОСТУПНЫЕ ТОВАРЫ (с ценами):
+{products_text}
+
+ЗАДАЧА:
+1. Найди товары, которые пользователь может купить, учитывая его бюджет (если указан)
+2. Учти требования к характеристикам, категории, цене
+3. Отсортируй по релевантности и цене
+4. Если бюджет не указан, предложи варианты в разных ценовых сегментах
+
+ФОРМАТ ОТВЕТА (ТОЛЬКО JSON, БЕЗ ДРУГОГО ТЕКСТА):
+{{
+  "understanding": "краткое описание того, что понял из запроса",
+  "budget_found": true,
+  "budget_amount": число_если_указан,
+  "recommendations": [
+    {{
+      "product_id": "id_товара",
+      "name": "название",
+      "price": 1000,
+      "why_fits": "почему подходит под запрос",
+      "price_rating": "бюджетный/средний/премиум"
+    }}
+  ],
+  "budget_advice": "совет по бюджету (если нужен)",
+  "alternative_advice": "альтернативные советы"
+}}
+"""
+
+
+def get_ai_price_recommendations(user_query: str) -> Dict[str, Any]:
+    """
+    Получает рекомендации от AI с учетом цены
+    """
+    products = get_products_with_prices()
+    
+    if not products:
+        return {
+            "understanding": "В магазине пока нет товаров",
+            "recommendations": [],
+            "budget_advice": "Добавьте первый товар в магазин",
+            "alternative_advice": None
+        }
+    
+    prompt = build_price_recommendation_prompt(user_query, products)
+    response = ask_ai_sync(prompt, response_format="json")
+    
+    try:
+        json_start = response.find('{')
+        json_end = response.rfind('}') + 1
+        if json_start != -1 and json_end > json_start:
+            json_str = response[json_start:json_end]
+            result = json.loads(json_str)
+            
+            enriched_recommendations = []
+            for rec in result.get('recommendations', []):
+                product = Product.objects.filter(id=rec.get('product_id')).first()
+                if product:
+                    enriched_recommendations.append({
+                        **rec,
+                        "product": {
+                            "id": str(product.id),
+                            "name": product.name,
+                            "price": float(product.price),
+                            "description": product.description,
+                            "category": product.category.name if product.category else None,
+                            "image": product.image,
+                            "stock": product.stock
+                        }
+                    })
+            
+            return {
+                "understanding": result.get('understanding', ''),
+                "budget_found": result.get('budget_found', False),
+                "budget_amount": result.get('budget_amount'),
+                "recommendations": enriched_recommendations,
+                "budget_advice": result.get('budget_advice'),
+                "alternative_advice": result.get('alternative_advice')
+            }
+    except Exception as e:
+        logger.error(f"Failed to parse price recommendations: {e}")
+    
+    return {
+        "understanding": "Не удалось обработать запрос",
+        "recommendations": [],
+        "budget_advice": "Попробуйте переформулировать запрос, указав бюджет",
+        "alternative_advice": None
+    }
+
+
+def build_budget_analysis_prompt(products: List[Dict]) -> str:
+    """
+    Анализ ценового диапазона товаров
+    """
+    prices = [p['price'] for p in products]
+    if not prices:
+        return "Нет товаров для анализа"
+    
+    min_price = min(prices)
+    max_price = max(prices)
+    avg_price = sum(prices) / len(prices)
+    
+    cheap_products = [p for p in products if p['price'] < avg_price * 0.7][:5]
+    expensive_products = [p for p in products if p['price'] > avg_price * 1.5][:5]
+    
+    return f"""
+Проанализируй цены в магазине:
+
+Диапазон цен: от {min_price}₽ до {max_price}₽
+Средняя цена: {avg_price:.0f}₽
+
+Бюджетные товары (до {avg_price * 0.7:.0f}₽):
+{', '.join([p['name'] for p in cheap_products])}
+
+Премиум товары (от {avg_price * 1.5:.0f}₽):
+{', '.join([p['name'] for p in expensive_products])}
+
+Верни JSON (ТОЛЬКО JSON, БЕЗ ДРУГОГО ТЕКСТА):
+{{
+  "price_range": {{"min": {min_price}, "max": {max_price}, "avg": {avg_price:.0f}}},
+  "budget_category": "бюджетный/средний/премиум",
+  "recommended_budget": "рекомендуемый бюджет для разных категорий",
+  "insight": "интересное наблюдение о ценах"
+}}
+"""
+
+
+def get_price_analysis() -> Dict[str, Any]:
+    """
+    Получает анализ ценового диапазона
+    """
+    products = get_products_with_prices()
+    if not products:
+        return {"error": "Нет товаров для анализа"}
+    
+    prompt = build_budget_analysis_prompt(products)
+    response = ask_ai_sync(prompt, response_format="json")
+    
+    try:
+        json_start = response.find('{')
+        json_end = response.rfind('}') + 1
+        if json_start != -1 and json_end > json_start:
+            return json.loads(response[json_start:json_end])
+    except Exception as e:
+        logger.error(f"Failed to parse price analysis: {e}")
+    
+    return {"error": "Не удалось проанализировать цены"}

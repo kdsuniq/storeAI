@@ -315,45 +315,64 @@ function ProductsPage({ auth, setAuth }) {
         </section>
 
         <aside className="panel ai-panel">
-          <h2>AI помощник</h2>
-          <textarea 
-            rows={5} 
-            value={aiQuestion} 
-            onChange={(e) => setAiQuestion(e.target.value)} 
-            placeholder="Например: помоги выбрать товар для офиса до 50 000 ₽"
-            disabled={aiLoading}
-          />
-          
-          <button 
-            className="btn btn-light" 
-            onClick={askAI}
-            disabled={aiLoading || !aiQuestion.trim()}
-          >
-            {aiLoading ? '⏳ Думаю...' : '💬 Спросить'}
-          </button>
-          
-          {/* ⭐ Индикатор загрузки */}
-          {aiLoading && (
-            <div className="ai-loading">
-              <div className="loading-spinner"></div>
-              <p>AI анализирует ваш запрос...</p>
-            </div>
-          )}
-          
-          {/* ⭐ Ответ AI */}
-          {aiAnswer && !aiLoading && (
-            <div className="ai-answer">
-              <div className="ai-answer-header">🤖 Ответ AI:</div>
-              <div className="ai-answer-content">
-                {aiAnswer.split('\n').map((line, i) => (
-                  <p key={i} className={line.startsWith('•') || line.startsWith('-') ? 'list-item' : ''}>
-                    {line}
-                  </p>
-                ))}
-              </div>
-            </div>
-          )}
-        </aside>
+  {/* Существующий AI помощник */}
+  <h2>💬 AI помощник</h2>
+  <textarea 
+    rows={5} 
+    value={aiQuestion} 
+    onChange={(e) => setAiQuestion(e.target.value)} 
+    placeholder="Например: помоги выбрать товар для офиса до 50 000 ₽"
+    disabled={aiLoading}
+  />
+  <button 
+    className="btn btn-light" 
+    onClick={askAI}
+    disabled={aiLoading || !aiQuestion.trim()}
+  >
+    {aiLoading ? '⏳ Думаю...' : '💬 Спросить'}
+  </button>
+  
+  {aiLoading && (
+    <div className="ai-loading">
+      <div className="loading-spinner"></div>
+      <p>AI анализирует ваш запрос...</p>
+    </div>
+  )}
+  
+  {aiAnswer && !aiLoading && (
+    <div className="ai-answer">
+      <div className="ai-answer-header">🤖 Ответ AI:</div>
+      <div className="ai-answer-content">
+        {aiAnswer.split('\n').map((line, i) => (
+          <p key={i} className={line.startsWith('•') || line.startsWith('-') ? 'list-item' : ''}>
+            {line}
+          </p>
+        ))}
+      </div>
+    </div>
+  )}
+  
+  <AIPriceSearchWidget 
+    onAddToCart={async (productId) => {
+      if (!auth.access) {
+        setError('Войдите в аккаунт, чтобы добавить товар в корзину')
+        return
+      }
+      const res = await apiFetch('/products/cart/', {
+        method: 'POST',
+        body: { product_id: productId, quantity: 1 },
+        auth,
+        setAuth,
+      })
+      if (res.ok) {
+        setError('✅ Товар добавлен в корзину')
+        loadCart()
+      } else {
+        setError(extractError(res.data))
+      }
+    }}
+  />
+</aside>
       </div>
     </>
   )
@@ -458,42 +477,77 @@ function AccountPage({ auth, setAuth }) {
   }
 
   const generateDescription = async () => {
-    if (!form.name.trim()) return setMsg('Введите название товара перед генерацией')
-    
-    setGeneratingDesc(true)
-    setMsg('')
-    
-    try {
-      const selected = categories.find((c) => c.id === form.category_id)
-      const res = await apiFetch('/ai/generate-description/', {
-        method: 'POST',
-        body: { 
-          name: form.name, 
-          category: selected?.name || '', 
-          specs: parseSpecs(form.specsText) 
-        },
-      })
-      
-      if (!res.ok) {
-        setMsg(extractError(res.data))
-      } else {
-        const description = res.data.description
-        if (typeof description === 'object') {
-          setForm((p) => ({ 
-            ...p, 
-            description: description.full_description || description.short_description 
-          }))
-        } else {
-          setForm((p) => ({ ...p, description: description || p.description }))
-        }
-        setMsg('Описание сгенерировано')
-      }
-    } catch (err) {
-      setMsg('Ошибка генерации')
-    } finally {
-      setGeneratingDesc(false)
-    }
+  if (!form.name.trim()) {
+    setMsg('Введите название товара перед генерацией')
+    return
   }
+  
+  setGeneratingDesc(true)
+  setMsg('')
+  
+  try {
+    const selected = categories.find((c) => c.id === form.category_id)
+    
+    const res = await apiFetch('/ai/generate-description/', {
+      method: 'POST',
+      body: { 
+        name: form.name, 
+        category: selected?.name || '', 
+        specs: parseSpecs(form.specsText) 
+      },
+      auth,
+      setAuth,
+    })
+    
+    console.log('AI Response:', res)  // ⭐ Для отладки - посмотри в консоли
+    
+    if (!res.ok) {
+      setMsg(extractError(res.data))
+      return
+    }
+    
+    // ⭐ ПРОВЕРЯЕМ РАЗНЫЕ ФОРМАТЫ ОТВЕТА
+    let generatedText = ''
+    
+    if (res.data.description) {
+      // Формат: { description: { ... } }
+      if (typeof res.data.description === 'object') {
+        // Берем full_description или short_description
+        generatedText = res.data.description.full_description || 
+                       res.data.description.short_description || 
+                       JSON.stringify(res.data.description)
+      } 
+      // Формат: { description: "текст" }
+      else if (typeof res.data.description === 'string') {
+        generatedText = res.data.description
+      }
+    }
+    // Формат: { answer: "текст" }
+    else if (res.data.answer) {
+      generatedText = res.data.answer
+    }
+    // Формат: { full_description: "текст" }
+    else if (res.data.full_description) {
+      generatedText = res.data.full_description
+    }
+    
+    if (generatedText) {
+      setForm((prev) => ({ 
+        ...prev, 
+        description: generatedText 
+      }))
+      setMsg('Описание успешно сгенерировано и добавлено в поле!')
+    } else {
+      setMsg('Не удалось получить описание. Попробуйте еще раз.')
+      console.log('Unexpected response format:', res.data)
+    }
+  } catch (err) {
+    console.error('Generation error:', err)
+    setMsg('Ошибка генерации. Попробуйте позже.')
+  } finally {
+    setGeneratingDesc(false)
+  }
+}
 
   const addProduct = async (e) => {
     e.preventDefault()
@@ -1026,6 +1080,165 @@ function CartPage({ auth, setAuth }) {
         </>
       )}
     </section>
+  )
+}
+
+
+function AIPriceSearchWidget({ onAddToCart }) {
+  const [query, setQuery] = useState('')
+  const [recommendations, setRecommendations] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [priceAnalysis, setPriceAnalysis] = useState(null)
+
+  useEffect(() => {
+    const loadPriceAnalysis = async () => {
+      const res = await apiFetch('/ai/price-analysis/')
+      if (res.ok) {
+        setPriceAnalysis(res.data)
+      }
+    }
+    loadPriceAnalysis()
+  }, [])
+
+  const getRecommendations = async () => {
+    if (!query.trim()) return
+    
+    setLoading(true)
+    setError('')
+    setRecommendations(null)
+    
+    try {
+      const res = await apiFetch('/ai/recommend/', {
+        method: 'POST',
+        body: { query: query }
+      })
+      
+      if (res.ok) {
+        setRecommendations(res.data)
+      } else {
+        setError(extractError(res.data))
+      }
+    } catch (err) {
+      setError('Ошибка соединения. Попробуйте позже.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="ai-price-widget">
+      <div className="widget-header">
+        <span className="widget-icon">💰</span>
+        <h3>Найду товар под ваш бюджет</h3>
+      </div>
+      
+      {priceAnalysis && priceAnalysis.price_range && (
+        <div className="price-analysis-banner">
+          <div className="price-range">
+            <span>📊 Цены в магазине:</span>
+            <span className="min-price">от {priceAnalysis.price_range.min}₽</span>
+            <span className="max-price">до {priceAnalysis.price_range.max}₽</span>
+            <span className="avg-price">средняя {priceAnalysis.price_range.avg}₽</span>
+          </div>
+          {priceAnalysis.insight && (
+            <p className="insight">💡 {priceAnalysis.insight}</p>
+          )}
+        </div>
+      )}
+      
+      <p className="widget-hint">Опишите, что хотите купить, и укажите бюджет</p>
+      
+      <div className="search-row">
+        <textarea
+          rows={2}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Например: нужен ноутбук для работы до 50000 рублей"
+          disabled={loading}
+        />
+        <button 
+          className="btn btn-accent"
+          onClick={getRecommendations}
+          disabled={loading || !query.trim()}
+        >
+          {loading ? '⏳ Ищем...' : '🔍 Подобрать по бюджету'}
+        </button>
+      </div>
+      
+      {error && <div className="error-message">{error}</div>}
+      
+      {loading && (
+        <div className="loading-state">
+          <div className="loading-spinner-small"></div>
+          <p>Анализирую ваш бюджет и подбираю лучшие варианты...</p>
+        </div>
+      )}
+      
+      {recommendations && (
+        <div className="recommendations-result">
+          {recommendations.understanding && (
+            <div className="understanding-bubble">
+              <span className="icon">🤔</span>
+              <p>{recommendations.understanding}</p>
+            </div>
+          )}
+          
+          {recommendations.budget_found && recommendations.budget_amount && (
+            <div className="budget-info">
+              <span className="budget-label">Ваш бюджет:</span>
+              <span className="budget-value">{recommendations.budget_amount.toLocaleString()} ₽</span>
+            </div>
+          )}
+          
+          {recommendations.recommendations && recommendations.recommendations.length > 0 ? (
+            <div className="recommendations-list">
+              <div className="list-header">🎯 Вот что можно купить:</div>
+              {recommendations.recommendations.map((rec, idx) => (
+                <div className="recommendation-card" key={rec.product_id}>
+                  <div className="rank-badge">{idx + 1}</div>
+                  <div className="card-content">
+                    <div className="card-header">
+                      <h4>{rec.name}</h4>
+                      <span className={`price-badge ${rec.price_rating === 'бюджетный' ? 'budget' : rec.price_rating === 'премиум' ? 'premium' : 'medium'}`}>
+                        {rec.price_rating === 'бюджетный' && '🟢 Бюджетный'}
+                        {rec.price_rating === 'средний' && '🟡 Средний'}
+                        {rec.price_rating === 'премиум' && '🔴 Премиум'}
+                      </span>
+                    </div>
+                    <div className="price">{rec.price.toLocaleString()} ₽</div>
+                    <div className="reason">
+                      <span className="reason-label">💡 Почему подходит:</span>
+                      <span>{rec.why_fits}</span>
+                    </div>
+                    <button 
+                      className="btn-small"
+                      onClick={() => onAddToCart && onAddToCart(rec.product_id)}
+                    >
+                      🛒 В корзину
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="no-results">
+              <p>😔 Не нашлось товаров под ваш запрос</p>
+              {recommendations.alternative_advice && (
+                <p className="advice">{recommendations.alternative_advice}</p>
+              )}
+            </div>
+          )}
+          
+          {recommendations.budget_advice && (
+            <div className="budget-advice">
+              <span className="advice-icon">💡</span>
+              <span>{recommendations.budget_advice}</span>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   )
 }
 
