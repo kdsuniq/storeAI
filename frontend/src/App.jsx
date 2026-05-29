@@ -96,17 +96,45 @@ function Header({ isAuth, onLogout }) {
 
 function ProductsPage({ auth, setAuth }) {
   const [products, setProducts] = useState([])
+  const [cartItems, setCartItems] = useState({})
   const [query, setQuery] = useState('')
   const [aiQuestion, setAiQuestion] = useState('')
   const [aiAnswer, setAiAnswer] = useState('')
   const [error, setError] = useState('')
+  const [cartTotalCount, setCartTotalCount] = useState(0)
 
-  const load = async () => {
+  const loadProducts = async () => {
     const { data } = await apiFetch('/products/')
     setProducts(Array.isArray(data) ? data : [])
   }
 
-  useEffect(() => { load() }, [])
+  const loadCart = async () => {
+    if (!auth.access) return
+    const res = await apiFetch('/products/cart/', { auth, setAuth })
+    if (!res.ok) return
+    
+    const items = Array.isArray(res.data.items) ? res.data.items : []
+    const cartMap = {}
+    let totalCount = 0
+    items.forEach(item => {
+      cartMap[item.product.id] = {
+        quantity: item.quantity,
+        cartItemId: item.id
+      }
+      totalCount += item.quantity
+    })
+    setCartItems(cartMap)
+    setCartTotalCount(totalCount)
+  }
+
+  useEffect(() => { 
+    loadProducts()
+    loadCart()
+  }, [])
+
+  useEffect(() => {
+    loadCart()
+  }, [auth.access])
 
   const filtered = useMemo(() => {
     if (!query.trim()) return products
@@ -114,17 +142,60 @@ function ProductsPage({ auth, setAuth }) {
     return products.filter((p) => `${p.name} ${p.description}`.toLowerCase().includes(q))
   }, [products, query])
 
-  const addToCart = async (productId) => {
-    setError('')
-    if (!auth.access) return setError('Чтобы добавить в корзину, нужно войти в аккаунт.')
-    const res = await apiFetch('/products/cart/', {
-      method: 'POST',
-      body: { product_id: productId, quantity: 1 },
+  // Функция для обновления количества товара в корзине
+  const updateCartQuantity = async (productId, newQuantity) => {
+    if (!auth.access) {
+      setError('Чтобы добавить в корзину, нужно войти в аккаунт.')
+      return
+    }
+
+    const product = products.find(p => p.id === productId)
+    if (!product) return
+
+    if (newQuantity < 0) newQuantity = 0
+    
+    if (newQuantity === 0) {
+      // Удаляем товар из корзины
+      const cartItemId = cartItems[productId]?.cartItemId
+      if (cartItemId) {
+        const res = await apiFetch(`/products/cart/${cartItemId}/`, { 
+          method: 'DELETE', 
+          auth, 
+          setAuth 
+        })
+        if (!res.ok) {
+          setError(extractError(res.data))
+          return
+        }
+        await loadCart()
+      }
+      return
+    }
+
+    if (newQuantity > product.stock) {
+      setError(`Недостаточно товара. В наличии: ${product.stock} шт.`)
+      return
+    }
+
+    // Используем PATCH эндпоинт для обновления количества
+    const res = await apiFetch('/products/cart/update/', {
+      method: 'PATCH',
+      body: { product_id: productId, quantity: newQuantity },
       auth,
       setAuth,
     })
-    if (!res.ok) return setError(extractError(res.data))
-    setError('Товар добавлен в корзину.')
+
+    if (!res.ok) {
+      setError(extractError(res.data))
+      return
+    }
+
+    await loadCart()
+    setError('')
+  }
+
+  const getQuantityInCart = (productId) => {
+    return cartItems[productId]?.quantity || 0
   }
 
   const askAI = async () => {
@@ -132,11 +203,33 @@ function ProductsPage({ auth, setAuth }) {
     setAiAnswer(res.data.answer || res.data.error || 'Ответ не получен')
   }
 
+  const getStockClass = (status) => {
+    switch(status) {
+      case 'in_stock': return 'in-stock'
+      case 'low_stock': return 'low-stock'
+      default: return 'out-of-stock'
+    }
+  }
+
   return (
     <>
       <section className="hero-market">
-        <h1>Маркетплейс товаров с AI</h1>
-        <p>Покупатели смотрят все товары, продавцы публикуют через личный кабинет.</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1>Маркетплейс товаров с AI</h1>
+            <p>Покупатели смотрят все товары, продавцы публикуют через личный кабинет.</p>
+          </div>
+          {auth.access && (
+            <Link to="/cart" className="cart-icon-link">
+              <div className="cart-icon">
+                🛒
+                {cartTotalCount > 0 && (
+                  <span className="cart-badge">{cartTotalCount}</span>
+                )}
+              </div>
+            </Link>
+          )}
+        </div>
       </section>
 
       <div className="layout">
@@ -147,16 +240,59 @@ function ProductsPage({ auth, setAuth }) {
           </div>
           {error && <p className="note">{error}</p>}
           <div className="catalog-grid">
-            {filtered.map((p) => (
-              <article className="product-card" key={p.id}>
-                <div className="mock-photo" />
-                <h3>{p.name}</h3>
-                <p className="price">{p.price} ₽</p>
-                <p className="meta">{p.category?.name || 'Без категории'} · продавец: {p.owner_username || 'пользователь'}</p>
-                <p className="desc">{p.description}</p>
-                <button className="btn btn-accent" onClick={() => addToCart(p.id)}>В корзину</button>
-              </article>
-            ))}
+            {filtered.map((p) => {
+              const cartQuantity = getQuantityInCart(p.id)
+              const isInStock = p.is_in_stock || p.stock > 0
+              
+              return (
+                <article className="product-card" key={p.id}>
+                  <div className="mock-photo" />
+                  <h3>{p.name}</h3>
+                  <p className="price">{p.price} ₽</p>
+                  
+                  <div className={`stock-badge ${getStockClass(p.stock_status)}`}>
+                    {p.in_stock_display || (p.stock > 0 ? `В наличии (${p.stock} шт.)` : 'Нет в наличии')}
+                  </div>
+                  
+                  <p className="meta">{p.category?.name || 'Без категории'} · продавец: {p.owner_username || 'пользователь'}</p>
+                  <p className="desc">{p.description}</p>
+                  
+                  {isInStock ? (
+                    <div className="cart-controls">
+                      {cartQuantity > 0 ? (
+                        <div className="quantity-controls">
+                          <button 
+                            className="qty-btn"
+                            onClick={() => updateCartQuantity(p.id, cartQuantity - 1)}
+                          >
+                            -
+                          </button>
+                          <span className="qty-value">{cartQuantity}</span>
+                          <button 
+                            className="qty-btn"
+                            onClick={() => updateCartQuantity(p.id, cartQuantity + 1)}
+                            disabled={cartQuantity >= p.stock}
+                          >
+                            +
+                          </button>
+                        </div>
+                      ) : (
+                        <button 
+                          className="btn btn-accent add-to-cart-btn"
+                          onClick={() => updateCartQuantity(p.id, 1)}
+                        >
+                          В корзину
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <button className="btn btn-disabled" disabled>
+                      Нет в наличии
+                    </button>
+                  )}
+                </article>
+              )
+            })}
           </div>
         </section>
 
@@ -219,10 +355,20 @@ function AccountPage({ auth, setAuth }) {
   const [myProducts, setMyProducts] = useState([])
   const [orders, setOrders] = useState([])
   const [cat, setCat] = useState({ name: '', description: '' })
-  const [form, setForm] = useState({ name: '', description: '', price: '', category_id: '', specsText: '' })
+  const [form, setForm] = useState({ 
+    name: '', 
+    description: '', 
+    price: '', 
+    category_id: '', 
+    specsText: '',
+    stock: '',
+    low_stock_threshold: ''
+  })
   const [insights, setInsights] = useState('')
   const [stats, setStats] = useState(null)
   const [msg, setMsg] = useState('')
+  const [editingProduct, setEditingProduct] = useState(null)
+  const [editingStockValue, setEditingStockValue] = useState('')
 
   const load = async () => {
     const [me, c, p, o] = await Promise.all([
@@ -268,22 +414,71 @@ function AccountPage({ auth, setAuth }) {
 
   const addProduct = async (e) => {
     e.preventDefault()
+    
+    const stockNum = Number(form.stock)
+    if (isNaN(stockNum) || stockNum < 0) {
+      return setMsg('Количество товара должно быть неотрицательным числом')
+    }
+    
     const res = await apiFetch('/products/', {
       method: 'POST',
       body: {
         name: form.name,
         description: form.description,
         price: Number(form.price),
-        category_id: form.category_id,
+        category: form.category_id,
         specs: parseSpecs(form.specsText),
+        stock: stockNum,
+        low_stock_threshold: Number(form.low_stock_threshold) || 5
       },
       auth,
       setAuth,
     })
     if (!res.ok) return setMsg(extractError(res.data))
     setMsg('Товар опубликован')
-    setForm({ name: '', description: '', price: '', category_id: '', specsText: '' })
+    setForm({ name: '', description: '', price: '', category_id: '', specsText: '', stock: '', low_stock_threshold: '' })
     load()
+  }
+  
+  const startEditingStock = (product) => {
+    setEditingProduct(product.id)
+    setEditingStockValue(product.stock.toString())
+  }
+  
+  const cancelEditingStock = () => {
+    setEditingProduct(null)
+    setEditingStockValue('')
+  }
+  
+  const saveStockUpdate = async (productId) => {
+    const newStock = parseInt(editingStockValue)
+    
+    if (isNaN(newStock)) {
+      setMsg('Введите корректное число')
+      return
+    }
+    
+    if (newStock < 0) {
+      setMsg('Количество не может быть отрицательным')
+      return
+    }
+    
+    const res = await apiFetch(`/products/my-products/${productId}/`, {
+      method: 'PATCH',
+      body: { stock: newStock },
+      auth,
+      setAuth,
+    })
+    
+    if (!res.ok) {
+      setMsg(extractError(res.data))
+      return
+    }
+    
+    setMsg('Остаток успешно обновлен')
+    load()
+    setEditingProduct(null)
+    setEditingStockValue('')
   }
 
   const loadInsights = async () => {
@@ -323,6 +518,25 @@ function AccountPage({ auth, setAuth }) {
           <h3>2) Разместить товар</h3>
           <input required placeholder="Название товара" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <input required type="number" min="0" step="0.01" placeholder="Цена" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
+          
+          <input 
+            required 
+            type="number" 
+            min="0" 
+            step="1" 
+            placeholder="Количество на складе (шт.)" 
+            value={form.stock} 
+            onChange={(e) => setForm({ ...form, stock: e.target.value })} 
+          />
+          <input 
+            type="number" 
+            min="0" 
+            step="1" 
+            placeholder="Порог низкого остатка (по умолчанию 5)" 
+            value={form.low_stock_threshold} 
+            onChange={(e) => setForm({ ...form, low_stock_threshold: e.target.value })} 
+          />
+          
           <select required value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })}>
             <option value="">Выберите категорию</option>
             {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -344,8 +558,52 @@ function AccountPage({ auth, setAuth }) {
               <div className="mock-photo" />
               <h3>{p.name}</h3>
               <p className="price">{p.price} ₽</p>
+              
+              <div className="stock-info">
+                {editingProduct === p.id ? (
+                  <div className="stock-edit">
+                    <input 
+                      type="number" 
+                      value={editingStockValue}
+                      onChange={(e) => setEditingStockValue(e.target.value)}
+                      min="0"
+                      step="1"
+                      autoFocus
+                    />
+                    <div className="stock-edit-buttons">
+                      <button 
+                        className="btn-save-stock"
+                        onClick={() => saveStockUpdate(p.id)}
+                      >
+                        Сохранить
+                      </button>
+                      <button 
+                        className="btn-cancel-stock"
+                        onClick={cancelEditingStock}
+                      >
+                        Отмена
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className={`stock-value ${p.stock <= p.low_stock_threshold && p.stock > 0 ? 'low' : ''}`}>
+                    В наличии: {p.stock} шт.
+                    {p.stock <= p.low_stock_threshold && p.stock > 0 && 
+                      <span className="warning"> низкий остаток!</span>
+                    }
+                    {p.stock === 0 && <span className="out"> закончился</span>}
+                    <button 
+                      className="btn-edit-stock" 
+                      onClick={() => startEditingStock(p)}
+                      title="Изменить количество"
+                    >
+                      Редактировать
+                    </button>
+                  </p>
+                )}
+              </div>
+              
               <p className="meta">{p.category?.name}</p>
-              <p className="desc">{p.description}</p>
             </article>
           ))}
         </div>
@@ -375,6 +633,8 @@ function AccountPage({ auth, setAuth }) {
           <div>
             <p className="meta">Товаров у продавца: {stats.seller_products_count}</p>
             <p className="meta">Добавлений в корзину: {stats.total_cart_additions}</p>
+            <p className="meta">Товаров с низким остатком: {myProducts.filter(p => p.stock > 0 && p.stock <= p.low_stock_threshold).length}</p>
+            <p className="meta">Распроданных товаров: {myProducts.filter(p => p.stock === 0).length}</p>
           </div>
         )}
         {insights && <p>{insights}</p>}
@@ -386,9 +646,17 @@ function AccountPage({ auth, setAuth }) {
 function CartPage({ auth, setAuth }) {
   const [cart, setCart] = useState({ items: [], total: 0 })
   const [msg, setMsg] = useState('')
-  const [checkoutData, setCheckoutData] = useState({ full_name: '', phone: '', city: '', address: '', comment: '' })
+  const [loading, setLoading] = useState(false)
+  const [checkoutData, setCheckoutData] = useState({ 
+    full_name: '', 
+    phone: '', 
+    city: '', 
+    address: '', 
+    comment: '' 
+  })
 
   const load = async () => {
+    if (!auth.access) return
     const res = await apiFetch('/products/cart/', { auth, setAuth })
     if (!res.ok) return
     setCart({
@@ -397,46 +665,215 @@ function CartPage({ auth, setAuth }) {
     })
   }
 
-  useEffect(() => { if (auth.access) load() }, [auth.access])
+  useEffect(() => { 
+    if (auth.access) load() 
+  }, [auth.access])
 
-  const removeItem = async (id) => {
-    await apiFetch(`/products/cart/${id}/`, { method: 'DELETE', auth, setAuth })
-    load()
+  const updateCartQuantity = async (productId, newQuantity) => {
+    if (!auth.access) return
+    if (loading) return
+    
+    setLoading(true)
+    
+    if (newQuantity <= 0) {
+      // Удаляем товар из корзины
+      const item = cart.items.find(i => i.product.id === productId)
+      if (item) {
+        const res = await apiFetch(`/products/cart/${item.id}/`, { 
+          method: 'DELETE', 
+          auth, 
+          setAuth 
+        })
+        if (!res.ok) {
+          setMsg(extractError(res.data))
+        }
+        await load()
+      }
+      setLoading(false)
+      return
+    }
+
+    // Проверяем доступность товара
+    const product = cart.items.find(i => i.product.id === productId)?.product
+    if (product && newQuantity > product.stock) {
+      setMsg(`Недостаточно товара. В наличии: ${product.stock} шт.`)
+      setLoading(false)
+      return
+    }
+
+    // Обновляем количество через PATCH эндпоинт
+    const res = await apiFetch('/products/cart/update/', {
+      method: 'PATCH',
+      body: { product_id: productId, quantity: newQuantity },
+      auth,
+      setAuth,
+    })
+
+    if (!res.ok) {
+      setMsg(extractError(res.data))
+    } else {
+      await load()
+    }
+    
+    setLoading(false)
+  }
+
+  const removeItem = async (itemId, productId) => {
+    await updateCartQuantity(productId, 0)
   }
 
   const checkout = async () => {
     setMsg('')
-    const res = await apiFetch('/products/cart/checkout/', { method: 'POST', body: checkoutData, auth, setAuth })
-    if (!res.ok) return setMsg(extractError(res.data))
+    setLoading(true)
+    
+    // Проверяем, что все товары есть в наличии
+    const unavailableItems = cart.items.filter(item => item.quantity > item.product.stock)
+    if (unavailableItems.length > 0) {
+      const names = unavailableItems.map(i => i.product.name).join(', ')
+      setMsg(`Товары недоступны в нужном количестве: ${names}. Обновите корзину.`)
+      setLoading(false)
+      return
+    }
+    
+    const res = await apiFetch('/products/cart/checkout/', { 
+      method: 'POST', 
+      body: checkoutData, 
+      auth, 
+      setAuth 
+    })
+    
+    if (!res.ok) {
+      if (res.data.error && res.data.error.includes('недоступен')) {
+        setMsg(`${res.data.error}. Обновите корзину.`)
+        load()
+      } else {
+        setMsg(extractError(res.data))
+      }
+      setLoading(false)
+      return
+    }
+    
     setMsg(`Заказ оформлен на сумму ${Number(res.data.order?.total || 0).toFixed(2)} ₽`)
     load()
+    // Очищаем форму
+    setCheckoutData({ full_name: '', phone: '', city: '', address: '', comment: '' })
+    setLoading(false)
   }
 
-  if (!auth.access) return <section className="panel"><p>Войдите в аккаунт, чтобы пользоваться корзиной.</p></section>
+  if (!auth.access) {
+    return (
+      <section className="panel">
+        <p>Войдите в аккаунт, чтобы пользоваться корзиной.</p>
+      </section>
+    )
+  }
 
   return (
     <section className="panel">
       <h2>Корзина</h2>
       {msg && <p className="note">{msg}</p>}
-      {cart.items.map((item) => (
-        <article className="product-row" key={item.id}>
-          <div>
-            <h3>{item.product.name}</h3>
-            <p className="meta">{item.quantity} шт · {item.product.price} ₽</p>
+      
+      {cart.items.length === 0 ? (
+        <p>Корзина пуста</p>
+      ) : (
+        <>
+          <div className="cart-items">
+            {cart.items.map((item) => (
+              <div className="cart-item" key={item.id}>
+                <div className="cart-item-info">
+                  <h3>{item.product.name}</h3>
+                  <p className="price">{item.product.price} ₽</p>
+                  <p className="meta">категория: {item.product.category?.name || 'Без категории'}</p>
+                  {item.quantity > item.product.stock && (
+                    <p className="error-meta">⚠️ В наличии только {item.product.stock} шт.</p>
+                  )}
+                </div>
+                
+                <div className="cart-item-controls">
+                  <div className="quantity-controls">
+                    <button 
+                      className="qty-btn"
+                      onClick={() => updateCartQuantity(item.product.id, item.quantity - 1)}
+                      disabled={loading}
+                    >
+                      -
+                    </button>
+                    <span className="qty-value">{item.quantity}</span>
+                    <button 
+                      className="qty-btn"
+                      onClick={() => updateCartQuantity(item.product.id, item.quantity + 1)}
+                      disabled={loading || item.quantity >= item.product.stock}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button 
+                    className="btn-remove"
+                    onClick={() => removeItem(item.id, item.product.id)}
+                    disabled={loading}
+                  >
+                    Удалить
+                  </button>
+                </div>
+                
+                <div className="cart-item-total">
+                  <span>Сумма: {(item.product.price * item.quantity).toFixed(2)} ₽</span>
+                </div>
+              </div>
+            ))}
           </div>
-          <button className="btn btn-outline" onClick={() => removeItem(item.id)}>Удалить</button>
-        </article>
-      ))}
-      <h3>Итого: {Number(cart.total).toFixed(2)} ₽</h3>
-      <div className="form-block">
-        <h3>Данные для доставки</h3>
-        <input placeholder="ФИО" value={checkoutData.full_name} onChange={(e) => setCheckoutData({ ...checkoutData, full_name: e.target.value })} />
-        <input placeholder="Телефон" value={checkoutData.phone} onChange={(e) => setCheckoutData({ ...checkoutData, phone: e.target.value })} />
-        <input placeholder="Город" value={checkoutData.city} onChange={(e) => setCheckoutData({ ...checkoutData, city: e.target.value })} />
-        <input placeholder="Адрес" value={checkoutData.address} onChange={(e) => setCheckoutData({ ...checkoutData, address: e.target.value })} />
-        <textarea rows={3} placeholder="Комментарий к заказу" value={checkoutData.comment} onChange={(e) => setCheckoutData({ ...checkoutData, comment: e.target.value })} />
-      </div>
-      <button className="btn btn-accent" onClick={checkout} disabled={!cart.items.length}>Оформить заказ</button>
+          
+          <div className="cart-summary">
+            <h3>Итого: {Number(cart.total).toFixed(2)} ₽</h3>
+            
+            <div className="form-block">
+              <h3>Данные для доставки</h3>
+              <input 
+                placeholder="ФИО" 
+                value={checkoutData.full_name} 
+                onChange={(e) => setCheckoutData({ ...checkoutData, full_name: e.target.value })} 
+              />
+              <input 
+                placeholder="Телефон" 
+                value={checkoutData.phone} 
+                onChange={(e) => setCheckoutData({ ...checkoutData, phone: e.target.value })} 
+              />
+              <input 
+                placeholder="Город" 
+                value={checkoutData.city} 
+                onChange={(e) => setCheckoutData({ ...checkoutData, city: e.target.value })} 
+              />
+              <input 
+                placeholder="Адрес" 
+                value={checkoutData.address} 
+                onChange={(e) => setCheckoutData({ ...checkoutData, address: e.target.value })} 
+              />
+              <textarea 
+                rows={3} 
+                placeholder="Комментарий к заказу" 
+                value={checkoutData.comment} 
+                onChange={(e) => setCheckoutData({ ...checkoutData, comment: e.target.value })} 
+              />
+            </div>
+            
+            <button 
+              className="btn btn-accent" 
+              onClick={checkout} 
+              disabled={
+                loading || 
+                !cart.items.length || 
+                cart.items.some(item => item.quantity > item.product.stock) ||
+                !checkoutData.full_name ||
+                !checkoutData.phone ||
+                !checkoutData.city ||
+                !checkoutData.address
+              }
+            >
+              {loading ? 'Обработка...' : 'Оформить заказ'}
+            </button>
+          </div>
+        </>
+      )}
     </section>
   )
 }
