@@ -3,6 +3,18 @@
 
 # Инструкция по сбеорке проекта
 
+сначала получаем токен на сайте
+
+```
+openrouter.ai
+```
+создаем файл .env и добавляем в него
+```
+OPENAI_API_KEY=ВАШ-КЛЮЧ
+OPENROUTER_MODEL=openrouter/free
+```
+
+далее в терминале
 ```
 cd frontend
 ```
@@ -15,7 +27,7 @@ npm i
 npm run dev
 ```
 
-В новом терминале
+в новом терминале
 ```
 cd backend
 ```
@@ -39,3 +51,4 @@ python manage.py migrate
 ```
 python manage.py runserver
 ```
+

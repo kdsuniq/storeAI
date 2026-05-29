@@ -75,7 +75,7 @@ class MyProductsView(APIView):
         return Response(ProductSerializer(queryset, many=True).data)
     
     def patch(self, request, product_id=None):
-        """Частичное обновление товара (например, изменить количество)"""
+        """Частичное обновление товара (количество, цена, порог)"""
         try:
             product = Product.objects.get(id=product_id, owner=request.user)
         except Product.DoesNotExist:
@@ -88,12 +88,18 @@ class MyProductsView(APIView):
             product.stock = new_stock
             product.save(update_fields=['stock'])
         
+        if 'price' in request.data:
+            new_price = request.data['price']
+            if new_price < 0:
+                return Response({"error": "Цена не может быть отрицательной"}, status=status.HTTP_400_BAD_REQUEST)
+            product.price = new_price
+            product.save(update_fields=['price'])
+        
         if 'low_stock_threshold' in request.data:
             product.low_stock_threshold = request.data['low_stock_threshold']
             product.save(update_fields=['low_stock_threshold'])
         
         return Response(ProductSerializer(product).data)
-
 
 class CartView(APIView):
     permission_classes = [permissions.IsAuthenticated]
