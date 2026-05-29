@@ -100,6 +100,7 @@ function ProductsPage({ auth, setAuth }) {
   const [query, setQuery] = useState('')
   const [aiQuestion, setAiQuestion] = useState('')
   const [aiAnswer, setAiAnswer] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)  // ⭐ Состояние загрузки AI
   const [error, setError] = useState('')
   const [cartTotalCount, setCartTotalCount] = useState(0)
 
@@ -142,7 +143,6 @@ function ProductsPage({ auth, setAuth }) {
     return products.filter((p) => `${p.name} ${p.description}`.toLowerCase().includes(q))
   }, [products, query])
 
-  // Функция для обновления количества товара в корзине
   const updateCartQuantity = async (productId, newQuantity) => {
     if (!auth.access) {
       setError('Чтобы добавить в корзину, нужно войти в аккаунт.')
@@ -155,7 +155,6 @@ function ProductsPage({ auth, setAuth }) {
     if (newQuantity < 0) newQuantity = 0
     
     if (newQuantity === 0) {
-      // Удаляем товар из корзины
       const cartItemId = cartItems[productId]?.cartItemId
       if (cartItemId) {
         const res = await apiFetch(`/products/cart/${cartItemId}/`, { 
@@ -177,7 +176,6 @@ function ProductsPage({ auth, setAuth }) {
       return
     }
 
-    // Используем PATCH эндпоинт для обновления количества
     const res = await apiFetch('/products/cart/update/', {
       method: 'PATCH',
       body: { product_id: productId, quantity: newQuantity },
@@ -198,9 +196,29 @@ function ProductsPage({ auth, setAuth }) {
     return cartItems[productId]?.quantity || 0
   }
 
+  // ⭐ Функция с индикатором загрузки
   const askAI = async () => {
-    const res = await apiFetch('/ai/chat/', { method: 'POST', body: { message: aiQuestion } })
-    setAiAnswer(res.data.answer || res.data.error || 'Ответ не получен')
+    if (!aiQuestion.trim()) return
+    
+    setAiLoading(true)
+    setAiAnswer('')
+    
+    try {
+      const res = await apiFetch('/ai/chat/', { 
+        method: 'POST', 
+        body: { message: aiQuestion, format: 'structured' }
+      })
+      
+      if (res.ok) {
+        setAiAnswer(res.data.answer || 'Ответ не получен')
+      } else {
+        setAiAnswer('❌ Ошибка: ' + (res.data.error || 'Не удалось получить ответ'))
+      }
+    } catch (err) {
+      setAiAnswer('❌ Ошибка соединения. Попробуйте позже.')
+    } finally {
+      setAiLoading(false)
+    }
   }
 
   const getStockClass = (status) => {
@@ -298,9 +316,43 @@ function ProductsPage({ auth, setAuth }) {
 
         <aside className="panel ai-panel">
           <h2>AI помощник</h2>
-          <textarea rows={5} value={aiQuestion} onChange={(e) => setAiQuestion(e.target.value)} placeholder="Например: помоги выбрать товар для офиса до 50 000 ₽" />
-          <button className="btn btn-light" onClick={askAI}>Спросить</button>
-          <p>{aiAnswer}</p>
+          <textarea 
+            rows={5} 
+            value={aiQuestion} 
+            onChange={(e) => setAiQuestion(e.target.value)} 
+            placeholder="Например: помоги выбрать товар для офиса до 50 000 ₽"
+            disabled={aiLoading}
+          />
+          
+          <button 
+            className="btn btn-light" 
+            onClick={askAI}
+            disabled={aiLoading || !aiQuestion.trim()}
+          >
+            {aiLoading ? '⏳ Думаю...' : '💬 Спросить'}
+          </button>
+          
+          {/* ⭐ Индикатор загрузки */}
+          {aiLoading && (
+            <div className="ai-loading">
+              <div className="loading-spinner"></div>
+              <p>AI анализирует ваш запрос...</p>
+            </div>
+          )}
+          
+          {/* ⭐ Ответ AI */}
+          {aiAnswer && !aiLoading && (
+            <div className="ai-answer">
+              <div className="ai-answer-header">🤖 Ответ AI:</div>
+              <div className="ai-answer-content">
+                {aiAnswer.split('\n').map((line, i) => (
+                  <p key={i} className={line.startsWith('•') || line.startsWith('-') ? 'list-item' : ''}>
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
         </aside>
       </div>
     </>
@@ -369,6 +421,7 @@ function AccountPage({ auth, setAuth }) {
   const [msg, setMsg] = useState('')
   const [editingProduct, setEditingProduct] = useState(null)
   const [editingStockValue, setEditingStockValue] = useState('')
+  const [generatingDesc, setGeneratingDesc] = useState(false)
 
   const load = async () => {
     const [me, c, p, o] = await Promise.all([
@@ -398,18 +451,6 @@ function AccountPage({ auth, setAuth }) {
     setMsg('Категория создана')
     setCat({ name: '', description: '' })
     load()
-  }
-
-  const generateDescription = async () => {
-    if (!form.name.trim()) return setMsg('Введите название товара перед генерацией')
-    const selected = categories.find((c) => c.id === form.category_id)
-    const res = await apiFetch('/ai/generate-description/', {
-      method: 'POST',
-      body: { name: form.name, category: selected?.name || '', specs: parseSpecs(form.specsText) },
-    })
-    if (!res.ok) return setMsg(extractError(res.data))
-    setForm((p) => ({ ...p, description: res.data.description || p.description }))
-    setMsg('Описание сгенерировано')
   }
 
   const addProduct = async (e) => {
@@ -500,6 +541,47 @@ function AccountPage({ auth, setAuth }) {
     load()
   }
 
+  const generateDescription = async () => {
+    if (!form.name.trim()) {
+      setMsg('Введите название товара перед генерацией')
+      return
+    }
+    
+    setGeneratingDesc(true)  // ⭐ Включаем загрузку
+    setMsg('')
+    
+    try {
+      const selected = categories.find((c) => c.id === form.category_id)
+      const res = await apiFetch('/ai/generate-description/', {
+        method: 'POST',
+        body: { 
+          name: form.name, 
+          category: selected?.name || '', 
+          specs: parseSpecs(form.specsText) 
+        },
+      })
+      
+      if (!res.ok) {
+        setMsg(extractError(res.data))
+      } else {
+        const description = res.data.description
+        if (typeof description === 'object') {
+          setForm((p) => ({ 
+            ...p, 
+            description: description.full_description || description.short_description 
+          }))
+        } else {
+          setForm((p) => ({ ...p, description: description || p.description }))
+        }
+        setMsg('✅ Описание сгенерировано')
+      }
+    } catch (err) {
+      setMsg('❌ Ошибка генерации')
+    } finally {
+      setGeneratingDesc(false)  // ⭐ Выключаем загрузку
+    }
+  }
+
   return (
     <div className="layout">
       <section className="panel">
@@ -544,7 +626,14 @@ function AccountPage({ auth, setAuth }) {
           <textarea rows={4} placeholder={'Характеристики\nЦвет: Черный\nПамять: 256 ГБ'} value={form.specsText} onChange={(e) => setForm({ ...form, specsText: e.target.value })} />
           <textarea required rows={6} placeholder="Описание" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           <div className="actions-row">
-            <button className="btn btn-outline" type="button" onClick={generateDescription}>Сгенерировать описание AI</button>
+            <button 
+  className="btn btn-outline" 
+  type="button" 
+  onClick={generateDescription}
+  disabled={generatingDesc}
+>
+  {generatingDesc ? '⏳ Генерация...' : '✨ Сгенерировать описание AI'}
+</button>
             <button className="btn btn-accent" type="submit">Опубликовать товар</button>
           </div>
         </form>

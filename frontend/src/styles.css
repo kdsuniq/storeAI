@@ -578,3 +578,74 @@ input, select, textarea {
     text-align: left;
   }
 }
+
+/* AI загрузка */
+.ai-loading {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f0f4ff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e0e0e0;
+  border-top: 3px solid #1f5eff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.ai-loading p {
+  margin: 0;
+  color: #1f5eff;
+  font-weight: 500;
+}
+
+/* Ответ AI */
+.ai-answer {
+  margin-top: 16px;
+  padding: 12px;
+  background: #f8f9ff;
+  border-radius: 12px;
+  border-left: 4px solid #1f5eff;
+}
+
+.ai-answer-header {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #1f5eff;
+}
+
+.ai-answer-content {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.ai-answer-content p {
+  margin: 8px 0;
+}
+
+.ai-answer-content .list-item {
+  margin-left: 16px;
+  color: #444;
+}
+
+/* Disabled состояние для кнопок */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+textarea:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
