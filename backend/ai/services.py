@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import re
 import httpx
 from functools import lru_cache
 from typing import Optional, Dict, Any, List
@@ -9,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 # Конфигурация OpenRouter
 OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions'
-OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY', '')
+OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY') or os.getenv('OPENAI_API_KEY', '')
 OPENROUTER_MODEL = os.getenv('OPENROUTER_MODEL', 'openrouter/free')
 
 # Системные промпты для разных типов ответов
@@ -221,7 +222,7 @@ def ask_ai_cached(prompt: str, response_format: str = "structured") -> str:
 
 # ========== НОВЫЕ ФУНКЦИИ ДЛЯ ПОИСКА ПО ЦЕНЕ ==========
 
-from products.models import Product
+from products.models import CartItem, Order, Product
 
 
 def get_products_with_prices(limit: int = 100) -> List[Dict]:
@@ -242,6 +243,341 @@ def get_products_with_prices(limit: int = 100) -> List[Dict]:
         }
         for p in products
     ]
+
+
+def _tokens(text: str) -> set:
+    return {token for token in re.findall(r"[a-zа-яё0-9]+", text.lower()) if len(token) > 2}
+
+
+def _product_search_text(product: Dict[str, Any]) -> str:
+    specs = product.get("specs") or {}
+    specs_text = " ".join([f"{key} {value}" for key, value in specs.items()])
+    return " ".join(
+        [
+            product.get("name", ""),
+            product.get("category", ""),
+            product.get("description", ""),
+            specs_text,
+        ]
+    )
+
+
+def enrich_recommendations(raw_recommendations: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    enriched_recommendations = []
+    for rec in raw_recommendations:
+        product = Product.objects.select_related("category").filter(id=rec.get("product_id")).first()
+        if product:
+            enriched_recommendations.append(
+                {
+                    **rec,
+                    "product_id": str(product.id),
+                    "name": rec.get("name") or product.name,
+                    "price": float(product.price),
+                    "product": {
+                        "id": str(product.id),
+                        "name": product.name,
+                        "price": float(product.price),
+                        "description": product.description,
+                        "category": product.category.name if product.category else None,
+                        "image": product.image,
+                        "stock": product.stock,
+                    },
+                }
+            )
+    return enriched_recommendations
+
+
+def fallback_rank_products(user_query: str, products: List[Dict[str, Any]], limit: int = 6) -> List[Dict[str, Any]]:
+    query_tokens = _tokens(user_query)
+    scored = []
+    for product in products:
+        product_tokens = _tokens(_product_search_text(product))
+        score = len(query_tokens & product_tokens)
+        if score:
+            scored.append((score, product))
+
+    if not scored:
+        scored = [(1, product) for product in products[:limit]]
+
+    scored.sort(key=lambda item: (-item[0], item[1]["price"]))
+    return [
+        {
+            "product_id": product["id"],
+            "name": product["name"],
+            "price": product["price"],
+            "why_fits": "Подходит по совпадению с запросом и доступен в наличии",
+            "price_rating": "средний",
+        }
+        for _, product in scored[:limit]
+    ]
+
+
+def get_user_context(user=None) -> Dict[str, Any]:
+    if not user or not getattr(user, "is_authenticated", False):
+        return {
+            "is_authenticated": False,
+            "cart": [],
+            "recent_purchases": [],
+            "recent_views": [],
+            "preferred_categories": [],
+        }
+
+    cart = [
+        {
+            "product_id": str(item.product_id),
+            "name": item.product.name,
+            "category": item.product.category.name if item.product.category else None,
+            "quantity": item.quantity,
+        }
+        for item in CartItem.objects.select_related("product", "product__category").filter(user=user)[:20]
+    ]
+
+    recent_orders = (
+        Order.objects.filter(user=user)
+        .prefetch_related("items", "items__product", "items__product__category")
+        .order_by("-created_at")[:5]
+    )
+    recent_purchases = []
+    category_counts = {}
+    for order in recent_orders:
+        for item in order.items.all():
+            category_name = item.product.category.name if item.product.category else None
+            if category_name:
+                category_counts[category_name] = category_counts.get(category_name, 0) + item.quantity
+            recent_purchases.append(
+                {
+                    "product_id": str(item.product_id),
+                    "name": item.product.name,
+                    "category": category_name,
+                    "quantity": item.quantity,
+                }
+            )
+
+    try:
+        from .models import ProductViewEvent
+
+        recent_views = [
+            {
+                "product_id": str(event.product_id),
+                "name": event.product.name,
+                "category": event.product.category.name if event.product.category else None,
+                "query": event.query,
+            }
+            for event in ProductViewEvent.objects.select_related("product", "product__category").filter(user=user)[:20]
+        ]
+        for view in recent_views:
+            category_name = view.get("category")
+            if category_name:
+                category_counts[category_name] = category_counts.get(category_name, 0) + 1
+    except Exception:
+        recent_views = []
+
+    preferred_categories = [
+        category for category, _ in sorted(category_counts.items(), key=lambda item: item[1], reverse=True)[:5]
+    ]
+
+    return {
+        "is_authenticated": True,
+        "cart": cart,
+        "recent_purchases": recent_purchases[:20],
+        "recent_views": recent_views,
+        "preferred_categories": preferred_categories,
+    }
+
+
+def build_semantic_search_prompt(user_query: str, products: List[Dict], user_context: Dict[str, Any]) -> str:
+    products_text = "\n".join(
+        [
+            f"{product['id']} | {product['name']} | {product['price']}₽ | {product['category']} | "
+            f"{product['description'][:220]} | specs: {json.dumps(product.get('specs') or {}, ensure_ascii=False)}"
+            for product in products[:80]
+        ]
+    )
+    return f"""
+Ты AI-поисковик интернет-магазина. Найди товары по смыслу, а не только по точным словам.
+
+Запрос пользователя: "{user_query}"
+
+Контекст пользователя:
+{json.dumps(user_context, ensure_ascii=False)}
+
+Каталог:
+{products_text}
+
+Если запрос слишком широкий, верни 1-3 уточняющих вопроса. Если товаров достаточно, верни лучшие совпадения.
+
+Верни ТОЛЬКО JSON:
+{{
+  "understanding": "что понял из запроса",
+  "clarifying_questions": ["вопрос 1"],
+  "recommendations": [
+    {{
+      "product_id": "id товара из каталога",
+      "name": "название",
+      "price": 1000,
+      "why_fits": "почему подходит",
+      "price_rating": "бюджетный/средний/премиум"
+    }}
+  ],
+  "budget_advice": "совет по бюджету",
+  "alternative_advice": "что уточнить или чем заменить"
+}}
+"""
+
+
+def semantic_search_products(user_query: str, user=None, limit: int = 6) -> Dict[str, Any]:
+    products = get_products_with_prices(limit=120)
+    user_context = get_user_context(user)
+    if not products:
+        return {
+            "understanding": "В магазине пока нет товаров",
+            "clarifying_questions": [],
+            "recommendations": [],
+            "budget_advice": None,
+            "alternative_advice": "Добавьте товары в каталог",
+            "context": user_context,
+        }
+
+    prompt = build_semantic_search_prompt(user_query, products, user_context)
+    response = ask_ai_sync(prompt, response_format="json", temperature=0.35)
+    parsed = parse_json_response(response)
+
+    if parsed:
+        recommendations = enrich_recommendations(parsed.get("recommendations", []))[:limit]
+        if recommendations:
+            return {
+                "understanding": parsed.get("understanding", ""),
+                "clarifying_questions": parsed.get("clarifying_questions", []),
+                "recommendations": recommendations,
+                "budget_advice": parsed.get("budget_advice"),
+                "alternative_advice": parsed.get("alternative_advice"),
+                "context": user_context,
+            }
+
+    fallback = enrich_recommendations(fallback_rank_products(user_query, products, limit=limit))
+    return {
+        "understanding": "Подобрал товары по совпадениям в названии, описании и характеристиках",
+        "clarifying_questions": ["Какой бюджет и какие характеристики для вас важнее всего?"],
+        "recommendations": fallback,
+        "budget_advice": None,
+        "alternative_advice": "Уточните назначение, бюджет или желаемую категорию",
+        "context": user_context,
+    }
+
+
+def get_personal_recommendations(user=None, limit: int = 6) -> Dict[str, Any]:
+    context = get_user_context(user)
+    query = "Подбери персональные рекомендации по истории покупок, просмотров и корзине"
+    result = semantic_search_products(query, user=user, limit=limit)
+    result["personal_context"] = context
+    return result
+
+
+def build_bundle_prompt(user_query: str, products: List[Dict], user_context: Dict[str, Any]) -> str:
+    products_text = "\n".join(
+        [
+            f"{product['id']} | {product['name']} | {product['price']}₽ | {product['category']} | {product['description'][:160]}"
+            for product in products[:80]
+        ]
+    )
+    return f"""
+Ты комплектовщик интернет-магазина. Нужно собрать готовую подборку товаров.
+
+Запрос: "{user_query}"
+Контекст пользователя:
+{json.dumps(user_context, ensure_ascii=False)}
+
+Каталог:
+{products_text}
+
+Правила:
+- Подбери 2-6 совместимых товаров.
+- Не добавляй товары, которых нет в каталоге.
+- Если запрос неясный, верни уточняющие вопросы.
+
+Верни ТОЛЬКО JSON:
+{{
+  "title": "название комплекта",
+  "occasion": "повод или сценарий",
+  "clarifying_questions": [],
+  "items": [
+    {{"product_id": "id товара", "role": "зачем нужен в комплекте", "quantity": 1}}
+  ],
+  "total_estimate": 1000,
+  "explanation": "почему комплект цельный"
+}}
+"""
+
+
+def build_bundle(user_query: str, user=None) -> Dict[str, Any]:
+    products = get_products_with_prices(limit=120)
+    user_context = get_user_context(user)
+    if not products:
+        return {
+            "title": "Комплект недоступен",
+            "occasion": user_query,
+            "clarifying_questions": [],
+            "items": [],
+            "total_estimate": 0,
+            "explanation": "В каталоге пока нет товаров",
+            "context": user_context,
+        }
+
+    response = ask_ai_sync(build_bundle_prompt(user_query, products, user_context), response_format="json", temperature=0.45)
+    parsed = parse_json_response(response) or {}
+    item_ids = [item.get("product_id") for item in parsed.get("items", [])]
+    products_by_id = {
+        str(product.id): product
+        for product in Product.objects.select_related("category").filter(id__in=item_ids, stock__gt=0)
+    }
+
+    items = []
+    for item in parsed.get("items", []):
+        product = products_by_id.get(str(item.get("product_id")))
+        if not product:
+            continue
+        try:
+            quantity = max(1, int(item.get("quantity") or 1))
+        except (TypeError, ValueError):
+            quantity = 1
+        items.append(
+            {
+                "product_id": str(product.id),
+                "role": item.get("role") or "Подходит к комплекту",
+                "quantity": quantity,
+                "product": {
+                    "id": str(product.id),
+                    "name": product.name,
+                    "price": float(product.price),
+                    "description": product.description,
+                    "category": product.category.name if product.category else None,
+                    "stock": product.stock,
+                },
+            }
+        )
+
+    if not items:
+        fallback_items = enrich_recommendations(fallback_rank_products(user_query, products, limit=4))
+        items = [
+            {
+                "product_id": rec["product_id"],
+                "role": rec.get("why_fits", "Подходит к запросу"),
+                "quantity": 1,
+                "product": rec["product"],
+            }
+            for rec in fallback_items
+        ]
+
+    total_estimate = sum(item["product"]["price"] * item["quantity"] for item in items)
+    return {
+        "title": parsed.get("title") or "AI-комплект",
+        "occasion": parsed.get("occasion") or user_query,
+        "clarifying_questions": parsed.get("clarifying_questions", []),
+        "items": items,
+        "total_estimate": total_estimate,
+        "explanation": parsed.get("explanation") or "Собрано по смыслу запроса и наличию товаров",
+        "context": user_context,
+    }
 
 
 def build_price_recommendation_prompt(user_query: str, products: List[Dict]) -> str:

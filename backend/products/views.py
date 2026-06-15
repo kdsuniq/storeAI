@@ -3,6 +3,7 @@ from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework import filters, permissions, status, viewsets
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -20,6 +21,12 @@ from .serializers import (
 )
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 8
+    page_size_query_param = "page_size"
+    max_page_size = 48
+
+
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.select_related("category", "owner").order_by("-created_at")
     serializer_class = ProductSerializer
@@ -28,6 +35,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     search_fields = ["name", "description"]
     ordering_fields = ["created_at", "price", "name", "stock"]
     permission_classes = [IsOwnerOrReadOnly]
+    pagination_class = StandardResultsSetPagination
 
     def get_serializer_class(self):
         """Разные сериализаторы для разных действий"""
@@ -80,25 +88,10 @@ class MyProductsView(APIView):
             product = Product.objects.get(id=product_id, owner=request.user)
         except Product.DoesNotExist:
             return Response({"error": "Товар не найден"}, status=status.HTTP_404_NOT_FOUND)
-        
-        if 'stock' in request.data:
-            new_stock = request.data['stock']
-            if new_stock < 0:
-                return Response({"error": "Количество не может быть отрицательным"}, status=status.HTTP_400_BAD_REQUEST)
-            product.stock = new_stock
-            product.save(update_fields=['stock'])
-        
-        if 'price' in request.data:
-            new_price = request.data['price']
-            if new_price < 0:
-                return Response({"error": "Цена не может быть отрицательной"}, status=status.HTTP_400_BAD_REQUEST)
-            product.price = new_price
-            product.save(update_fields=['price'])
-        
-        if 'low_stock_threshold' in request.data:
-            product.low_stock_threshold = request.data['low_stock_threshold']
-            product.save(update_fields=['low_stock_threshold'])
-        
+
+        serializer = ProductCreateSerializer(product, data=request.data, partial=True, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        product = serializer.save()
         return Response(ProductSerializer(product).data)
 
 class CartView(APIView):
@@ -142,7 +135,6 @@ class CartView(APIView):
 
         return Response(CartItemSerializer(item).data, status=status.HTTP_201_CREATED)
 
-    # ⭐ НОВЫЙ МЕТОД ДЛЯ ОБНОВЛЕНИЯ КОЛИЧЕСТВА
     def patch(self, request):
         product_id = request.data.get('product_id')
         quantity = request.data.get('quantity')
@@ -152,6 +144,11 @@ class CartView(APIView):
                 {"error": "Необходимо указать product_id и quantity"},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        try:
+            quantity = int(quantity)
+        except (TypeError, ValueError):
+            return Response({"error": "Количество должно быть целым числом"}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
             product = Product.objects.get(id=product_id)
@@ -219,7 +216,6 @@ class CheckoutView(APIView):
         if not items:
             return Response({"error": "Корзина пуста"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # ⭐ Проверка доступности всех товаров
         for item in items:
             if not item.product.is_available(item.quantity):
                 return Response(
@@ -253,7 +249,6 @@ class CheckoutView(APIView):
                         price=item.product.price
                     )
                 )
-                # ⭐ Уменьшаем остаток товара
                 item.product.decrease_stock(item.quantity)
             
             OrderItem.objects.bulk_create(order_items)
@@ -272,7 +267,70 @@ class MyOrdersView(APIView):
 
     def get(self, request):
         orders = Order.objects.filter(user=request.user).prefetch_related("items", "items__product").order_by("-created_at")
-        return Response(OrderSerializer(orders, many=True).data)
+        paginator = StandardResultsSetPagination()
+        page = paginator.paginate_queryset(orders, request, view=self)
+        serializer = OrderSerializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+
+class RepeatOrderView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, order_id):
+        order = (
+            Order.objects.filter(id=order_id, user=request.user)
+            .prefetch_related("items", "items__product", "items__product__category", "items__product__owner")
+            .first()
+        )
+        if not order:
+            return Response({"error": "Заказ не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+        order_items = list(order.items.all())
+        cart_items = {
+            item.product_id: item
+            for item in CartItem.objects.select_related("product").filter(user=request.user)
+        }
+
+        errors = []
+        for item in order_items:
+            in_cart = cart_items.get(item.product_id)
+            requested_quantity = item.quantity + (in_cart.quantity if in_cart else 0)
+            if item.product.stock < requested_quantity:
+                errors.append(
+                    {
+                        "product_id": str(item.product_id),
+                        "product_name": item.product.name,
+                        "requested": requested_quantity,
+                        "available": item.product.stock,
+                    }
+                )
+
+        if errors:
+            return Response(
+                {"error": "Не удалось повторить заказ: недостаточно товара", "details": errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        with transaction.atomic():
+            for item in order_items:
+                cart_item, created = CartItem.objects.get_or_create(
+                    user=request.user,
+                    product=item.product,
+                    defaults={"quantity": item.quantity},
+                )
+                if not created:
+                    cart_item.quantity = F("quantity") + item.quantity
+                    cart_item.save(update_fields=["quantity"])
+
+        items = CartItem.objects.select_related("product", "product__category", "product__owner").filter(user=request.user)
+        total = sum(float(item.product.price) * item.quantity for item in items)
+        return Response(
+            {
+                "message": "Товары из заказа добавлены в корзину",
+                "items": CartItemSerializer(items, many=True).data,
+                "total": total,
+            }
+        )
 
 
 class OrderStatusUpdateView(APIView):
@@ -300,5 +358,3 @@ class OrderStatusUpdateView(APIView):
             # Если заказ был отменен, а теперь меняем статус - не делаем ничего особенного
         
         return Response(OrderSerializer(order).data)
-
-

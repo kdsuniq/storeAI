@@ -8,6 +8,12 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = "__all__"
 
+    def validate_name(self, value):
+        value = value.strip()
+        if len(value) < 2:
+            raise serializers.ValidationError("Название категории должно быть не короче 2 символов")
+        return value
+
 
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
@@ -70,6 +76,23 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             "name", "description", "price", "category", 
             "image", "specs", "stock", "low_stock_threshold"
         ]
+
+    def validate_name(self, value):
+        value = value.strip()
+        if len(value) < 2:
+            raise serializers.ValidationError("Название товара должно быть не короче 2 символов")
+        return value
+
+    def validate_description(self, value):
+        value = value.strip()
+        if len(value) < 10:
+            raise serializers.ValidationError("Описание должно быть не короче 10 символов")
+        return value
+
+    def validate_price(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Цена должна быть больше нуля")
+        return value
     
     def validate_stock(self, value):
         if value < 0:
@@ -95,9 +118,11 @@ class CartItemSerializer(serializers.ModelSerializer):
     product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), source="product", write_only=True)
     
     def validate(self, data):
+        quantity = data.get('quantity', 1)
+        if quantity <= 0:
+            raise serializers.ValidationError("Количество должно быть больше нуля")
         if 'product' in data:
             product = data['product']
-            quantity = data.get('quantity', 1)
             if not product.is_available(quantity):
                 raise serializers.ValidationError(
                     f"Товар '{product.name}' недоступен в количестве {quantity}. В наличии: {product.stock} шт."
@@ -111,11 +136,23 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class CheckoutSerializer(serializers.Serializer):
-    full_name = serializers.CharField(max_length=255)
+    full_name = serializers.CharField(max_length=255, min_length=3)
     phone = serializers.RegexField(regex=r"^[0-9+()\-\s]{7,20}$")
-    city = serializers.CharField(max_length=120)
+    city = serializers.CharField(max_length=120, min_length=2)
     address = serializers.CharField(max_length=255, min_length=10)
-    comment = serializers.CharField(required=False, allow_blank=True)
+    comment = serializers.CharField(required=False, allow_blank=True, max_length=1000)
+
+    def validate_full_name(self, value):
+        value = value.strip()
+        if len(value.split()) < 2:
+            raise serializers.ValidationError("Укажите имя и фамилию")
+        return value
+
+    def validate_city(self, value):
+        return value.strip()
+
+    def validate_address(self, value):
+        return value.strip()
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

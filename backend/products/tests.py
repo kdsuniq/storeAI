@@ -17,6 +17,7 @@ class StoreApiTests(APITestCase):
             price="1000.00",
             category=self.category,
             specs={"memory": "128gb"},
+            stock=10,
         )
 
     def _login(self, username="seller", password="password123"):
@@ -28,11 +29,19 @@ class StoreApiTests(APITestCase):
     def test_register_and_login_jwt(self):
         response = self.client.post(
             "/api/auth/register/",
-            {"username": "newuser", "email": "n@example.com", "password": "password123"},
+            {"username": "newuser", "email": "n@example.com", "password": "StrongPass123!"},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn("tokens", response.data)
+
+    def test_product_list_supports_pagination_search_and_filters(self):
+        response = self.client.get(
+            f"/api/products/?search=phone&min_price=500&max_price=1200&category={self.category.id}&page_size=4"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["name"], "Phone")
 
     def test_only_owner_can_update_product(self):
         self._login(username="other")
@@ -80,4 +89,21 @@ class StoreApiTests(APITestCase):
         )
         response = self.client.get("/api/products/my-orders/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
+
+    def test_repeat_order_adds_items_back_to_cart(self):
+        self._login()
+        order = Order.objects.create(
+            user=self.user,
+            full_name="Ivan Ivanov",
+            phone="+79990001122",
+            city="Moscow",
+            address="Lenina 1",
+            total="2000.00",
+        )
+        order.items.create(product=self.product, quantity=2, price=self.product.price)
+
+        response = self.client.post(f"/api/products/orders/{order.id}/repeat/", format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["items"][0]["quantity"], 2)

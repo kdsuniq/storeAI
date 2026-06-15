@@ -1,7 +1,7 @@
 import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-const API = 'http://127.0.0.1:8000/api'
+const API = import.meta.env.VITE_API_URL || '/api'
 
 const getAuth = () => ({
   access: localStorage.getItem('access_token') || '',
@@ -37,34 +37,79 @@ const extractError = (data) => {
   return Array.isArray(val) ? val[0] : String(val)
 }
 
+const getList = (data) => {
+  if (Array.isArray(data)) return data
+  if (Array.isArray(data?.results)) return data.results
+  return []
+}
+
+const getPageMeta = (data, fallbackLength = 0) => ({
+  count: Number(data?.count ?? fallbackLength),
+  next: data?.next || null,
+  previous: data?.previous || null,
+})
+
+const validateAuthForm = (mode, form) => {
+  if (form.username.trim().length < 3) return 'Логин должен быть не короче 3 символов'
+  if (form.password.length < 8) return 'Пароль должен быть не короче 8 символов'
+  if (mode === 'register' && form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    return 'Введите корректный email'
+  }
+  return ''
+}
+
+const validateCheckoutForm = (data) => {
+  if (data.full_name.trim().split(/\s+/).length < 2) return 'Укажите имя и фамилию'
+  if (!/^[0-9+()\-\s]{7,20}$/.test(data.phone.trim())) return 'Введите корректный телефон'
+  if (data.city.trim().length < 2) return 'Укажите город'
+  if (data.address.trim().length < 10) return 'Адрес должен быть не короче 10 символов'
+  return ''
+}
+
 async function apiFetch(path, { method = 'GET', body, auth, setAuth } = {}) {
   const headers = {}
   if (body) headers['Content-Type'] = 'application/json'
   if (auth?.access) headers.Authorization = `Bearer ${auth.access}`
 
-  let res = await fetch(`${API}${path}`, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  })
+  let res
+  try {
+    res = await fetch(`${API}${path}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    })
+  } catch (err) {
+    return { ok: false, status: 0, data: { error: 'Не удалось подключиться к серверу' } }
+  }
 
   if (res.status === 401 && auth?.refresh && setAuth) {
-    const refreshRes = await fetch(`${API}/auth/token/refresh/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refresh: auth.refresh }),
-    })
+    let refreshRes
+    try {
+      refreshRes = await fetch(`${API}/auth/token/refresh/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh: auth.refresh }),
+      })
+    } catch (err) {
+      clearAuth()
+      setAuth({ access: '', refresh: '' })
+      return { ok: false, status: 0, data: { error: 'Не удалось обновить сессию' } }
+    }
     const refreshData = await refreshRes.json().catch(() => ({}))
     if (refreshRes.ok && refreshData.access) {
       const nextAuth = { access: refreshData.access, refresh: refreshData.refresh || auth.refresh }
       setAuth(nextAuth)
       saveAuth(nextAuth)
       const retryHeaders = { ...headers, Authorization: `Bearer ${nextAuth.access}` }
-      res = await fetch(`${API}${path}`, {
-        method,
-        headers: retryHeaders,
-        body: body ? JSON.stringify(body) : undefined,
-      })
+      try {
+        res = await fetch(`${API}${path}`, {
+          method,
+          headers: retryHeaders,
+          body: body ? JSON.stringify(body) : undefined,
+        })
+      } catch (err) {
+        return { ok: false, status: 0, data: { error: 'Не удалось подключиться к серверу' } }
+      }
     } else {
       clearAuth()
       setAuth({ access: '', refresh: '' })
@@ -96,17 +141,43 @@ function Header({ isAuth, onLogout }) {
 
 function ProductsPage({ auth, setAuth }) {
   const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
   const [cartItems, setCartItems] = useState({})
-  const [query, setQuery] = useState('')
+  const [filters, setFilters] = useState({
+    search: '',
+    category: '',
+    min_price: '',
+    max_price: '',
+    ordering: '-created_at',
+  })
+  const [page, setPage] = useState(1)
+  const [pageMeta, setPageMeta] = useState({ count: 0, next: null, previous: null })
   const [aiQuestion, setAiQuestion] = useState('')
   const [aiAnswer, setAiAnswer] = useState('')
-  const [aiLoading, setAiLoading] = useState(false)  // ⭐ Состояние загрузки AI
+  const [aiChatRecommendations, setAiChatRecommendations] = useState([])
+  const [aiChatQuestions, setAiChatQuestions] = useState([])
+  const [aiChatInteractionId, setAiChatInteractionId] = useState(null)
+  const [aiLoading, setAiLoading] = useState(false)
   const [error, setError] = useState('')
   const [cartTotalCount, setCartTotalCount] = useState(0)
+  const [productsLoading, setProductsLoading] = useState(false)
 
-  const loadProducts = async () => {
-    const { data } = await apiFetch('/products/')
-    setProducts(Array.isArray(data) ? data : [])
+  const loadProducts = async (pageNumber = page) => {
+    setProductsLoading(true)
+    const params = new URLSearchParams({ page: String(pageNumber), page_size: '8' })
+    Object.entries(filters).forEach(([key, value]) => {
+      if (String(value).trim()) params.set(key, String(value).trim())
+    })
+    const { data } = await apiFetch(`/products/?${params.toString()}`)
+    const list = getList(data)
+    setProducts(list)
+    setPageMeta(getPageMeta(data, list.length))
+    setProductsLoading(false)
+  }
+
+  const loadCategories = async () => {
+    const { data } = await apiFetch('/categories/')
+    setCategories(getList(data))
   }
 
   const loadCart = async () => {
@@ -128,20 +199,25 @@ function ProductsPage({ auth, setAuth }) {
     setCartTotalCount(totalCount)
   }
 
-  useEffect(() => { 
-    loadProducts()
+  useEffect(() => {
+    loadCategories()
     loadCart()
   }, [])
+
+  useEffect(() => {
+    loadProducts(page)
+  }, [page, filters.search, filters.category, filters.min_price, filters.max_price, filters.ordering])
 
   useEffect(() => {
     loadCart()
   }, [auth.access])
 
-  const filtered = useMemo(() => {
-    if (!query.trim()) return products
-    const q = query.toLowerCase()
-    return products.filter((p) => `${p.name} ${p.description}`.toLowerCase().includes(q))
-  }, [products, query])
+  const totalPages = Math.max(1, Math.ceil(pageMeta.count / 8))
+
+  const updateFilter = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }))
+    setPage(1)
+  }
 
   const updateCartQuantity = async (productId, newQuantity) => {
     if (!auth.access) {
@@ -188,6 +264,12 @@ function ProductsPage({ auth, setAuth }) {
       return
     }
 
+    await apiFetch('/ai/track-view/', {
+      method: 'POST',
+      body: { product_id: productId, source: 'catalog', query: filters.search },
+      auth,
+      setAuth,
+    })
     await loadCart()
     setError('')
   }
@@ -196,7 +278,6 @@ function ProductsPage({ auth, setAuth }) {
     return cartItems[productId]?.quantity || 0
   }
 
-  // ⭐ Функция с индикатором загрузки
   const askAI = async () => {
     if (!aiQuestion.trim()) return
     
@@ -206,19 +287,63 @@ function ProductsPage({ auth, setAuth }) {
     try {
       const res = await apiFetch('/ai/chat/', { 
         method: 'POST', 
-        body: { message: aiQuestion, format: 'structured' }
+        body: { message: aiQuestion, format: 'structured' },
+        auth,
+        setAuth,
       })
       
       if (res.ok) {
         setAiAnswer(res.data.answer || 'Ответ не получен')
+        setAiChatRecommendations(res.data.recommendations || [])
+        setAiChatQuestions(res.data.clarifying_questions || [])
+        setAiChatInteractionId(res.data.interaction_id || null)
       } else {
         setAiAnswer('❌ Ошибка: ' + (res.data.error || 'Не удалось получить ответ'))
+        setAiChatRecommendations([])
+        setAiChatQuestions([])
+        setAiChatInteractionId(null)
       }
     } catch (err) {
       setAiAnswer('❌ Ошибка соединения. Попробуйте позже.')
     } finally {
       setAiLoading(false)
     }
+  }
+
+  const addProductFromAI = async (productId, queryText = aiQuestion) => {
+    if (!auth.access) {
+      setError('Войдите в аккаунт, чтобы добавить товар в корзину')
+      return
+    }
+    const res = await apiFetch('/products/cart/', {
+      method: 'POST',
+      body: { product_id: productId, quantity: 1 },
+      auth,
+      setAuth,
+    })
+    if (res.ok) {
+      await apiFetch('/ai/track-view/', {
+        method: 'POST',
+        body: { product_id: productId, source: 'ai', query: queryText },
+        auth,
+        setAuth,
+      })
+      setError('Товар добавлен в корзину')
+      loadCart()
+    } else {
+      setError(extractError(res.data))
+    }
+  }
+
+  const sendAIFeedback = async (interactionId, helpful, feedbackText = '') => {
+    if (!interactionId) return
+    const res = await apiFetch('/ai/feedback/', {
+      method: 'POST',
+      body: { interaction_id: interactionId, helpful, feedback_text: feedbackText },
+      auth,
+      setAuth,
+    })
+    setError(res.ok ? 'Спасибо, оценка AI сохранена' : extractError(res.data))
   }
 
   const getStockClass = (status) => {
@@ -254,11 +379,26 @@ function ProductsPage({ auth, setAuth }) {
         <section className="panel">
           <div className="panel-head">
             <h2>Каталог</h2>
-            <input placeholder="Поиск по товарам" value={query} onChange={(e) => setQuery(e.target.value)} />
+          </div>
+          <div className="filters-grid">
+            <input placeholder="Поиск по товарам" value={filters.search} onChange={(e) => updateFilter('search', e.target.value)} />
+            <select value={filters.category} onChange={(e) => updateFilter('category', e.target.value)}>
+              <option value="">Все категории</option>
+              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+            <input type="number" min="0" step="0.01" placeholder="Цена от" value={filters.min_price} onChange={(e) => updateFilter('min_price', e.target.value)} />
+            <input type="number" min="0" step="0.01" placeholder="Цена до" value={filters.max_price} onChange={(e) => updateFilter('max_price', e.target.value)} />
+            <select value={filters.ordering} onChange={(e) => updateFilter('ordering', e.target.value)}>
+              <option value="-created_at">Сначала новые</option>
+              <option value="price">Сначала дешевле</option>
+              <option value="-price">Сначала дороже</option>
+              <option value="name">По названию</option>
+            </select>
           </div>
           {error && <p className="note">{error}</p>}
+          {productsLoading && <p className="meta">Загружаем товары...</p>}
           <div className="catalog-grid">
-            {filtered.map((p) => {
+            {products.map((p) => {
               const cartQuantity = getQuantityInCart(p.id)
               const isInStock = p.is_in_stock || p.stock > 0
               
@@ -312,6 +452,16 @@ function ProductsPage({ auth, setAuth }) {
               )
             })}
           </div>
+          {!productsLoading && products.length === 0 && <p className="meta">По выбранным фильтрам товаров нет.</p>}
+          <div className="pagination-row">
+            <button className="btn btn-dark-outline" type="button" onClick={() => setPage((value) => Math.max(1, value - 1))} disabled={!pageMeta.previous}>
+              Назад
+            </button>
+            <span>Страница {page} из {totalPages}</span>
+            <button className="btn btn-dark-outline" type="button" onClick={() => setPage((value) => value + 1)} disabled={!pageMeta.next}>
+              Вперёд
+            </button>
+          </div>
         </section>
 
         <aside className="panel ai-panel">
@@ -349,28 +499,48 @@ function ProductsPage({ auth, setAuth }) {
           </p>
         ))}
       </div>
+      {aiChatQuestions.length > 0 && (
+        <div className="ai-followups">
+          <b>Уточняющие вопросы:</b>
+          {aiChatQuestions.map((question) => (
+            <button key={question} className="chip-button" type="button" onClick={() => setAiQuestion(question)}>
+              {question}
+            </button>
+          ))}
+        </div>
+      )}
+      {aiChatRecommendations.length > 0 && (
+        <div className="recommendations-list compact">
+          {aiChatRecommendations.map((rec) => (
+            <div className="recommendation-card" key={rec.product_id}>
+              <div className="card-content">
+                <div className="card-header">
+                  <h4>{rec.name}</h4>
+                  <span className="price-badge medium">{rec.price} ₽</span>
+                </div>
+                <div className="reason">{rec.why_fits}</div>
+                <button className="btn-small" type="button" onClick={() => addProductFromAI(rec.product_id)}>
+                  В корзину
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {aiChatInteractionId && (
+        <div className="ai-feedback-row">
+          <button className="btn btn-dark-outline" type="button" onClick={() => sendAIFeedback(aiChatInteractionId, true)}>Помогло</button>
+          <button className="btn btn-dark-outline" type="button" onClick={() => sendAIFeedback(aiChatInteractionId, false, aiQuestion)}>Не помогло</button>
+        </div>
+      )}
     </div>
   )}
   
   <AIPriceSearchWidget 
-    onAddToCart={async (productId) => {
-      if (!auth.access) {
-        setError('Войдите в аккаунт, чтобы добавить товар в корзину')
-        return
-      }
-      const res = await apiFetch('/products/cart/', {
-        method: 'POST',
-        body: { product_id: productId, quantity: 1 },
-        auth,
-        setAuth,
-      })
-      if (res.ok) {
-        setError('✅ Товар добавлен в корзину')
-        loadCart()
-      } else {
-        setError(extractError(res.data))
-      }
-    }}
+    auth={auth}
+    setAuth={setAuth}
+    onAddToCart={addProductFromAI}
+    onFeedback={sendAIFeedback}
   />
 </aside>
       </div>
@@ -387,6 +557,8 @@ function AuthPage({ setAuth }) {
   const submit = async (e) => {
     e.preventDefault()
     setError('')
+    const validationError = validateAuthForm(mode, form)
+    if (validationError) return setError(validationError)
     const path = mode === 'login' ? '/auth/login/' : '/auth/register/'
     const payload = mode === 'login' ? { username: form.username, password: form.password } : form
     const res = await apiFetch(path, { method: 'POST', body: payload })
@@ -410,8 +582,8 @@ function AuthPage({ setAuth }) {
         <h2>{mode === 'login' ? 'Вход' : 'Регистрация продавца'}</h2>
         <form onSubmit={submit}>
           <input placeholder="Логин" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} required />
-          {mode === 'register' && <input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />}
-          <input type="password" placeholder="Пароль (мин. 6 символов)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+          {mode === 'register' && <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />}
+          <input type="password" minLength={8} placeholder="Пароль (мин. 8 символов)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
           {error && <p className="note">{error}</p>}
           <button className="btn btn-accent" type="submit">{mode === 'login' ? 'Войти' : 'Создать аккаунт'}</button>
         </form>
@@ -439,11 +611,10 @@ function AccountPage({ auth, setAuth }) {
   const [stats, setStats] = useState(null)
   const [msg, setMsg] = useState('')
   
-  // ⭐ Состояния для редактирования
   const [editingProduct, setEditingProduct] = useState(null)
   const [editingStockValue, setEditingStockValue] = useState('')
-  const [editingPriceValue, setEditingPriceValue] = useState('')  // ⭐ НОВОЕ
-  const [editingField, setEditingField] = useState(null)  // ⭐ 'stock' или 'price'
+  const [editingPriceValue, setEditingPriceValue] = useState('')
+  const [editingField, setEditingField] = useState(null)
   const [generatingDesc, setGeneratingDesc] = useState(false)
 
   const load = async () => {
@@ -451,7 +622,7 @@ function AccountPage({ auth, setAuth }) {
       apiFetch('/auth/me/', { auth, setAuth }),
       apiFetch('/categories/'),
       apiFetch('/products/my-products/', { auth, setAuth }),
-      apiFetch('/products/my-orders/', { auth, setAuth }),
+      apiFetch('/products/my-orders/?page_size=20', { auth, setAuth }),
     ])
 
     if (!me.ok || !p.ok) {
@@ -460,15 +631,16 @@ function AccountPage({ auth, setAuth }) {
     }
 
     setProfile(me.data || null)
-    setCategories(Array.isArray(c.data) ? c.data : [])
-    setMyProducts(Array.isArray(p.data) ? p.data : [])
-    setOrders(Array.isArray(o.data) ? o.data : [])
+    setCategories(getList(c.data))
+    setMyProducts(getList(p.data))
+    setOrders(getList(o.data))
   }
 
   useEffect(() => { load() }, [auth.access])
 
   const addCategory = async (e) => {
     e.preventDefault()
+    if (cat.name.trim().length < 2) return setMsg('Название категории должно быть не короче 2 символов')
     const res = await apiFetch('/categories/', { method: 'POST', body: cat, auth, setAuth })
     if (!res.ok) return setMsg(extractError(res.data))
     setMsg('Категория создана')
@@ -499,14 +671,11 @@ function AccountPage({ auth, setAuth }) {
       setAuth,
     })
     
-    console.log('AI Response:', res)  // ⭐ Для отладки - посмотри в консоли
-    
     if (!res.ok) {
       setMsg(extractError(res.data))
       return
     }
     
-    // ⭐ ПРОВЕРЯЕМ РАЗНЫЕ ФОРМАТЫ ОТВЕТА
     let generatedText = ''
     
     if (res.data.description) {
@@ -539,10 +708,8 @@ function AccountPage({ auth, setAuth }) {
       setMsg('Описание успешно сгенерировано и добавлено в поле!')
     } else {
       setMsg('Не удалось получить описание. Попробуйте еще раз.')
-      console.log('Unexpected response format:', res.data)
     }
   } catch (err) {
-    console.error('Generation error:', err)
     setMsg('Ошибка генерации. Попробуйте позже.')
   } finally {
     setGeneratingDesc(false)
@@ -551,10 +718,23 @@ function AccountPage({ auth, setAuth }) {
 
   const addProduct = async (e) => {
     e.preventDefault()
+    if (form.name.trim().length < 2) return setMsg('Название товара должно быть не короче 2 символов')
+    if (form.description.trim().length < 10) return setMsg('Описание должно быть не короче 10 символов')
+    if (!form.category_id) return setMsg('Выберите категорию')
     
+    const priceNum = Number(form.price)
+    if (isNaN(priceNum) || priceNum <= 0) {
+      return setMsg('Цена должна быть больше нуля')
+    }
+
     const stockNum = Number(form.stock)
-    if (isNaN(stockNum) || stockNum < 0) {
+    if (!Number.isInteger(stockNum) || stockNum < 0) {
       return setMsg('Количество товара должно быть неотрицательным числом')
+    }
+
+    const thresholdNum = form.low_stock_threshold ? Number(form.low_stock_threshold) : 5
+    if (!Number.isInteger(thresholdNum) || thresholdNum < 0) {
+      return setMsg('Порог низкого остатка должен быть неотрицательным числом')
     }
     
     const res = await apiFetch('/products/', {
@@ -562,11 +742,11 @@ function AccountPage({ auth, setAuth }) {
       body: {
         name: form.name,
         description: form.description,
-        price: Number(form.price),
+        price: priceNum,
         category: form.category_id,
         specs: parseSpecs(form.specsText),
         stock: stockNum,
-        low_stock_threshold: Number(form.low_stock_threshold) || 5
+        low_stock_threshold: thresholdNum
       },
       auth,
       setAuth,
@@ -577,7 +757,6 @@ function AccountPage({ auth, setAuth }) {
     load()
   }
   
-  // ⭐ Редактирование количества
   const startEditingStock = (product) => {
     setEditingProduct(product.id)
     setEditingStockValue(product.stock.toString())
@@ -614,7 +793,6 @@ function AccountPage({ auth, setAuth }) {
     cancelEditing()
   }
   
-  // ⭐ НОВОЕ: Редактирование цены
   const startEditingPrice = (product) => {
     setEditingProduct(product.id)
     setEditingPriceValue(product.price.toString())
@@ -665,16 +843,14 @@ function AccountPage({ auth, setAuth }) {
     setStats(res.data.stats || null)
   }
 
-  const updateOrderStatus = async (orderId, statusValue) => {
-    const res = await apiFetch(`/products/orders/${orderId}/status/`, {
-      method: 'PATCH',
-      body: { status: statusValue },
+  const repeatOrder = async (orderId) => {
+    const res = await apiFetch(`/products/orders/${orderId}/repeat/`, {
+      method: 'POST',
       auth,
       setAuth,
     })
     if (!res.ok) return setMsg(extractError(res.data))
-    setMsg('Статус заказа обновлен')
-    load()
+    setMsg('Товары из заказа добавлены в корзину')
   }
 
   return (
@@ -742,7 +918,6 @@ function AccountPage({ auth, setAuth }) {
               <div className="mock-photo" />
               <h3>{p.name}</h3>
               
-              {/* ⭐ Редактирование цены */}
               <div className="price-info">
                 {editingProduct === p.id && editingField === 'price' ? (
                   <div className="edit-field">
@@ -773,7 +948,6 @@ function AccountPage({ auth, setAuth }) {
                 )}
               </div>
               
-              {/* ⭐ Редактирование количества */}
               <div className="stock-info">
                 {editingProduct === p.id && editingField === 'stock' ? (
                   <div className="edit-field">
@@ -818,14 +992,17 @@ function AccountPage({ auth, setAuth }) {
           <article className="product-card" key={o.id}>
             <p><b>Заказ #{o.id}</b> · {o.total} ₽ · статус: {o.status}</p>
             <p className="meta">{o.full_name}, {o.phone}, {o.city}, {o.address}</p>
+            {o.items?.length > 0 && (
+              <ul className="order-items">
+                {o.items.map((item) => (
+                  <li key={item.id}>{item.product_name} · {item.quantity} шт. · {item.price} ₽</li>
+                ))}
+              </ul>
+            )}
             <div className="actions-row">
-              <select defaultValue={o.status} onChange={(e) => updateOrderStatus(o.id, e.target.value)}>
-                <option value="new">new</option>
-                <option value="paid">paid</option>
-                <option value="shipped">shipped</option>
-                <option value="done">done</option>
-                <option value="canceled">canceled</option>
-              </select>
+              <button className="btn btn-accent" type="button" onClick={() => repeatOrder(o.id)}>
+                Повторить заказ
+              </button>
             </div>
           </article>
         ))}
@@ -929,6 +1106,8 @@ function CartPage({ auth, setAuth }) {
 
   const checkout = async () => {
     setMsg('')
+    const validationError = validateCheckoutForm(checkoutData)
+    if (validationError) return setMsg(validationError)
     setLoading(true)
     
     // Проверяем, что все товары есть в наличии
@@ -1037,21 +1216,30 @@ function CartPage({ auth, setAuth }) {
                 placeholder="ФИО" 
                 value={checkoutData.full_name} 
                 onChange={(e) => setCheckoutData({ ...checkoutData, full_name: e.target.value })} 
+                minLength={3}
+                required
               />
               <input 
                 placeholder="Телефон" 
                 value={checkoutData.phone} 
                 onChange={(e) => setCheckoutData({ ...checkoutData, phone: e.target.value })} 
+                inputMode="tel"
+                pattern="[0-9+()\\-\\s]{7,20}"
+                required
               />
               <input 
                 placeholder="Город" 
                 value={checkoutData.city} 
                 onChange={(e) => setCheckoutData({ ...checkoutData, city: e.target.value })} 
+                minLength={2}
+                required
               />
               <input 
                 placeholder="Адрес" 
                 value={checkoutData.address} 
                 onChange={(e) => setCheckoutData({ ...checkoutData, address: e.target.value })} 
+                minLength={10}
+                required
               />
               <textarea 
                 rows={3} 
@@ -1084,10 +1272,14 @@ function CartPage({ auth, setAuth }) {
 }
 
 
-function AIPriceSearchWidget({ onAddToCart }) {
+function AIPriceSearchWidget({ auth, setAuth, onAddToCart, onFeedback }) {
   const [query, setQuery] = useState('')
+  const [bundleQuery, setBundleQuery] = useState('')
   const [recommendations, setRecommendations] = useState(null)
+  const [personalRecommendations, setPersonalRecommendations] = useState(null)
+  const [bundle, setBundle] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [bundleLoading, setBundleLoading] = useState(false)
   const [error, setError] = useState('')
   const [priceAnalysis, setPriceAnalysis] = useState(null)
 
@@ -1101,6 +1293,18 @@ function AIPriceSearchWidget({ onAddToCart }) {
     loadPriceAnalysis()
   }, [])
 
+  useEffect(() => {
+    const loadPersonal = async () => {
+      if (!auth?.access) {
+        setPersonalRecommendations(null)
+        return
+      }
+      const res = await apiFetch('/ai/personal-recommendations/', { auth, setAuth })
+      if (res.ok) setPersonalRecommendations(res.data)
+    }
+    loadPersonal()
+  }, [auth?.access])
+
   const getRecommendations = async () => {
     if (!query.trim()) return
     
@@ -1109,9 +1313,11 @@ function AIPriceSearchWidget({ onAddToCart }) {
     setRecommendations(null)
     
     try {
-      const res = await apiFetch('/ai/recommend/', {
+      const res = await apiFetch('/ai/semantic-search/', {
         method: 'POST',
-        body: { query: query }
+        body: { query: query },
+        auth,
+        setAuth,
       })
       
       if (res.ok) {
@@ -1126,11 +1332,76 @@ function AIPriceSearchWidget({ onAddToCart }) {
     }
   }
 
+  const getBundle = async () => {
+    if (!bundleQuery.trim()) return
+    setBundleLoading(true)
+    setError('')
+    setBundle(null)
+    const res = await apiFetch('/ai/bundle/', {
+      method: 'POST',
+      body: { query: bundleQuery },
+      auth,
+      setAuth,
+    })
+    if (res.ok) {
+      setBundle(res.data)
+    } else {
+      setError(extractError(res.data))
+    }
+    setBundleLoading(false)
+  }
+
+  const addBundleToCart = async () => {
+    if (!bundle?.items?.length) return
+    for (const item of bundle.items) {
+      const quantity = Number(item.quantity || 1)
+      for (let i = 0; i < quantity; i += 1) {
+        await onAddToCart(item.product_id, bundleQuery)
+      }
+    }
+  }
+
+  const renderRecommendationList = (data, title) => {
+    if (!data?.recommendations?.length) return null
+    return (
+      <div className="recommendations-list">
+        <div className="list-header">{title}</div>
+        {data.recommendations.map((rec, idx) => (
+          <div className="recommendation-card" key={`${title}-${rec.product_id}`}>
+            <div className="rank-badge">{idx + 1}</div>
+            <div className="card-content">
+              <div className="card-header">
+                <h4>{rec.name}</h4>
+                <span className={`price-badge ${rec.price_rating === 'бюджетный' ? 'budget' : rec.price_rating === 'премиум' ? 'premium' : 'medium'}`}>
+                  {rec.price_rating || 'подходит'}
+                </span>
+              </div>
+              <div className="price">{Number(rec.price || 0).toLocaleString()} ₽</div>
+              <div className="reason">
+                <span className="reason-label">Почему подходит:</span>
+                <span>{rec.why_fits}</span>
+              </div>
+              <button className="btn-small" type="button" onClick={() => onAddToCart && onAddToCart(rec.product_id, query)}>
+                В корзину
+              </button>
+            </div>
+          </div>
+        ))}
+        {data.interaction_id && (
+          <div className="ai-feedback-row">
+            <button className="btn btn-dark-outline" type="button" onClick={() => onFeedback(data.interaction_id, true)}>Помогло</button>
+            <button className="btn btn-dark-outline" type="button" onClick={() => onFeedback(data.interaction_id, false, query)}>Не помогло</button>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="ai-price-widget">
       <div className="widget-header">
         <span className="widget-icon">💰</span>
-        <h3>Найду товар под ваш бюджет</h3>
+        <h3>AI-поиск и персональные подборки</h3>
       </div>
       
       {priceAnalysis && priceAnalysis.price_range && (
@@ -1147,14 +1418,14 @@ function AIPriceSearchWidget({ onAddToCart }) {
         </div>
       )}
       
-      <p className="widget-hint">Опишите, что хотите купить, и укажите бюджет</p>
+      <p className="widget-hint">Опишите задачу обычными словами: AI поймёт смысл, бюджет и сценарий использования</p>
       
       <div className="search-row">
         <textarea
           rows={2}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Например: нужен ноутбук для работы до 50000 рублей"
+          placeholder="Например: лёгкий рюкзак для треккинга или ноутбук для работы до 50000 рублей"
           disabled={loading}
         />
         <button 
@@ -1162,18 +1433,31 @@ function AIPriceSearchWidget({ onAddToCart }) {
           onClick={getRecommendations}
           disabled={loading || !query.trim()}
         >
-          {loading ? '⏳ Ищем...' : '🔍 Подобрать по бюджету'}
+          {loading ? 'Ищем...' : 'Найти по смыслу'}
         </button>
       </div>
+
+      {recommendations?.clarifying_questions?.length > 0 && (
+        <div className="ai-followups">
+          <b>AI уточняет:</b>
+          {recommendations.clarifying_questions.map((question) => (
+            <button key={question} className="chip-button" type="button" onClick={() => setQuery(`${query}. ${question}`)}>
+              {question}
+            </button>
+          ))}
+        </div>
+      )}
       
       {error && <div className="error-message">{error}</div>}
       
       {loading && (
         <div className="loading-state">
           <div className="loading-spinner-small"></div>
-          <p>Анализирую ваш бюджет и подбираю лучшие варианты...</p>
+          <p>Анализирую запрос, историю и каталог...</p>
         </div>
       )}
+
+      {personalRecommendations && renderRecommendationList(personalRecommendations, 'Персонально для вас')}
       
       {recommendations && (
         <div className="recommendations-result">
@@ -1192,35 +1476,7 @@ function AIPriceSearchWidget({ onAddToCart }) {
           )}
           
           {recommendations.recommendations && recommendations.recommendations.length > 0 ? (
-            <div className="recommendations-list">
-              <div className="list-header">🎯 Вот что можно купить:</div>
-              {recommendations.recommendations.map((rec, idx) => (
-                <div className="recommendation-card" key={rec.product_id}>
-                  <div className="rank-badge">{idx + 1}</div>
-                  <div className="card-content">
-                    <div className="card-header">
-                      <h4>{rec.name}</h4>
-                      <span className={`price-badge ${rec.price_rating === 'бюджетный' ? 'budget' : rec.price_rating === 'премиум' ? 'premium' : 'medium'}`}>
-                        {rec.price_rating === 'бюджетный' && '🟢 Бюджетный'}
-                        {rec.price_rating === 'средний' && '🟡 Средний'}
-                        {rec.price_rating === 'премиум' && '🔴 Премиум'}
-                      </span>
-                    </div>
-                    <div className="price">{rec.price.toLocaleString()} ₽</div>
-                    <div className="reason">
-                      <span className="reason-label">💡 Почему подходит:</span>
-                      <span>{rec.why_fits}</span>
-                    </div>
-                    <button 
-                      className="btn-small"
-                      onClick={() => onAddToCart && onAddToCart(rec.product_id)}
-                    >
-                      🛒 В корзину
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            renderRecommendationList(recommendations, 'Вот что можно купить')
           ) : (
             <div className="no-results">
               <p>😔 Не нашлось товаров под ваш запрос</p>
@@ -1238,6 +1494,52 @@ function AIPriceSearchWidget({ onAddToCart }) {
           )}
         </div>
       )}
+
+      <div className="bundle-builder">
+        <div className="widget-header">
+          <span className="widget-icon">🎁</span>
+          <h3>Собрать комплект</h3>
+        </div>
+        <div className="search-row">
+          <textarea
+            rows={2}
+            value={bundleQuery}
+            onChange={(e) => setBundleQuery(e.target.value)}
+            placeholder="Например: собрать комплект к походу или подарок на день рождения"
+            disabled={bundleLoading}
+          />
+          <button className="btn btn-accent" type="button" onClick={getBundle} disabled={bundleLoading || !bundleQuery.trim()}>
+            {bundleLoading ? 'Собираю...' : 'Собрать'}
+          </button>
+        </div>
+        {bundle && (
+          <div className="bundle-result">
+            <h4>{bundle.title}</h4>
+            <p className="meta">{bundle.explanation}</p>
+            {bundle.clarifying_questions?.length > 0 && (
+              <div className="ai-followups">
+                {bundle.clarifying_questions.map((question) => (
+                  <button key={question} className="chip-button" type="button" onClick={() => setBundleQuery(`${bundleQuery}. ${question}`)}>
+                    {question}
+                  </button>
+                ))}
+              </div>
+            )}
+            {bundle.items?.map((item) => (
+              <div className="bundle-item" key={item.product_id}>
+                <b>{item.product?.name}</b>
+                <span>{item.role}</span>
+                <span>{Number(item.product?.price || 0).toLocaleString()} ₽ · {item.quantity} шт.</span>
+              </div>
+            ))}
+            {bundle.items?.length > 0 && (
+              <button className="btn btn-accent" type="button" onClick={addBundleToCart}>
+                Добавить комплект в корзину
+              </button>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

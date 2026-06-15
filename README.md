@@ -10,7 +10,7 @@ openrouter.ai
 ```
 создаем файл .env и добавляем в него
 ```
-OPENAI_API_KEY=ВАШ-КЛЮЧ
+OPENROUTER_API_KEY=ВАШ-КЛЮЧ
 OPENROUTER_MODEL=openrouter/free
 ```
 
@@ -52,3 +52,12 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+Бэкенд после запуска доступен по адресу:
+```
+http://127.0.0.1:8000/
+```
+
+Swagger-документация API:
+```
+http://127.0.0.1:8000/api/schema/swagger-ui/
+```

@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backend-migrate
+  namespace: store-ai
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: cr.yandex/<REGISTRY_ID>/store-ai-backend:latest
+          command: ["python", "manage.py", "migrate"]
+          envFrom:
+            - configMapRef:
+                name: store-ai-config
+            - secretRef:
+                name: store-ai-secret
+  backoffLimit: 3

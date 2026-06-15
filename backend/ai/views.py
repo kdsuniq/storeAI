@@ -7,22 +7,24 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from products.models import CartItem, Product
-
+from .models import AIInteraction, ProductViewEvent
 from .services import (
     ask_ai_sync,
+    build_bundle,
     build_market_insights_prompt,
     build_product_prompt,
     build_chat_prompt,
+    get_personal_recommendations,
     parse_json_response,
-    get_ai_price_recommendations,
-    get_price_analysis
+    get_price_analysis,
+    semantic_search_products,
 )
 
 logger = logging.getLogger(__name__)
 
 
 class AIChatView(APIView):
-    """Общий чат с AI помощником - структурированный вывод"""
+    """Чат с AI помощником: вопросы, сужение выбора и рекомендации"""
     
     permission_classes = [permissions.AllowAny]
 
@@ -56,18 +58,56 @@ class AIChatView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        user = request.user if request.user.is_authenticated else None
+        semantic_result = semantic_search_products(message, user=user, limit=4)
+
         prompt = build_chat_prompt(message, response_format)
         answer = ask_ai_sync(prompt, response_format=response_format)
         
         if response_format == "json":
             parsed = parse_json_response(answer)
             if parsed:
-                return Response({"answer": parsed, "format": "json"})
+                interaction = AIInteraction.objects.create(
+                    user=user,
+                    kind=AIInteraction.KIND_CHAT,
+                    query=message,
+                    response={**parsed, "semantic": semantic_result},
+                    context=semantic_result.get("context", {}),
+                )
+                return Response(
+                    {
+                        "answer": parsed,
+                        "format": "json",
+                        "clarifying_questions": semantic_result.get("clarifying_questions", []),
+                        "recommendations": semantic_result.get("recommendations", []),
+                        "interaction_id": interaction.id,
+                    }
+                )
+
+        recommendations = semantic_result.get("recommendations", [])
+        questions = semantic_result.get("clarifying_questions", [])
+        if questions:
+            answer = f"{answer}\n\nУТОЧНЮ, ЧТОБЫ СУЗИТЬ ВЫБОР:\n" + "\n".join([f"- {question}" for question in questions[:3]])
+        if recommendations:
+            answer = f"{answer}\n\nПОДХОДЯЩИЕ ТОВАРЫ:\n" + "\n".join(
+                [f"- {rec['name']} — {rec['price']} ₽. {rec.get('why_fits', '')}" for rec in recommendations[:4]]
+            )
+
+        interaction = AIInteraction.objects.create(
+            user=user,
+            kind=AIInteraction.KIND_CHAT,
+            query=message,
+            response={"answer": answer, "semantic": semantic_result},
+            context=semantic_result.get("context", {}),
+        )
         
         return Response({
             "answer": answer,
             "format": response_format,
-            "model": "openrouter/free"
+            "model": "openrouter/free",
+            "clarifying_questions": questions,
+            "recommendations": recommendations,
+            "interaction_id": interaction.id,
         })
 
 
@@ -198,7 +238,7 @@ class MarketInsightsView(APIView):
 
 
 class AIRecommendationsView(APIView):
-    """AI рекомендации товаров на основе запроса пользователя"""
+    """AI рекомендации товаров на основе семантического запроса пользователя"""
     
     permission_classes = [permissions.AllowAny]
 
@@ -217,8 +257,104 @@ class AIRecommendationsView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        recommendations = get_ai_price_recommendations(user_query)
+        user = request.user if request.user.is_authenticated else None
+        recommendations = semantic_search_products(user_query, user=user)
+        interaction = AIInteraction.objects.create(
+            user=user,
+            kind=AIInteraction.KIND_SEARCH,
+            query=user_query,
+            response=recommendations,
+            context=recommendations.get("context", {}),
+        )
+        recommendations["interaction_id"] = interaction.id
         return Response(recommendations, status=status.HTTP_200_OK)
+
+
+class AISemanticSearchView(AIRecommendationsView):
+    """Явный alias для семантического поиска"""
+
+
+class AIPersonalRecommendationsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        recommendations = get_personal_recommendations(request.user)
+        interaction = AIInteraction.objects.create(
+            user=request.user,
+            kind=AIInteraction.KIND_PERSONAL,
+            query="personal_recommendations",
+            response=recommendations,
+            context=recommendations.get("context", {}),
+        )
+        recommendations["interaction_id"] = interaction.id
+        return Response(recommendations)
+
+
+class AIBundleView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        query = request.data.get("query", "").strip()
+        if not query:
+            return Response({"error": "query is required"}, status=status.HTTP_400_BAD_REQUEST)
+        if len(query) > 500:
+            return Response({"error": "query too long (max 500 characters)"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user if request.user.is_authenticated else None
+        bundle = build_bundle(query, user=user)
+        interaction = AIInteraction.objects.create(
+            user=user,
+            kind=AIInteraction.KIND_BUNDLE,
+            query=query,
+            response=bundle,
+            context=bundle.get("context", {}),
+        )
+        bundle["interaction_id"] = interaction.id
+        return Response(bundle)
+
+
+class AIInteractionFeedbackView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        interaction_id = request.data.get("interaction_id")
+        helpful = request.data.get("helpful")
+        feedback_text = request.data.get("feedback_text", "")
+        if interaction_id is None or helpful is None:
+            return Response({"error": "interaction_id and helpful are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        interaction = AIInteraction.objects.filter(id=interaction_id).first()
+        if not interaction:
+            return Response({"error": "AI interaction not found"}, status=status.HTTP_404_NOT_FOUND)
+        if interaction.user_id and interaction.user_id != getattr(request.user, "id", None):
+            return Response({"error": "Нет прав оценивать этот ответ"}, status=status.HTTP_403_FORBIDDEN)
+
+        if isinstance(helpful, str):
+            helpful = helpful.lower() in ["1", "true", "yes", "да"]
+        interaction.helpful = bool(helpful)
+        interaction.feedback_text = feedback_text[:2000]
+        interaction.needs_prompt_review = not interaction.helpful
+        interaction.save(update_fields=["helpful", "feedback_text", "needs_prompt_review", "updated_at"])
+        return Response({"message": "Спасибо, оценка сохранена"})
+
+
+class ProductViewTrackView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        product_id = request.data.get("product_id")
+        product = Product.objects.filter(id=product_id).first()
+        if not product:
+            return Response({"error": "Товар не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user if request.user.is_authenticated else None
+        ProductViewEvent.objects.create(
+            user=user,
+            product=product,
+            source=request.data.get("source") or ProductViewEvent.SOURCE_CATALOG,
+            query=request.data.get("query", "")[:500],
+        )
+        return Response({"message": "Просмотр сохранен"})
 
 
 class AIPriceAnalysisView(APIView):

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: store-ai-config
+  namespace: store-ai
+data:
+  DEBUG: "0"
+  ALLOWED_HOSTS: "*"
+  DB_ENGINE: postgres
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: store_ai
+  POSTGRES_USER: store_ai
+  OPENROUTER_MODEL: openrouter/free
