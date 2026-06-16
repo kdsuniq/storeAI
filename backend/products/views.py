@@ -7,8 +7,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from users.permissions import IsEmailVerified, IsSeller
+
 from .filters import ProductFilter
-from .models import CartItem, Category, Order, OrderItem, Product
+from .models import CartItem, Category, Order, OrderItem, Payment, Product
+from .payments import check_payment_status, create_payment
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (
     CartItemSerializer,
@@ -58,7 +61,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["create", "update", "partial_update", "destroy"]:
-            return [permissions.IsAuthenticated(), IsOwnerOrReadOnly()]
+            return [permissions.IsAuthenticated(), IsSeller(), IsEmailVerified(), IsOwnerOrReadOnly()]
         return [permissions.AllowAny()]
 
     def perform_create(self, serializer):
@@ -71,12 +74,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["create", "update", "partial_update", "destroy"]:
-            return [permissions.IsAuthenticated()]
+            return [permissions.IsAuthenticated(), IsSeller(), IsEmailVerified()]
         return [permissions.AllowAny()]
 
 
 class MyProductsView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsSeller]
 
     def get(self, request):
         queryset = Product.objects.select_related("category", "owner").filter(owner=request.user).order_by("-created_at")
@@ -190,7 +193,7 @@ class CartItemDeleteView(APIView):
 
 
 class CheckoutView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsEmailVerified]
 
     @extend_schema(
         examples=[
@@ -256,10 +259,98 @@ class CheckoutView(APIView):
             # Очищаем корзину
             CartItem.objects.filter(user=request.user).delete()
 
-        return Response(
-            {"message": "Заказ оформлен", "order": OrderSerializer(order).data}, 
-            status=status.HTTP_201_CREATED
+        return_url = request.data.get("return_url", "http://127.0.0.1:5173/payment/success")
+        if "?" in return_url:
+            payment_return_url = f"{return_url}&order_id={order.id}"
+        else:
+            payment_return_url = f"{return_url}?order_id={order.id}"
+        payment_data = create_payment(order, payment_return_url)
+
+        payment = Payment.objects.create(
+            order=order,
+            external_id=payment_data["external_id"],
+            status=Payment.STATUS_SUCCEEDED if payment_data["status"] == "succeeded" else Payment.STATUS_PENDING,
+            confirmation_url=payment_data.get("confirmation_url", ""),
+            amount=total,
         )
+
+        if payment.status == Payment.STATUS_SUCCEEDED:
+            order.status = Order.STATUS_PAID
+            order.save(update_fields=["status"])
+
+        return Response(
+            {
+                "message": "Заказ оформлен",
+                "order": OrderSerializer(order).data,
+                "payment": {
+                    "status": payment.status,
+                    "confirmation_url": payment.confirmation_url,
+                    "mock": payment_data.get("mock", False),
+                },
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class PaymentStatusView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, order_id):
+        order = Order.objects.filter(id=order_id, user=request.user).select_related("payment").first()
+        if not order:
+            return Response({"error": "Заказ не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+        payment = getattr(order, "payment", None)
+        if not payment:
+            return Response({"error": "Платёж не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+        if payment.status == Payment.STATUS_PENDING and payment.external_id:
+            remote_status = check_payment_status(payment.external_id)
+            if remote_status == "succeeded":
+                payment.status = Payment.STATUS_SUCCEEDED
+                payment.save(update_fields=["status", "updated_at"])
+                order.status = Order.STATUS_PAID
+                order.save(update_fields=["status"])
+            elif remote_status == "canceled":
+                payment.status = Payment.STATUS_CANCELED
+                payment.save(update_fields=["status", "updated_at"])
+
+        return Response(
+            {
+                "order_id": order.id,
+                "order_status": order.status,
+                "payment_status": payment.status,
+                "confirmation_url": payment.confirmation_url,
+            }
+        )
+
+
+class PaymentWebhookView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        event = request.data.get("event")
+        payment_obj = request.data.get("object", {})
+        external_id = payment_obj.get("id")
+        payment_status = payment_obj.get("status")
+
+        if not external_id:
+            return Response({"error": "invalid payload"}, status=status.HTTP_400_BAD_REQUEST)
+
+        payment = Payment.objects.filter(external_id=external_id).select_related("order").first()
+        if not payment:
+            return Response(status=status.HTTP_200_OK)
+
+        if payment_status == "succeeded" or event == "payment.succeeded":
+            payment.status = Payment.STATUS_SUCCEEDED
+            payment.save(update_fields=["status", "updated_at"])
+            payment.order.status = Order.STATUS_PAID
+            payment.order.save(update_fields=["status"])
+        elif payment_status == "canceled" or event == "payment.canceled":
+            payment.status = Payment.STATUS_CANCELED
+            payment.save(update_fields=["status", "updated_at"])
+
+        return Response(status=status.HTTP_200_OK)
     
 
 class MyOrdersView(APIView):
@@ -267,6 +358,22 @@ class MyOrdersView(APIView):
 
     def get(self, request):
         orders = Order.objects.filter(user=request.user).prefetch_related("items", "items__product").order_by("-created_at")
+        paginator = StandardResultsSetPagination()
+        page = paginator.paginate_queryset(orders, request, view=self)
+        serializer = OrderSerializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+
+class SellerIncomingOrdersView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsSeller]
+
+    def get(self, request):
+        orders = (
+            Order.objects.filter(items__product__owner=request.user)
+            .distinct()
+            .prefetch_related("items", "items__product")
+            .order_by("-created_at")
+        )
         paginator = StandardResultsSetPagination()
         page = paginator.paginate_queryset(orders, request, view=self)
         serializer = OrderSerializer(page, many=True)
@@ -334,7 +441,7 @@ class RepeatOrderView(APIView):
 
 
 class OrderStatusUpdateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsSeller]
 
     def patch(self, request, order_id):
         order = Order.objects.filter(id=order_id, items__product__owner=request.user).distinct().first()

@@ -12,3 +12,9 @@ data:
   POSTGRES_DB: store_ai
   POSTGRES_USER: store_ai
   OPENROUTER_MODEL: openrouter/free
+  FRONTEND_URL: "https://your-frontend-domain.ru"
+  DEFAULT_FROM_EMAIL: "noreply@your-domain.ru"
+  EMAIL_BACKEND: "django.core.mail.backends.smtp.EmailBackend"
+  EMAIL_HOST: "smtp.yandex.ru"
+  EMAIL_PORT: "587"
+  EMAIL_USE_TLS: "1"

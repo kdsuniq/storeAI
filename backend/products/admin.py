@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CartItem, Category, Order, OrderItem, Product
+from .models import CartItem, Category, Order, OrderItem, Payment, Product
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -44,3 +44,11 @@ class CartItemAdmin(admin.ModelAdmin):
     list_display = ['user', 'product', 'quantity', 'created_at']
     list_filter = ['created_at']
     search_fields = ['user__username', 'product__name']
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ['order', 'external_id', 'status', 'amount', 'created_at']
+    list_filter = ['status', 'created_at']
+    search_fields = ['external_id', 'order__id']
+    readonly_fields = ['order', 'external_id', 'amount', 'confirmation_url', 'created_at', 'updated_at']

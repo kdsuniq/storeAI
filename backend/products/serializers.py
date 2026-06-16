@@ -19,6 +19,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source="category", write_only=True)
     owner_username = serializers.CharField(source="owner.username", read_only=True)
+    store_name = serializers.SerializerMethodField()
 
     stock_status = serializers.SerializerMethodField()
     is_in_stock = serializers.SerializerMethodField()
@@ -37,6 +38,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "specs",
             "owner",
             "owner_username",
+            "store_name",
             "created_at",
             "stock",                    
             "low_stock_threshold",      
@@ -44,7 +46,13 @@ class ProductSerializer(serializers.ModelSerializer):
             "is_in_stock",       
             "in_stock_display", 
         ]
-        read_only_fields = ["id", "created_at", "category", "owner", "owner_username", "stock_status", "is_in_stock", "in_stock_display"]
+        read_only_fields = ["id", "created_at", "category", "owner", "owner_username", "store_name", "stock_status", "is_in_stock", "in_stock_display"]
+
+    def get_store_name(self, obj):
+        profile = getattr(obj.owner, "profile", None) if obj.owner else None
+        if profile and profile.store_name:
+            return profile.store_name
+        return obj.owner.username if obj.owner else "магазин"
 
     def get_stock_status(self, obj):
         """Возвращает текстовый статус наличия"""

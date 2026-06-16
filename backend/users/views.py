@@ -6,6 +6,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .email_service import send_verification_email
+from .models import EmailVerificationToken, UserProfile
+from .permissions import IsAdminUser
 from .serializers import LoginSerializer, RegisterSerializer, UserSerializer
 
 
@@ -20,17 +23,38 @@ class RegisterView(APIView):
     @extend_schema(
         examples=[
             OpenApiExample(
-                "Register payload",
-                value={"username": "seller1", "email": "seller@example.com", "password": "password123"},
+                "Register buyer",
+                value={"username": "buyer1", "email": "buyer@example.com", "password": "password123", "role": "buyer"},
                 request_only=True,
-            )
+            ),
+            OpenApiExample(
+                "Register seller",
+                value={
+                    "username": "seller1",
+                    "email": "seller@example.com",
+                    "password": "password123",
+                    "role": "seller",
+                    "store_name": "Мой магазин",
+                },
+                request_only=True,
+            ),
         ]
     )
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        return Response({"tokens": tokens_for_user(user), "user": UserSerializer(user).data}, status=status.HTTP_201_CREATED)
+        token = EmailVerificationToken.objects.create(user=user)
+        email_sent = send_verification_email(user, token)
+        return Response(
+            {
+                "tokens": tokens_for_user(user),
+                "user": UserSerializer(user).data,
+                "email_sent": email_sent,
+                "message": "Аккаунт создан. Проверьте почту для подтверждения email.",
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class LoginView(APIView):
@@ -81,8 +105,8 @@ class ChangePasswordView(APIView):
         new_password = request.data.get("new_password")
         if not old_password or not new_password:
             return Response({"error": "old_password and new_password are required"}, status=status.HTTP_400_BAD_REQUEST)
-        if len(new_password) < 6:
-            return Response({"error": "new_password must be at least 6 characters"}, status=status.HTTP_400_BAD_REQUEST)
+        if len(new_password) < 8:
+            return Response({"error": "new_password must be at least 8 characters"}, status=status.HTTP_400_BAD_REQUEST)
         if not request.user.check_password(old_password):
             return Response({"error": "old_password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -96,3 +120,111 @@ class ProfileView(APIView):
 
     def get(self, request):
         return Response(UserSerializer(request.user).data)
+
+
+class VerifyEmailView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        token_value = request.data.get("token", "").strip()
+        if not token_value:
+            return Response({"error": "token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        token = EmailVerificationToken.objects.filter(token=token_value, used=False).select_related("user").first()
+        if not token:
+            return Response({"error": "Недействительная или уже использованная ссылка"}, status=status.HTTP_400_BAD_REQUEST)
+
+        profile = token.user.profile
+        profile.email_verified = True
+        profile.save(update_fields=["email_verified"])
+        token.used = True
+        token.save(update_fields=["used"])
+
+        return Response({"message": "Email успешно подтверждён", "user": UserSerializer(token.user).data})
+
+
+class ResendVerificationView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        profile = getattr(request.user, "profile", None)
+        if not profile:
+            return Response({"error": "Профиль не найден"}, status=status.HTTP_400_BAD_REQUEST)
+        if profile.email_verified:
+            return Response({"message": "Email уже подтверждён"})
+        if not request.user.email:
+            return Response({"error": "Email не указан в профиле"}, status=status.HTTP_400_BAD_REQUEST)
+
+        token = EmailVerificationToken.objects.create(user=request.user)
+        email_sent = send_verification_email(request.user, token)
+        if not email_sent:
+            return Response({"error": "Не удалось отправить письмо"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"message": "Письмо с подтверждением отправлено повторно"})
+
+
+class AdminStatsView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsAdminUser]
+
+    def get(self, request):
+        from products.models import Order, Product
+        from ai.models import AIInteraction
+
+        return Response(
+            {
+                "users_count": User.objects.count(),
+                "sellers_count": UserProfile.objects.filter(role=UserProfile.ROLE_SELLER).count(),
+                "buyers_count": UserProfile.objects.filter(role=UserProfile.ROLE_BUYER).count(),
+                "products_count": Product.objects.count(),
+                "orders_count": Order.objects.count(),
+                "orders_paid": Order.objects.filter(status=Order.STATUS_PAID).count(),
+                "orders_new": Order.objects.filter(status=Order.STATUS_NEW).count(),
+                "ai_interactions": AIInteraction.objects.count(),
+            }
+        )
+
+
+class AdminUsersView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsAdminUser]
+
+    def get(self, request):
+        users = User.objects.select_related("profile").order_by("-date_joined")[:100]
+        data = []
+        for user in users:
+            profile = getattr(user, "profile", None)
+            data.append(
+                {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "role": profile.role if profile else "buyer",
+                    "store_name": profile.store_name if profile else "",
+                    "email_verified": profile.email_verified if profile else False,
+                    "is_staff": user.is_staff,
+                    "date_joined": user.date_joined,
+                }
+            )
+        return Response(data)
+
+
+class AdminOrdersView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsAdminUser]
+
+    def get(self, request):
+        from products.serializers import OrderSerializer
+        from products.models import Order
+
+        orders = Order.objects.prefetch_related("items", "items__product").order_by("-created_at")[:100]
+        return Response(OrderSerializer(orders, many=True).data)
+
+    def patch(self, request, order_id):
+        from products.models import Order
+        from products.serializers import OrderStatusSerializer, OrderSerializer
+
+        order = Order.objects.filter(id=order_id).first()
+        if not order:
+            return Response({"error": "Заказ не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = OrderStatusSerializer(order, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(OrderSerializer(order).data)

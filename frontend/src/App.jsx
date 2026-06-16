@@ -49,11 +49,13 @@ const getPageMeta = (data, fallbackLength = 0) => ({
   previous: data?.previous || null,
 })
 
-const validateAuthForm = (mode, form) => {
+const validateAuthForm = (mode, form, role) => {
   if (form.username.trim().length < 3) return 'Логин должен быть не короче 3 символов'
   if (form.password.length < 8) return 'Пароль должен быть не короче 8 символов'
-  if (mode === 'register' && form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    return 'Введите корректный email'
+  if (mode === 'register') {
+    if (!form.email.trim()) return 'Email обязателен'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return 'Введите корректный email'
+    if (role === 'seller' && !form.store_name.trim()) return 'Укажите название магазина'
   }
   return ''
 }
@@ -120,20 +122,33 @@ async function apiFetch(path, { method = 'GET', body, auth, setAuth } = {}) {
   return { ok: res.ok, status: res.status, data }
 }
 
-function Header({ isAuth, onLogout }) {
+function Header({ isAuth, profile, onLogout }) {
+  const isSeller = profile?.role === 'seller'
+  const isAdmin = profile?.is_staff
   return (
     <header className="header-wrap">
       <div className="topline">
-        <div className="brand">Store with AI</div>
+        <Link to="/" className="brand-link">
+          <div className="brand">Store with AI</div>
+        </Link>
         <div className="actions">
-          {isAuth ? <Link className="btn btn-light" to="/account">Разместить товар</Link> : <Link className="btn btn-light" to="/auth">Стать продавцом</Link>}
+          {!isAuth && (
+            <>
+              <Link className="btn btn-light" to="/auth/buyer">Регистрация покупателя</Link>
+              <Link className="btn btn-light" to="/auth/seller">Стать продавцом</Link>
+            </>
+          )}
+          {isAuth && isSeller && <Link className="btn btn-light" to="/account">Кабинет продавца</Link>}
+          {isAuth && !isSeller && <Link className="btn btn-light" to="/my-orders">Мои заказы</Link>}
           <Link className="btn btn-accent" to="/cart">Корзина</Link>
-          {isAuth ? <button className="btn btn-outline" onClick={onLogout}>Выйти</button> : <Link className="btn btn-outline" to="/auth">Вход</Link>}
+          {isAdmin && <Link className="btn btn-light" to="/admin">Админка</Link>}
+          {isAuth ? <button className="btn btn-outline" onClick={onLogout}>Выйти</button> : <Link className="btn btn-outline" to="/auth/buyer">Вход</Link>}
         </div>
       </div>
       <nav className="menu">
-        <Link to="/">Все товары</Link>
-        <Link to="/account">Кабинет продавца</Link>
+        <Link to="/">Каталог</Link>
+        {isAuth && isSeller && <Link to="/account">Управление товарами</Link>}
+        {isAuth && !isSeller && <Link to="/my-orders">История заказов</Link>}
       </nav>
     </header>
   )
@@ -298,13 +313,13 @@ function ProductsPage({ auth, setAuth }) {
         setAiChatQuestions(res.data.clarifying_questions || [])
         setAiChatInteractionId(res.data.interaction_id || null)
       } else {
-        setAiAnswer('❌ Ошибка: ' + (res.data.error || 'Не удалось получить ответ'))
+        setAiAnswer('Ошибка: ' + (res.data.error || 'Не удалось получить ответ'))
         setAiChatRecommendations([])
         setAiChatQuestions([])
         setAiChatInteractionId(null)
       }
     } catch (err) {
-      setAiAnswer('❌ Ошибка соединения. Попробуйте позже.')
+      setAiAnswer('Ошибка соединения. Попробуйте позже.')
     } finally {
       setAiLoading(false)
     }
@@ -358,10 +373,7 @@ function ProductsPage({ auth, setAuth }) {
     <>
       <section className="hero-market">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h1>Маркетплейс товаров с AI</h1>
-            <p>Покупатели смотрят все товары, продавцы публикуют через личный кабинет.</p>
-          </div>
+
           {auth.access && (
             <Link to="/cart" className="cart-icon-link">
               <div className="cart-icon">
@@ -412,7 +424,7 @@ function ProductsPage({ auth, setAuth }) {
                     {p.in_stock_display || (p.stock > 0 ? `В наличии (${p.stock} шт.)` : 'Нет в наличии')}
                   </div>
                   
-                  <p className="meta">{p.category?.name || 'Без категории'} · продавец: {p.owner_username || 'пользователь'}</p>
+                  <p className="meta">{p.category?.name || 'Без категории'} · {p.store_name || p.owner_username || 'магазин'}</p>
                   <p className="desc">{p.description}</p>
                   
                   {isInStock ? (
@@ -466,7 +478,7 @@ function ProductsPage({ auth, setAuth }) {
 
         <aside className="panel ai-panel">
   {/* Существующий AI помощник */}
-  <h2>💬 AI помощник</h2>
+  <h2>AI помощник</h2>
   <textarea 
     rows={5} 
     value={aiQuestion} 
@@ -479,7 +491,7 @@ function ProductsPage({ auth, setAuth }) {
     onClick={askAI}
     disabled={aiLoading || !aiQuestion.trim()}
   >
-    {aiLoading ? '⏳ Думаю...' : '💬 Спросить'}
+    {aiLoading ? ' Думаю...' : ' Спросить'}
   </button>
   
   {aiLoading && (
@@ -548,19 +560,24 @@ function ProductsPage({ auth, setAuth }) {
   )
 }
 
-function AuthPage({ setAuth }) {
+function AuthPage({ setAuth, setProfile, role = 'buyer' }) {
   const [mode, setMode] = useState('login')
   const [error, setError] = useState('')
-  const [form, setForm] = useState({ username: '', email: '', password: '' })
+  const [info, setInfo] = useState('')
+  const [form, setForm] = useState({ username: '', email: '', password: '', store_name: '' })
   const navigate = useNavigate()
+  const isSeller = role === 'seller'
 
   const submit = async (e) => {
     e.preventDefault()
     setError('')
-    const validationError = validateAuthForm(mode, form)
+    setInfo('')
+    const validationError = validateAuthForm(mode, form, role)
     if (validationError) return setError(validationError)
     const path = mode === 'login' ? '/auth/login/' : '/auth/register/'
-    const payload = mode === 'login' ? { username: form.username, password: form.password } : form
+    const payload = mode === 'login'
+      ? { username: form.username, password: form.password }
+      : { ...form, role }
     const res = await apiFetch(path, { method: 'POST', body: payload })
     if (!res.ok) return setError(extractError(res.data))
 
@@ -569,34 +586,65 @@ function AuthPage({ setAuth }) {
 
     saveAuth(tokens)
     setAuth(tokens)
-    navigate('/account')
+    if (res.data.user) setProfile(res.data.user)
+
+    if (mode === 'register') {
+      setInfo(res.data.message || 'Проверьте почту для подтверждения email')
+      if (isSeller) navigate('/account')
+      else navigate('/')
+      return
+    }
+
+    if (res.data.user?.role === 'seller') navigate('/account')
+    else navigate('/')
   }
 
   return (
     <section className="auth-wrap">
       <div className="panel auth-panel">
+        <div className="auth-role-badge">{isSeller ? 'Аккаунт продавца / магазина' : 'Аккаунт покупателя'}</div>
         <div className="auth-tabs">
           <button type="button" className={`auth-tab ${mode === 'login' ? 'active' : ''}`} onClick={() => setMode('login')}>Вход</button>
           <button type="button" className={`auth-tab ${mode === 'register' ? 'active' : ''}`} onClick={() => setMode('register')}>Регистрация</button>
         </div>
-        <h2>{mode === 'login' ? 'Вход' : 'Регистрация продавца'}</h2>
+        <h2>{mode === 'login' ? 'Вход' : isSeller ? 'Регистрация магазина' : 'Регистрация покупателя'}</h2>
+        <p className="meta auth-hint">
+          {isSeller
+            ? 'После регистрации вы сможете публиковать товары и получать заказы.'
+            : 'Покупайте товары, используйте AI-помощник и отслеживайте заказы.'}
+        </p>
         <form onSubmit={submit}>
           <input placeholder="Логин" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} required />
-          {mode === 'register' && <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />}
+          {mode === 'register' && (
+            <>
+              <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+              {isSeller && (
+                <input placeholder="Название магазина" value={form.store_name} onChange={(e) => setForm({ ...form, store_name: e.target.value })} required />
+              )}
+            </>
+          )}
           <input type="password" minLength={8} placeholder="Пароль (мин. 8 символов)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
-          {error && <p className="note">{error}</p>}
+          {error && <p className="note error-note">{error}</p>}
+          {info && <p className="note success-note">{info}</p>}
           <button className="btn btn-accent" type="submit">{mode === 'login' ? 'Войти' : 'Создать аккаунт'}</button>
         </form>
+        <p className="meta auth-switch">
+          {isSeller ? (
+            <>Нужен аккаунт покупателя? <Link to="/auth/buyer">Регистрация покупателя</Link></>
+          ) : (
+            <>Хотите продавать? <Link to="/auth/seller">Стать продавцом</Link></>
+          )}
+        </p>
       </div>
     </section>
   )
 }
 
-function AccountPage({ auth, setAuth }) {
-  const [profile, setProfile] = useState(null)
+function AccountPage({ auth, setAuth, profile, setProfile }) {
   const [categories, setCategories] = useState([])
   const [myProducts, setMyProducts] = useState([])
   const [orders, setOrders] = useState([])
+  const [sellerOrders, setSellerOrders] = useState([])
   const [cat, setCat] = useState({ name: '', description: '' })
   const [form, setForm] = useState({ 
     name: '', 
@@ -618,11 +666,12 @@ function AccountPage({ auth, setAuth }) {
   const [generatingDesc, setGeneratingDesc] = useState(false)
 
   const load = async () => {
-    const [me, c, p, o] = await Promise.all([
+    const [me, c, p, o, so] = await Promise.all([
       apiFetch('/auth/me/', { auth, setAuth }),
       apiFetch('/categories/'),
       apiFetch('/products/my-products/', { auth, setAuth }),
       apiFetch('/products/my-orders/?page_size=20', { auth, setAuth }),
+      apiFetch('/products/seller-orders/?page_size=20', { auth, setAuth }),
     ])
 
     if (!me.ok || !p.ok) {
@@ -634,6 +683,7 @@ function AccountPage({ auth, setAuth }) {
     setCategories(getList(c.data))
     setMyProducts(getList(p.data))
     setOrders(getList(o.data))
+    setSellerOrders(getList(so.data))
   }
 
   useEffect(() => { load() }, [auth.access])
@@ -853,11 +903,44 @@ function AccountPage({ auth, setAuth }) {
     setMsg('Товары из заказа добавлены в корзину')
   }
 
+  const updateOrderStatus = async (orderId, status) => {
+    const res = await apiFetch(`/products/orders/${orderId}/status/`, {
+      method: 'PATCH',
+      body: { status },
+      auth,
+      setAuth,
+    })
+    if (!res.ok) return setMsg(extractError(res.data))
+    setMsg('Статус заказа обновлён')
+    load()
+  }
+
+  const resendVerification = async () => {
+    const res = await apiFetch('/auth/resend-verification/', { method: 'POST', auth, setAuth })
+    setMsg(res.ok ? (res.data.message || 'Письмо отправлено') : extractError(res.data))
+  }
+
+  if (profile?.role !== 'seller') {
+    return <Navigate to="/my-orders" replace />
+  }
+
   return (
-    <div className="layout">
+    <div className="layout seller-layout">
       <section className="panel">
         <h2>Кабинет продавца</h2>
-        {profile && <p className="meta">Пользователь: {profile.username} {profile.email ? `· ${profile.email}` : ''}</p>}
+        {profile && (
+          <p className="meta">
+            {profile.store_name || profile.username}
+            {profile.email ? ` · ${profile.email}` : ''}
+            {profile.email_verified ? ' · email подтверждён' : ' · email не подтверждён'}
+          </p>
+        )}
+        {profile && !profile.email_verified && (
+          <div className="verify-banner">
+            <p>Подтвердите email, чтобы публиковать товары и принимать заказы.</p>
+            <button className="btn btn-light" type="button" onClick={resendVerification}>Отправить письмо повторно</button>
+          </div>
+        )}
         {msg && <p className="note">{msg}</p>}
 
         <form onSubmit={addCategory} className="form-block">
@@ -987,7 +1070,31 @@ function AccountPage({ auth, setAuth }) {
           ))}
         </div>
 
-        <h2 style={{ marginTop: 16 }}>Мои заказы</h2>
+        <h2 style={{ marginTop: 16 }}>Входящие заказы</h2>
+        {sellerOrders.length === 0 && <p className="meta">Пока нет заказов с вашими товарами.</p>}
+        {sellerOrders.map((o) => (
+          <article className="product-card order-card" key={`seller-${o.id}`}>
+            <p><b>Заказ #{o.id}</b> · {o.total} ₽ · статус: {o.status}</p>
+            <p className="meta">{o.full_name}, {o.phone}, {o.city}</p>
+            {o.items?.length > 0 && (
+              <ul className="order-items">
+                {o.items.map((item) => (
+                  <li key={item.id}>{item.product_name} · {item.quantity} шт.</li>
+                ))}
+              </ul>
+            )}
+            <div className="actions-row">
+              {o.status === 'paid' && (
+                <button className="btn btn-accent" type="button" onClick={() => updateOrderStatus(o.id, 'shipped')}>Отправлен</button>
+              )}
+              {o.status === 'shipped' && (
+                <button className="btn btn-accent" type="button" onClick={() => updateOrderStatus(o.id, 'done')}>Завершён</button>
+              )}
+            </div>
+          </article>
+        ))}
+
+        <h2 style={{ marginTop: 16 }}>Мои покупки</h2>
         {orders.map((o) => (
           <article className="product-card" key={o.id}>
             <p><b>Заказ #{o.id}</b> · {o.total} ₽ · статус: {o.status}</p>
@@ -1025,7 +1132,7 @@ function AccountPage({ auth, setAuth }) {
   )
 }
 
-function CartPage({ auth, setAuth }) {
+function CartPage({ auth, setAuth, profile }) {
   const [cart, setCart] = useState({ items: [], total: 0 })
   const [msg, setMsg] = useState('')
   const [loading, setLoading] = useState(false)
@@ -1108,9 +1215,14 @@ function CartPage({ auth, setAuth }) {
     setMsg('')
     const validationError = validateCheckoutForm(checkoutData)
     if (validationError) return setMsg(validationError)
+
+    if (profile && !profile.email_verified) {
+      setMsg('Подтвердите email перед оформлением заказа. Проверьте почту или запросите письмо повторно в профиле.')
+      return
+    }
+
     setLoading(true)
     
-    // Проверяем, что все товары есть в наличии
     const unavailableItems = cart.items.filter(item => item.quantity > item.product.stock)
     if (unavailableItems.length > 0) {
       const names = unavailableItems.map(i => i.product.name).join(', ')
@@ -1121,7 +1233,10 @@ function CartPage({ auth, setAuth }) {
     
     const res = await apiFetch('/products/cart/checkout/', { 
       method: 'POST', 
-      body: checkoutData, 
+      body: {
+        ...checkoutData,
+        return_url: `${window.location.origin}/payment/success`,
+      },
       auth, 
       setAuth 
     })
@@ -1136,18 +1251,30 @@ function CartPage({ auth, setAuth }) {
       setLoading(false)
       return
     }
-    
-    setMsg(`Заказ оформлен на сумму ${Number(res.data.order?.total || 0).toFixed(2)} ₽`)
+
+    const payment = res.data.payment || {}
+    if (payment.confirmation_url) {
+      window.location.href = payment.confirmation_url
+      return
+    }
+
+    const orderId = res.data.order?.id
+    if (payment.status === 'succeeded' || payment.mock) {
+      setMsg(`Заказ #${orderId} оплачен на сумму ${Number(res.data.order?.total || 0).toFixed(2)} ₽`)
+    } else {
+      setMsg(`Заказ #${orderId} создан. Ожидается оплата.`)
+    }
     load()
-    // Очищаем форму
     setCheckoutData({ full_name: '', phone: '', city: '', address: '', comment: '' })
     setLoading(false)
   }
 
   if (!auth.access) {
     return (
-      <section className="panel">
-        <p>Войдите в аккаунт, чтобы пользоваться корзиной.</p>
+      <section className="panel empty-state">
+        <h2>Корзина</h2>
+        <p>Войдите как покупатель, чтобы оформить заказ.</p>
+        <Link className="btn btn-accent" to="/auth/buyer">Войти / регистрация</Link>
       </section>
     )
   }
@@ -1262,7 +1389,7 @@ function CartPage({ auth, setAuth }) {
                 !checkoutData.address
               }
             >
-              {loading ? 'Обработка...' : 'Оформить заказ'}
+              {loading ? 'Обработка...' : 'Оформить и оплатить'}
             </button>
           </div>
         </>
@@ -1400,14 +1527,13 @@ function AIPriceSearchWidget({ auth, setAuth, onAddToCart, onFeedback }) {
   return (
     <div className="ai-price-widget">
       <div className="widget-header">
-        <span className="widget-icon">💰</span>
         <h3>AI-поиск и персональные подборки</h3>
       </div>
       
       {priceAnalysis && priceAnalysis.price_range && (
         <div className="price-analysis-banner">
           <div className="price-range">
-            <span>📊 Цены в магазине:</span>
+            <span> Цены в магазине:</span>
             <span className="min-price">от {priceAnalysis.price_range.min}₽</span>
             <span className="max-price">до {priceAnalysis.price_range.max}₽</span>
             <span className="avg-price">средняя {priceAnalysis.price_range.avg}₽</span>
@@ -1497,7 +1623,6 @@ function AIPriceSearchWidget({ auth, setAuth, onAddToCart, onFeedback }) {
 
       <div className="bundle-builder">
         <div className="widget-header">
-          <span className="widget-icon">🎁</span>
           <h3>Собрать комплект</h3>
         </div>
         <div className="search-row">
@@ -1544,16 +1669,238 @@ function AIPriceSearchWidget({ auth, setAuth, onAddToCart, onFeedback }) {
   )
 }
 
+function EmailVerificationBanner({ auth, setAuth, setProfile }) {
+  const [msg, setMsg] = useState('')
+  const resend = async () => {
+    const res = await apiFetch('/auth/resend-verification/', { method: 'POST', auth, setAuth })
+    setMsg(res.ok ? 'Письмо отправлено повторно' : extractError(res.data))
+  }
+  return (
+    <div className="verify-banner global-banner">
+      <span>Подтвердите email — без этого нельзя оформить заказ или публиковать товары.</span>
+      <button className="btn btn-light" type="button" onClick={resend}>Отправить снова</button>
+      {msg && <span className="meta">{msg}</span>}
+    </div>
+  )
+}
+
+function VerifyEmailPage({ auth, setAuth, setProfile }) {
+  const [status, setStatus] = useState('loading')
+  const [message, setMessage] = useState('')
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const token = params.get('token')
+    if (!token) {
+      setStatus('error')
+      setMessage('Ссылка подтверждения недействительна')
+      return
+    }
+    const verify = async () => {
+      const res = await apiFetch('/auth/verify-email/', { method: 'POST', body: { token } })
+      if (res.ok) {
+        setStatus('success')
+        setMessage(res.data.message || 'Email подтверждён')
+        if (res.data.user) setProfile(res.data.user)
+        if (auth.access) {
+          const me = await apiFetch('/auth/me/', { auth, setAuth })
+          if (me.ok) setProfile(me.data)
+        }
+      } else {
+        setStatus('error')
+        setMessage(extractError(res.data))
+      }
+    }
+    verify()
+  }, [])
+
+  return (
+    <section className="panel auth-wrap">
+      <div className="auth-panel">
+        <h2>Подтверждение email</h2>
+        {status === 'loading' && <p className="meta">Проверяем ссылку...</p>}
+        {status !== 'loading' && <p className={status === 'success' ? 'note success-note' : 'note error-note'}>{message}</p>}
+        <Link className="btn btn-accent" to="/">На главную</Link>
+        {status === 'success' && (
+          <button className="btn btn-light" type="button" onClick={() => navigate('/')}>Продолжить покупки</button>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function BuyerOrdersPage({ auth, setAuth, profile }) {
+  const [orders, setOrders] = useState([])
+  const [msg, setMsg] = useState('')
+
+  const load = async () => {
+    const res = await apiFetch('/products/my-orders/?page_size=50', { auth, setAuth })
+    if (res.ok) setOrders(getList(res.data))
+  }
+
+  useEffect(() => { load() }, [auth.access])
+
+  const repeatOrder = async (orderId) => {
+    const res = await apiFetch(`/products/orders/${orderId}/repeat/`, { method: 'POST', auth, setAuth })
+    setMsg(res.ok ? 'Товары добавлены в корзину' : extractError(res.data))
+  }
+
+  return (
+    <section className="panel">
+      <h2>Мои заказы</h2>
+      {profile && <p className="meta">{profile.username}{profile.email ? ` · ${profile.email}` : ''}</p>}
+      {msg && <p className="note">{msg}</p>}
+      {orders.length === 0 && <p className="meta">Заказов пока нет. Выберите товары в каталоге.</p>}
+      {orders.map((o) => (
+        <article className="product-card order-card" key={o.id}>
+          <p><b>Заказ #{o.id}</b> · {o.total} ₽ · {o.status}</p>
+          <p className="meta">{o.full_name}, {o.phone}, {o.city}, {o.address}</p>
+          {o.items?.map((item) => (
+            <p className="meta" key={item.id}>{item.product_name} · {item.quantity} шт. · {item.price} ₽</p>
+          ))}
+          <button className="btn btn-accent" type="button" onClick={() => repeatOrder(o.id)}>Повторить заказ</button>
+        </article>
+      ))}
+    </section>
+  )
+}
+
+function PaymentSuccessPage({ auth, setAuth }) {
+  const [info, setInfo] = useState('Проверяем статус оплаты...')
+  const params = new URLSearchParams(window.location.search)
+  const orderId = params.get('order_id')
+
+  useEffect(() => {
+    if (!orderId || !auth.access) {
+      setInfo('Заказ создан. Статус оплаты обновится автоматически.')
+      return
+    }
+    const check = async () => {
+      const res = await apiFetch(`/products/orders/${orderId}/payment/`, { auth, setAuth })
+      if (res.ok) {
+        setInfo(res.data.payment_status === 'succeeded'
+          ? `Оплата заказа #${orderId} прошла успешно`
+          : `Заказ #${orderId} ожидает подтверждения оплаты`)
+      }
+    }
+    check()
+  }, [orderId, auth.access])
+
+  return (
+    <section className="panel empty-state">
+      <h2>Оплата</h2>
+      <p>{info}</p>
+      <Link className="btn btn-accent" to="/my-orders">Мои заказы</Link>
+    </section>
+  )
+}
+
+function AdminPage({ auth, setAuth }) {
+  const [stats, setStats] = useState(null)
+  const [users, setUsers] = useState([])
+  const [orders, setOrders] = useState([])
+  const [msg, setMsg] = useState('')
+
+  const load = async () => {
+    const [s, u, o] = await Promise.all([
+      apiFetch('/auth/admin/stats/', { auth, setAuth }),
+      apiFetch('/auth/admin/users/', { auth, setAuth }),
+      apiFetch('/auth/admin/orders/', { auth, setAuth }),
+    ])
+    if (s.ok) setStats(s.data)
+    if (u.ok) setUsers(Array.isArray(u.data) ? u.data : [])
+    if (o.ok) setOrders(Array.isArray(o.data) ? o.data : [])
+  }
+
+  useEffect(() => { load() }, [])
+
+  const updateStatus = async (orderId, status) => {
+    const res = await apiFetch(`/auth/admin/orders/${orderId}/`, {
+      method: 'PATCH',
+      body: { status },
+      auth,
+      setAuth,
+    })
+    setMsg(res.ok ? 'Статус обновлён' : extractError(res.data))
+    load()
+  }
+
+  return (
+    <div className="layout admin-layout">
+      <section className="panel">
+        <h2>Админ-панель</h2>
+        {msg && <p className="note">{msg}</p>}
+        {stats && (
+          <div className="stats-grid">
+            <div className="stat-card"><b>{stats.users_count}</b><span>Пользователей</span></div>
+            <div className="stat-card"><b>{stats.buyers_count}</b><span>Покупателей</span></div>
+            <div className="stat-card"><b>{stats.sellers_count}</b><span>Продавцов</span></div>
+            <div className="stat-card"><b>{stats.products_count}</b><span>Товаров</span></div>
+            <div className="stat-card"><b>{stats.orders_count}</b><span>Заказов</span></div>
+            <div className="stat-card"><b>{stats.orders_paid}</b><span>Оплачено</span></div>
+            <div className="stat-card"><b>{stats.ai_interactions}</b><span>AI запросов</span></div>
+          </div>
+        )}
+        <p className="meta">Полный Django Admin: <a href="/admin/" target="_blank" rel="noreferrer">/admin/</a></p>
+      </section>
+
+      <section className="panel">
+        <h3>Пользователи</h3>
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr><th>Логин</th><th>Email</th><th>Роль</th><th>Магазин</th><th>Email ✓</th></tr>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <tr key={u.id}>
+                  <td>{u.username}{u.is_staff ? ' (admin)' : ''}</td>
+                  <td>{u.email}</td>
+                  <td>{u.role}</td>
+                  <td>{u.store_name || '—'}</td>
+                  <td>{u.email_verified ? 'да' : 'нет'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel admin-orders-panel">
+        <h3>Заказы</h3>
+        {orders.map((o) => (
+          <article className="product-card order-card" key={o.id}>
+            <p><b>#{o.id}</b> · {o.total} ₽ · {o.status} · {o.full_name}</p>
+            <div className="actions-row">
+              {['paid', 'shipped', 'done', 'canceled'].map((st) => (
+                <button key={st} className="btn btn-dark-outline" type="button" onClick={() => updateStatus(o.id, st)}>{st}</button>
+              ))}
+            </div>
+          </article>
+        ))}
+      </section>
+    </div>
+  )
+}
+
 export default function App() {
   const [auth, setAuth] = useState(getAuth())
+  const [profile, setProfile] = useState(null)
 
   useEffect(() => {
     const check = async () => {
-      if (!auth.access) return
+      if (!auth.access) {
+        setProfile(null)
+        return
+      }
       const res = await apiFetch('/auth/me/', { auth, setAuth })
       if (!res.ok) {
         clearAuth()
         setAuth({ access: '', refresh: '' })
+        setProfile(null)
+      } else {
+        setProfile(res.data)
       }
     }
     check()
@@ -1562,18 +1909,28 @@ export default function App() {
   const onLogout = () => {
     clearAuth()
     setAuth({ access: '', refresh: '' })
+    setProfile(null)
   }
 
   const isAuth = Boolean(auth.access)
 
   return (
     <div className="page">
-      <Header isAuth={isAuth} onLogout={onLogout} />
+      <Header isAuth={isAuth} profile={profile} onLogout={onLogout} />
+      {isAuth && profile && !profile.email_verified && (
+        <EmailVerificationBanner auth={auth} setAuth={setAuth} setProfile={setProfile} />
+      )}
       <Routes>
         <Route path="/" element={<ProductsPage auth={auth} setAuth={setAuth} />} />
-        <Route path="/auth" element={<AuthPage setAuth={setAuth} />} />
-        <Route path="/cart" element={<CartPage auth={auth} setAuth={setAuth} />} />
-        <Route path="/account" element={isAuth ? <AccountPage auth={auth} setAuth={setAuth} /> : <Navigate to="/auth" replace />} />
+        <Route path="/auth" element={<Navigate to="/auth/buyer" replace />} />
+        <Route path="/auth/buyer" element={<AuthPage setAuth={setAuth} setProfile={setProfile} role="buyer" />} />
+        <Route path="/auth/seller" element={<AuthPage setAuth={setAuth} setProfile={setProfile} role="seller" />} />
+        <Route path="/verify-email" element={<VerifyEmailPage setProfile={setProfile} auth={auth} setAuth={setAuth} />} />
+        <Route path="/cart" element={<CartPage auth={auth} setAuth={setAuth} profile={profile} />} />
+        <Route path="/my-orders" element={isAuth ? <BuyerOrdersPage auth={auth} setAuth={setAuth} profile={profile} /> : <Navigate to="/auth/buyer" replace />} />
+        <Route path="/account" element={isAuth ? <AccountPage auth={auth} setAuth={setAuth} profile={profile} setProfile={setProfile} /> : <Navigate to="/auth/seller" replace />} />
+        <Route path="/admin" element={isAuth && profile?.is_staff ? <AdminPage auth={auth} setAuth={setAuth} /> : <Navigate to="/" replace />} />
+        <Route path="/payment/success" element={<PaymentSuccessPage auth={auth} setAuth={setAuth} />} />
       </Routes>
     </div>
   )
