@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.db.models import F
 from drf_spectacular.utils import OpenApiExample, extend_schema
 from django.contrib.auth.models import User
 from rest_framework import permissions, status
@@ -166,19 +167,35 @@ class AdminStatsView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsAdminUser]
 
     def get(self, request):
+        from django.db.models import Sum
         from products.models import Order, Product
         from ai.models import AIInteraction
+
+        paid_revenue = Order.objects.filter(status__in=[Order.STATUS_PAID, Order.STATUS_SHIPPED, Order.STATUS_DONE]).aggregate(
+            total=Sum("total")
+        )["total"] or 0
+        orders_by_status = {
+            status_key: Order.objects.filter(status=status_key).count()
+            for status_key, _ in Order.STATUS_CHOICES
+        }
+        recent_ai = AIInteraction.objects.order_by("-created_at").values("id", "kind", "query", "created_at")[:5]
 
         return Response(
             {
                 "users_count": User.objects.count(),
                 "sellers_count": UserProfile.objects.filter(role=UserProfile.ROLE_SELLER).count(),
                 "buyers_count": UserProfile.objects.filter(role=UserProfile.ROLE_BUYER).count(),
+                "unverified_users_count": UserProfile.objects.filter(email_verified=False).count(),
                 "products_count": Product.objects.count(),
+                "low_stock_products": Product.objects.filter(stock__gt=0, stock__lte=F("low_stock_threshold")).count(),
+                "out_of_stock_products": Product.objects.filter(stock=0).count(),
                 "orders_count": Order.objects.count(),
                 "orders_paid": Order.objects.filter(status=Order.STATUS_PAID).count(),
                 "orders_new": Order.objects.filter(status=Order.STATUS_NEW).count(),
+                "paid_revenue": paid_revenue,
+                "orders_by_status": orders_by_status,
                 "ai_interactions": AIInteraction.objects.count(),
+                "recent_ai": list(recent_ai),
             }
         )
 

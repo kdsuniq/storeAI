@@ -3,6 +3,36 @@ import { useEffect, useState } from 'react'
 
 const API = import.meta.env.VITE_API_URL || '/api'
 
+const ORDER_STATUSES = [
+  ['new', 'Новый'],
+  ['paid', 'Оплачен'],
+  ['shipped', 'Отправлен'],
+  ['done', 'Завершён'],
+  ['canceled', 'Отменён'],
+]
+
+const ORDER_STATUS_LABELS = Object.fromEntries(ORDER_STATUSES)
+
+const formatMoney = (value) => `${Number(value || 0).toLocaleString('ru-RU')} ₽`
+
+const formatDate = (value) => {
+  if (!value) return '—'
+  return new Intl.DateTimeFormat('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(value))
+}
+
+function ProductMedia({ product }) {
+  if (product?.image) {
+    return <img className="product-media" src={product.image} alt={product.name} loading="lazy" />
+  }
+  return <div className="mock-photo" aria-hidden="true" />
+}
+
 const getAuth = () => ({
   access: localStorage.getItem('access_token') || '',
   refresh: localStorage.getItem('refresh_token') || '',
@@ -372,12 +402,15 @@ function ProductsPage({ auth, setAuth }) {
   return (
     <>
       <section className="hero-market">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-
+        <div className="catalog-command">
+          <div>
+            <h1>Каталог товаров</h1>
+            <p className="meta">{pageMeta.count ? `${pageMeta.count} позиций в каталоге` : 'Подберите товары по категории, цене или запросу'}</p>
+          </div>
           {auth.access && (
-            <Link to="/cart" className="cart-icon-link">
+            <Link to="/cart" className="cart-icon-link" aria-label="Открыть корзину">
               <div className="cart-icon">
-                🛒
+                <span>Корзина</span>
                 {cartTotalCount > 0 && (
                   <span className="cart-badge">{cartTotalCount}</span>
                 )}
@@ -390,7 +423,7 @@ function ProductsPage({ auth, setAuth }) {
       <div className="layout">
         <section className="panel">
           <div className="panel-head">
-            <h2>Каталог</h2>
+            <h2>Товары</h2>
           </div>
           <div className="filters-grid">
             <input placeholder="Поиск по товарам" value={filters.search} onChange={(e) => updateFilter('search', e.target.value)} />
@@ -416,7 +449,7 @@ function ProductsPage({ auth, setAuth }) {
               
               return (
                 <article className="product-card" key={p.id}>
-                  <div className="mock-photo" />
+                  <ProductMedia product={p} />
                   <h3>{p.name}</h3>
                   <p className="price">{p.price} ₽</p>
                   
@@ -998,7 +1031,7 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
         <div className="catalog-grid">
           {myProducts.map((p) => (
             <article className="product-card" key={p.id}>
-              <div className="mock-photo" />
+              <ProductMedia product={p} />
               <h3>{p.name}</h3>
               
               <div className="price-info">
@@ -1801,6 +1834,8 @@ function AdminPage({ auth, setAuth }) {
   const [users, setUsers] = useState([])
   const [orders, setOrders] = useState([])
   const [msg, setMsg] = useState('')
+  const [userQuery, setUserQuery] = useState('')
+  const [orderStatus, setOrderStatus] = useState('all')
 
   const load = async () => {
     const [s, u, o] = await Promise.all([
@@ -1826,60 +1861,155 @@ function AdminPage({ auth, setAuth }) {
     load()
   }
 
+  const filteredUsers = users.filter((u) => {
+    const query = userQuery.trim().toLowerCase()
+    if (!query) return true
+    return [u.username, u.email, u.role, u.store_name]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(query))
+  })
+
+  const filteredOrders = orders.filter((o) => orderStatus === 'all' || o.status === orderStatus)
+  const ordersByStatus = stats?.orders_by_status || {}
+
   return (
     <div className="layout admin-layout">
-      <section className="panel">
-        <h2>Админ-панель</h2>
+      <section className="panel admin-hero">
+        <div className="panel-head">
+          <div>
+            <h2>Админ-панель</h2>
+            <p className="meta">Операционный обзор магазина, пользователей, заказов и AI-активности.</p>
+          </div>
+          <a className="btn btn-light" href="/admin/" target="_blank" rel="noreferrer">Django Admin</a>
+        </div>
         {msg && <p className="note">{msg}</p>}
         {stats && (
           <div className="stats-grid">
+            <div className="stat-card stat-card-strong"><b>{formatMoney(stats.paid_revenue)}</b><span>Выручка оплаченных заказов</span></div>
+            <div className="stat-card"><b>{stats.orders_count}</b><span>Заказов всего</span></div>
+            <div className="stat-card"><b>{stats.orders_new}</b><span>Новых заказов</span></div>
             <div className="stat-card"><b>{stats.users_count}</b><span>Пользователей</span></div>
-            <div className="stat-card"><b>{stats.buyers_count}</b><span>Покупателей</span></div>
             <div className="stat-card"><b>{stats.sellers_count}</b><span>Продавцов</span></div>
             <div className="stat-card"><b>{stats.products_count}</b><span>Товаров</span></div>
-            <div className="stat-card"><b>{stats.orders_count}</b><span>Заказов</span></div>
-            <div className="stat-card"><b>{stats.orders_paid}</b><span>Оплачено</span></div>
+            <div className="stat-card warning-stat"><b>{stats.low_stock_products}</b><span>Низкий остаток</span></div>
+            <div className="stat-card danger-stat"><b>{stats.out_of_stock_products}</b><span>Нет в наличии</span></div>
+            <div className="stat-card"><b>{stats.unverified_users_count}</b><span>Email не подтверждён</span></div>
             <div className="stat-card"><b>{stats.ai_interactions}</b><span>AI запросов</span></div>
           </div>
         )}
-        <p className="meta">Полный Django Admin: <a href="/admin/" target="_blank" rel="noreferrer">/admin/</a></p>
       </section>
 
+      {stats && (
+        <section className="panel admin-status-panel">
+          <h3>Воронка заказов</h3>
+          <div className="status-grid">
+            {ORDER_STATUSES.map(([value, label]) => (
+              <button
+                className={`status-card ${orderStatus === value ? 'active' : ''}`}
+                type="button"
+                key={value}
+                onClick={() => setOrderStatus(value)}
+              >
+                <b>{ordersByStatus[value] || 0}</b>
+                <span>{label}</span>
+              </button>
+            ))}
+            <button className={`status-card ${orderStatus === 'all' ? 'active' : ''}`} type="button" onClick={() => setOrderStatus('all')}>
+              <b>{stats.orders_count}</b>
+              <span>Все</span>
+            </button>
+          </div>
+        </section>
+      )}
+
       <section className="panel">
-        <h3>Пользователи</h3>
+        <div className="panel-head">
+          <h3>Пользователи</h3>
+          <input
+            className="admin-search"
+            placeholder="Поиск по логину, email, роли или магазину"
+            value={userQuery}
+            onChange={(e) => setUserQuery(e.target.value)}
+          />
+        </div>
         <div className="admin-table-wrap">
           <table className="admin-table">
             <thead>
-              <tr><th>Логин</th><th>Email</th><th>Роль</th><th>Магазин</th><th>Email ✓</th></tr>
+              <tr><th>Логин</th><th>Email</th><th>Роль</th><th>Магазин</th><th>Email</th><th>Дата</th></tr>
             </thead>
             <tbody>
-              {users.map((u) => (
+              {filteredUsers.map((u) => (
                 <tr key={u.id}>
                   <td>{u.username}{u.is_staff ? ' (admin)' : ''}</td>
                   <td>{u.email}</td>
-                  <td>{u.role}</td>
+                  <td>{u.role === 'seller' ? 'продавец' : 'покупатель'}</td>
                   <td>{u.store_name || '—'}</td>
-                  <td>{u.email_verified ? 'да' : 'нет'}</td>
+                  <td><span className={`pill ${u.email_verified ? 'pill-good' : 'pill-warn'}`}>{u.email_verified ? 'подтверждён' : 'не подтверждён'}</span></td>
+                  <td>{formatDate(u.date_joined)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        {filteredUsers.length === 0 && <p className="meta">Пользователи не найдены.</p>}
       </section>
 
       <section className="panel admin-orders-panel">
-        <h3>Заказы</h3>
-        {orders.map((o) => (
+        <div className="panel-head">
+          <h3>Заказы</h3>
+          <select className="admin-filter" value={orderStatus} onChange={(e) => setOrderStatus(e.target.value)}>
+            <option value="all">Все статусы</option>
+            {ORDER_STATUSES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+          </select>
+        </div>
+        {filteredOrders.map((o) => (
           <article className="product-card order-card" key={o.id}>
-            <p><b>#{o.id}</b> · {o.total} ₽ · {o.status} · {o.full_name}</p>
+            <div className="order-card-head">
+              <div>
+                <p><b>Заказ #{o.id}</b> · {formatMoney(o.total)} · {o.full_name}</p>
+                <p className="meta">{formatDate(o.created_at)} · {o.phone} · {o.city}, {o.address}</p>
+              </div>
+              <span className={`order-status order-status-${o.status}`}>{ORDER_STATUS_LABELS[o.status] || o.status}</span>
+            </div>
+            {o.items?.length > 0 && (
+              <ul className="order-items admin-order-items">
+                {o.items.map((item) => (
+                  <li key={item.id}>{item.product_name} · {item.quantity} шт. · {formatMoney(item.price)}</li>
+                ))}
+              </ul>
+            )}
             <div className="actions-row">
-              {['paid', 'shipped', 'done', 'canceled'].map((st) => (
-                <button key={st} className="btn btn-dark-outline" type="button" onClick={() => updateStatus(o.id, st)}>{st}</button>
+              {ORDER_STATUSES.map(([st, label]) => (
+                <button
+                  key={st}
+                  className={`btn ${o.status === st ? 'btn-accent' : 'btn-dark-outline'}`}
+                  type="button"
+                  onClick={() => updateStatus(o.id, st)}
+                  disabled={o.status === st}
+                >
+                  {label}
+                </button>
               ))}
             </div>
           </article>
         ))}
+        {filteredOrders.length === 0 && <p className="meta">Заказов с выбранным статусом нет.</p>}
       </section>
+
+      {stats?.recent_ai?.length > 0 && (
+        <section className="panel">
+          <h3>Последние AI-запросы</h3>
+          <div className="ai-log-list">
+            {stats.recent_ai.map((item) => (
+              <article className="ai-log-item" key={item.id}>
+                <span className="pill">{item.kind}</span>
+                <p>{item.query}</p>
+                <span className="meta">{formatDate(item.created_at)}</span>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
