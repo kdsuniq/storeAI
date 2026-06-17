@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiExample, extend_schema
-from rest_framework import filters, permissions, status, viewsets
+from rest_framework import filters, parsers, permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -39,6 +39,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     ordering_fields = ["created_at", "price", "name", "stock"]
     permission_classes = [IsOwnerOrReadOnly]
     pagination_class = StandardResultsSetPagination
+    parser_classes = [parsers.JSONParser, parsers.MultiPartParser, parsers.FormParser]
 
     def get_serializer_class(self):
         """Разные сериализаторы для разных действий"""
@@ -80,6 +81,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 class MyProductsView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsSeller]
+    parser_classes = [parsers.JSONParser, parsers.MultiPartParser, parsers.FormParser]
 
     def get(self, request):
         queryset = Product.objects.select_related("category", "owner").filter(owner=request.user).order_by("-created_at")

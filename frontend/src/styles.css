@@ -1558,3 +1558,234 @@ textarea:focus {
     transition-duration: 1ms !important;
   }
 }
+
+/* === Dark theme and upload polish === */
+:root {
+  color-scheme: dark;
+  --bg: #0d0f12;
+  --panel: #16191e;
+  --panel-soft: #1d2128;
+  --line: #2a3039;
+  --line-strong: #3a4350;
+  --ink: #f2f4f7;
+  --muted: #9aa3af;
+  --primary: #f2f4f7;
+  --secondary: #1f242c;
+  --accent: #58d0a8;
+  --accent-soft: rgba(88, 208, 168, 0.14);
+  --focus: #75b8ff;
+  --danger: #ff8f8f;
+  --warning: #ffd27a;
+  --shadow: 0 22px 60px rgba(0, 0, 0, 0.42);
+  --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.28);
+  --price-color: #ffffff;
+}
+
+body {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(88, 208, 168, 0.12), transparent 30%),
+    radial-gradient(circle at 85% 12%, rgba(117, 184, 255, 0.1), transparent 26%),
+    linear-gradient(180deg, #101319 0%, #0d0f12 44%, #090b0e 100%);
+}
+
+.header-wrap,
+.filters-grid,
+.product-card,
+.cart-item,
+.form-block,
+.auth-panel,
+.ai-panel,
+.panel:has(.ai-answer),
+.panel:has(.ai-price-widget),
+.cart-summary,
+.stat-card,
+.status-card,
+.ai-log-item,
+.admin-table,
+.cart-icon {
+  background: rgba(22, 25, 30, 0.88);
+  border-color: rgba(69, 79, 94, 0.78);
+  box-shadow: var(--shadow-soft);
+}
+
+.header-wrap,
+.filters-grid {
+  backdrop-filter: blur(20px);
+}
+
+.brand::before {
+  background: #ffffff;
+  box-shadow: 7px 7px 0 var(--accent);
+}
+
+.menu {
+  border-top-color: rgba(69, 79, 94, 0.64);
+}
+
+.menu a,
+.meta,
+.desc,
+.status-card span,
+.widget-hint {
+  color: var(--muted);
+}
+
+.btn-light,
+.btn-outline,
+.btn-dark-outline,
+.chip-button,
+.qty-btn {
+  background: #1d222a;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.btn-light:hover,
+.btn-outline:hover,
+.btn-dark-outline:hover,
+.chip-button:hover {
+  background: #252b35;
+  border-color: var(--line-strong);
+}
+
+.btn-accent {
+  background: var(--accent);
+  color: #07100d;
+  box-shadow: 0 14px 28px rgba(88, 208, 168, 0.18);
+}
+
+.btn-accent:hover {
+  background: #73dfba;
+}
+
+input,
+select,
+textarea {
+  background: #11151b;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #697383;
+}
+
+.mock-photo {
+  background:
+    linear-gradient(135deg, #232a34, #151a20 48%, #214036);
+}
+
+.mock-photo::after {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.stock-badge.in-stock,
+.pill-good,
+.order-status-paid,
+.order-status-shipped,
+.order-status-done {
+  background: rgba(88, 208, 168, 0.15);
+  border-color: rgba(88, 208, 168, 0.38);
+  color: #95f0cf;
+}
+
+.stock-badge.low-stock,
+.pill-warn,
+.warning-stat {
+  background: rgba(255, 210, 122, 0.12);
+  border-color: rgba(255, 210, 122, 0.34);
+  color: var(--warning);
+}
+
+.stock-badge.out-of-stock,
+.danger-stat,
+.order-status-canceled,
+.error-note {
+  background: rgba(255, 143, 143, 0.12);
+  border-color: rgba(255, 143, 143, 0.34);
+  color: var(--danger);
+}
+
+.success-note {
+  background: rgba(88, 208, 168, 0.12);
+  border-color: rgba(88, 208, 168, 0.34);
+  color: #95f0cf;
+}
+
+.admin-table th {
+  background: #1d222a;
+  color: #c4cbd5;
+}
+
+.admin-table th,
+.admin-table td {
+  border-bottom-color: var(--line);
+}
+
+.admin-table tbody tr:hover {
+  background: #1b2028;
+}
+
+.price-analysis-banner,
+.ai-answer,
+.quantity-controls,
+.verify-banner,
+.note {
+  background: #1d222a;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.image-upload {
+  display: grid;
+  gap: 7px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 8px 0;
+  background: rgba(17, 21, 27, 0.72);
+  cursor: pointer;
+}
+
+.image-upload span {
+  font-weight: 720;
+}
+
+.image-upload small {
+  color: var(--muted);
+}
+
+.image-upload input {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.image-preview {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.image-preview img {
+  width: 112px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+@media (max-width: 560px) {
+  .image-preview {
+    grid-template-columns: 1fr;
+  }
+
+  .image-preview img {
+    width: 100%;
+    height: 180px;
+  }
+}

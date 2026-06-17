@@ -100,7 +100,8 @@ const validateCheckoutForm = (data) => {
 
 async function apiFetch(path, { method = 'GET', body, auth, setAuth } = {}) {
   const headers = {}
-  if (body) headers['Content-Type'] = 'application/json'
+  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData
+  if (body && !isFormData) headers['Content-Type'] = 'application/json'
   if (auth?.access) headers.Authorization = `Bearer ${auth.access}`
 
   let res
@@ -108,7 +109,7 @@ async function apiFetch(path, { method = 'GET', body, auth, setAuth } = {}) {
     res = await fetch(`${API}${path}`, {
       method,
       headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
     })
   } catch (err) {
     return { ok: false, status: 0, data: { error: 'Не удалось подключиться к серверу' } }
@@ -137,7 +138,7 @@ async function apiFetch(path, { method = 'GET', body, auth, setAuth } = {}) {
         res = await fetch(`${API}${path}`, {
           method,
           headers: retryHeaders,
-          body: body ? JSON.stringify(body) : undefined,
+          body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
         })
       } catch (err) {
         return { ok: false, status: 0, data: { error: 'Не удалось подключиться к серверу' } }
@@ -153,7 +154,6 @@ async function apiFetch(path, { method = 'GET', body, auth, setAuth } = {}) {
 }
 
 function Header({ isAuth, profile, onLogout }) {
-  const isSeller = profile?.role === 'seller'
   const isAdmin = profile?.is_staff
   return (
     <header className="header-wrap">
@@ -168,8 +168,7 @@ function Header({ isAuth, profile, onLogout }) {
               <Link className="btn btn-light" to="/auth/seller">Стать продавцом</Link>
             </>
           )}
-          {isAuth && isSeller && <Link className="btn btn-light" to="/account">Кабинет продавца</Link>}
-          {isAuth && !isSeller && <Link className="btn btn-light" to="/my-orders">Мои заказы</Link>}
+          {isAuth && <Link className="btn btn-light" to="/account">Аккаунт</Link>}
           <Link className="btn btn-accent" to="/cart">Корзина</Link>
           {isAdmin && <Link className="btn btn-light" to="/admin">Админка</Link>}
           {isAuth ? <button className="btn btn-outline" onClick={onLogout}>Выйти</button> : <Link className="btn btn-outline" to="/auth/buyer">Вход</Link>}
@@ -177,8 +176,7 @@ function Header({ isAuth, profile, onLogout }) {
       </div>
       <nav className="menu">
         <Link to="/">Каталог</Link>
-        {isAuth && isSeller && <Link to="/account">Управление товарами</Link>}
-        {isAuth && !isSeller && <Link to="/my-orders">История заказов</Link>}
+        {isAuth && <Link to="/account">Аккаунт и заказы</Link>}
       </nav>
     </header>
   )
@@ -580,13 +578,6 @@ function ProductsPage({ auth, setAuth }) {
       )}
     </div>
   )}
-  
-  <AIPriceSearchWidget 
-    auth={auth}
-    setAuth={setAuth}
-    onAddToCart={addProductFromAI}
-    onFeedback={sendAIFeedback}
-  />
 </aside>
       </div>
     </>
@@ -691,6 +682,8 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
   const [insights, setInsights] = useState('')
   const [stats, setStats] = useState(null)
   const [msg, setMsg] = useState('')
+  const [productImage, setProductImage] = useState(null)
+  const [productImagePreview, setProductImagePreview] = useState('')
   
   const [editingProduct, setEditingProduct] = useState(null)
   const [editingStockValue, setEditingStockValue] = useState('')
@@ -699,24 +692,32 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
   const [generatingDesc, setGeneratingDesc] = useState(false)
 
   const load = async () => {
-    const [me, c, p, o, so] = await Promise.all([
+    const [me, c, o] = await Promise.all([
       apiFetch('/auth/me/', { auth, setAuth }),
       apiFetch('/categories/'),
-      apiFetch('/products/my-products/', { auth, setAuth }),
       apiFetch('/products/my-orders/?page_size=20', { auth, setAuth }),
-      apiFetch('/products/seller-orders/?page_size=20', { auth, setAuth }),
     ])
 
-    if (!me.ok || !p.ok) {
+    if (!me.ok) {
       setMsg('Сессия истекла. Войдите заново.')
       return
     }
 
     setProfile(me.data || null)
     setCategories(getList(c.data))
-    setMyProducts(getList(p.data))
     setOrders(getList(o.data))
-    setSellerOrders(getList(so.data))
+
+    if (me.data?.role === 'seller') {
+      const [p, so] = await Promise.all([
+        apiFetch('/products/my-products/', { auth, setAuth }),
+        apiFetch('/products/seller-orders/?page_size=20', { auth, setAuth }),
+      ])
+      setMyProducts(getList(p.data))
+      setSellerOrders(getList(so.data))
+    } else {
+      setMyProducts([])
+      setSellerOrders([])
+    }
   }
 
   useEffect(() => { load() }, [auth.access])
@@ -820,24 +821,44 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
       return setMsg('Порог низкого остатка должен быть неотрицательным числом')
     }
     
+    const payload = new FormData()
+    payload.append('name', form.name)
+    payload.append('description', form.description)
+    payload.append('price', String(priceNum))
+    payload.append('category', form.category_id)
+    payload.append('specs', JSON.stringify(parseSpecs(form.specsText)))
+    payload.append('stock', String(stockNum))
+    payload.append('low_stock_threshold', String(thresholdNum))
+    if (productImage) payload.append('image', productImage)
+
     const res = await apiFetch('/products/', {
       method: 'POST',
-      body: {
-        name: form.name,
-        description: form.description,
-        price: priceNum,
-        category: form.category_id,
-        specs: parseSpecs(form.specsText),
-        stock: stockNum,
-        low_stock_threshold: thresholdNum
-      },
+      body: payload,
       auth,
       setAuth,
     })
     if (!res.ok) return setMsg(extractError(res.data))
     setMsg('Товар опубликован')
     setForm({ name: '', description: '', price: '', category_id: '', specsText: '', stock: '', low_stock_threshold: '' })
+    setProductImage(null)
+    setProductImagePreview('')
     load()
+  }
+
+  const handleProductImageChange = (event) => {
+    const file = event.target.files?.[0]
+    if (!file) {
+      setProductImage(null)
+      setProductImagePreview('')
+      return
+    }
+    if (!file.type.startsWith('image/')) {
+      setMsg('Выберите файл изображения')
+      event.target.value = ''
+      return
+    }
+    setProductImage(file)
+    setProductImagePreview(URL.createObjectURL(file))
   }
   
   const startEditingStock = (product) => {
@@ -953,14 +974,12 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
     setMsg(res.ok ? (res.data.message || 'Письмо отправлено') : extractError(res.data))
   }
 
-  if (profile?.role !== 'seller') {
-    return <Navigate to="/my-orders" replace />
-  }
+  const isSeller = profile?.role === 'seller'
 
   return (
     <div className="layout seller-layout">
       <section className="panel">
-        <h2>Кабинет продавца</h2>
+        <h2>{isSeller ? 'Аккаунт продавца' : 'Аккаунт покупателя'}</h2>
         {profile && (
           <p className="meta">
             {profile.store_name || profile.username}
@@ -970,12 +989,22 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
         )}
         {profile && !profile.email_verified && (
           <div className="verify-banner">
-            <p>Подтвердите email, чтобы публиковать товары и принимать заказы.</p>
+            <p>Подтвердите email, чтобы {isSeller ? 'публиковать товары и принимать заказы' : 'оформлять заказы'}.</p>
             <button className="btn btn-light" type="button" onClick={resendVerification}>Отправить письмо повторно</button>
           </div>
         )}
         {msg && <p className="note">{msg}</p>}
 
+        {!isSeller && (
+          <div className="form-block">
+            <h3>Мои данные</h3>
+            <p className="meta">Здесь собраны заказы и статус аккаунта. Для публикации товаров создайте аккаунт продавца.</p>
+            <Link className="btn btn-light" to="/auth/seller">Стать продавцом</Link>
+          </div>
+        )}
+
+        {isSeller && (
+        <>
         <form onSubmit={addCategory} className="form-block">
           <h3>1) Создать категорию</h3>
           <input required placeholder="Название категории" value={cat.name} onChange={(e) => setCat({ ...cat, name: e.target.value })} />
@@ -1010,6 +1039,19 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
             <option value="">Выберите категорию</option>
             {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
+          <label className="image-upload">
+            <span>Фото товара</span>
+            <input type="file" accept="image/*" onChange={handleProductImageChange} />
+            <small>JPG, PNG или WebP. Фото появится в карточке каталога.</small>
+          </label>
+          {productImagePreview && (
+            <div className="image-preview">
+              <img src={productImagePreview} alt="Предпросмотр товара" />
+              <button className="btn btn-dark-outline" type="button" onClick={() => { setProductImage(null); setProductImagePreview('') }}>
+                Убрать фото
+              </button>
+            </div>
+          )}
           <textarea rows={4} placeholder={'Характеристики\nЦвет: Черный\nПамять: 256 ГБ'} value={form.specsText} onChange={(e) => setForm({ ...form, specsText: e.target.value })} />
           <textarea required rows={6} placeholder="Описание" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           <div className="actions-row">
@@ -1024,8 +1066,11 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
             <button className="btn btn-accent" type="submit">Опубликовать товар</button>
           </div>
         </form>
+        </>
+        )}
       </section>
 
+      {isSeller && (
       <section className="panel">
         <h2>Мои товары</h2>
         <div className="catalog-grid">
@@ -1147,7 +1192,9 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
           </article>
         ))}
       </section>
+      )}
 
+      {isSeller && (
       <section className="panel">
         <h2>AI анализатор спроса</h2>
         <button className="btn btn-light" onClick={loadInsights}>Показать статистику и рекомендации</button>
@@ -1161,6 +1208,32 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
         )}
         {insights && <p>{insights}</p>}
       </section>
+      )}
+
+      {!isSeller && (
+        <section className="panel">
+          <h2>Мои заказы</h2>
+          {orders.length === 0 && <p className="meta">Пока нет заказов.</p>}
+          {orders.map((o) => (
+            <article className="product-card order-card" key={o.id}>
+              <p><b>Заказ #{o.id}</b> · {o.total} ₽ · статус: {o.status}</p>
+              <p className="meta">{o.full_name}, {o.phone}, {o.city}, {o.address}</p>
+              {o.items?.length > 0 && (
+                <ul className="order-items">
+                  {o.items.map((item) => (
+                    <li key={item.id}>{item.product_name} · {item.quantity} шт. · {item.price} ₽</li>
+                  ))}
+                </ul>
+              )}
+              <div className="actions-row">
+                <button className="btn btn-accent" type="button" onClick={() => repeatOrder(o.id)}>
+                  Повторить заказ
+                </button>
+              </div>
+            </article>
+          ))}
+        </section>
+      )}
     </div>
   )
 }

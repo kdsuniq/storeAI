@@ -18,6 +18,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source="category", write_only=True)
+    image = serializers.SerializerMethodField()
     owner_username = serializers.CharField(source="owner.username", read_only=True)
     store_name = serializers.SerializerMethodField()
 
@@ -48,6 +49,19 @@ class ProductSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "created_at", "category", "owner", "owner_username", "store_name", "stock_status", "is_in_stock", "in_stock_display"]
 
+    def get_image(self, obj):
+        if not obj.image:
+            return ""
+        image_name = str(obj.image)
+        if image_name.startswith(("http://", "https://", "/")):
+            return image_name
+        try:
+            url = obj.image.url
+        except ValueError:
+            return image_name
+        request = self.context.get("request")
+        return request.build_absolute_uri(url) if request else url
+
     def get_store_name(self, obj):
         profile = getattr(obj.owner, "profile", None) if obj.owner else None
         if profile and profile.store_name:
@@ -77,6 +91,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class ProductCreateSerializer(serializers.ModelSerializer):
     """Специальный сериализатор для создания/обновления товаров"""
+    image = serializers.FileField(required=False, allow_null=True)
     
     class Meta:
         model = Product
@@ -110,6 +125,15 @@ class ProductCreateSerializer(serializers.ModelSerializer):
     def validate_low_stock_threshold(self, value):
         if value < 0:
             raise serializers.ValidationError("Порог низкого остатка не может быть отрицательным")
+        return value
+
+    def validate_specs(self, value):
+        if isinstance(value, str):
+            import json
+            try:
+                return json.loads(value) if value.strip() else {}
+            except json.JSONDecodeError:
+                raise serializers.ValidationError("Характеристики должны быть корректным JSON")
         return value
     
     def create(self, validated_data):
