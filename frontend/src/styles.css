@@ -840,7 +840,7 @@ input:focus, select:focus, textarea:focus {
 .status-card:hover,
 .status-card.active {
   border-color: #222222;
-  background: #f5f5f5;
+  background: #707070;
 }
 
 .status-card b {
