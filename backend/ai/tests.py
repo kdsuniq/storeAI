@@ -6,7 +6,7 @@ from unittest.mock import patch
 from products.models import Category, Product
 
 from .models import AIInteraction
-from .services import build_local_product_description, normalize_specs, parse_json_response
+from .services import build_local_product_description, fallback_rank_products, normalize_specs, parse_json_response
 
 
 class AIAssistantTests(APITestCase):
@@ -59,6 +59,89 @@ class AIAssistantTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("items", response.data)
         self.assertIn("interaction_id", response.data)
+
+    @patch("ai.views.semantic_search_products")
+    @patch("ai.views.ask_ai_sync")
+    def test_chat_keeps_answer_compact_and_recommendations_separate(self, mocked_ai, mocked_semantic):
+        mocked_ai.return_value = "Можно выбрать что-то практичное и приятное.\nУточните бюджет и стиль."
+        mocked_semantic.return_value = {
+            "understanding": "Подарок для жены",
+            "clarifying_questions": ["Какой бюджет?"],
+            "recommendations": [
+                {
+                    "product_id": str(self.product.id),
+                    "name": self.product.name,
+                    "price": 3500.0,
+                    "why_fits": "Подходит по запросу",
+                }
+            ],
+            "context": {},
+        }
+
+        response = self.client.post("/api/ai/chat/", {"message": "подарок жене", "format": "structured"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn("ПОДХОДЯЩИЕ ТОВАРЫ", response.data["answer"])
+        self.assertNotIn(self.product.name, response.data["answer"])
+        self.assertEqual(len(response.data["recommendations"]), 1)
+
+    @patch("ai.views.semantic_search_products")
+    @patch("ai.views.ask_ai_sync")
+    def test_chat_replaces_service_safety_answer(self, mocked_ai, mocked_semantic):
+        mocked_ai.return_value = "User Safety: safe"
+        mocked_semantic.return_value = {
+            "understanding": "Подарок для жены",
+            "clarifying_questions": ["Какой бюджет?"],
+            "recommendations": [
+                {
+                    "product_id": str(self.product.id),
+                    "name": self.product.name,
+                    "price": 3500.0,
+                    "why_fits": "Подходит по запросу",
+                    "product": {"category": "Подарки"},
+                }
+            ],
+            "context": {},
+        }
+
+        response = self.client.post("/api/ai/chat/", {"message": "подарок жене", "format": "structured"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn("User Safety", response.data["answer"])
+        self.assertIn("Ниже показал", response.data["answer"])
+
+    def test_fallback_rank_products_prefers_gifts_for_wife_query(self):
+        products = [
+            {
+                "id": "phone-id",
+                "name": "телефон",
+                "price": 100.0,
+                "category": "Техника",
+                "description": "обычный телефон",
+                "specs": {},
+            },
+            {
+                "id": "gift-id",
+                "name": "Подарочный набор для ухода",
+                "price": 2200.0,
+                "category": "Подарки",
+                "description": "подарок для жены с косметикой и открыткой",
+                "specs": {"Для кого": "женщине"},
+            },
+            {
+                "id": "earrings-id",
+                "name": "Серьги Minimal",
+                "price": 1200.0,
+                "category": "Аксессуары",
+                "description": "аксессуар для женщины",
+                "specs": {},
+            },
+        ]
+
+        recommendations = fallback_rank_products("подарок жене", products, limit=2)
+
+        self.assertNotEqual(recommendations[0]["name"], "телефон")
+        self.assertIn(recommendations[0]["name"], {"Подарочный набор для ухода", "Серьги Minimal"})
 
     def test_parse_json_response_ignores_empty_content(self):
         self.assertIsNone(parse_json_response(None))

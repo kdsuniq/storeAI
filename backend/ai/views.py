@@ -10,6 +10,7 @@ from products.models import CartItem, Product
 from .models import AIInteraction, ProductViewEvent
 from .services import (
     ask_ai_sync,
+    build_compact_chat_fallback,
     build_local_product_description,
     build_bundle,
     build_market_insights_prompt,
@@ -17,6 +18,7 @@ from .services import (
     build_chat_prompt,
     get_personal_recommendations,
     parse_json_response,
+    is_unhelpful_ai_answer,
     normalize_specs,
     SYSTEM_PROMPT_PRODUCT,
     get_price_analysis,
@@ -89,12 +91,11 @@ class AIChatView(APIView):
 
         recommendations = semantic_result.get("recommendations", [])
         questions = semantic_result.get("clarifying_questions", [])
-        if questions:
-            answer = f"{answer}\n\nУТОЧНЮ, ЧТОБЫ СУЗИТЬ ВЫБОР:\n" + "\n".join([f"- {question}" for question in questions[:3]])
-        if recommendations:
-            answer = f"{answer}\n\nПОДХОДЯЩИЕ ТОВАРЫ:\n" + "\n".join(
-                [f"- {rec['name']} — {rec['price']} ₽. {rec.get('why_fits', '')}" for rec in recommendations[:4]]
-            )
+        answer = "\n".join(line.strip() for line in answer.splitlines() if line.strip())[:700]
+        if is_unhelpful_ai_answer(answer):
+            answer = build_compact_chat_fallback(message, semantic_result)
+        if questions and not recommendations:
+            answer = f"{answer}\n\nУточните: {questions[0]}"
 
         interaction = AIInteraction.objects.create(
             user=user,

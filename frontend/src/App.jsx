@@ -345,6 +345,9 @@ function ProductsPage({ auth, setAuth }) {
     
     setAiLoading(true)
     setAiAnswer('')
+    setAiChatRecommendations([])
+    setAiChatQuestions([])
+    setAiChatInteractionId(null)
     
     try {
       const res = await apiFetch('/ai/chat/', { 
@@ -553,18 +556,21 @@ function ProductsPage({ auth, setAuth }) {
   
   {aiAnswer && !aiLoading && (
     <div className="ai-answer">
-      <div className="ai-answer-header">🤖 Ответ AI:</div>
+      <div className="ai-answer-header">Ответ AI</div>
       <div className="ai-answer-content">
-        {aiAnswer.split('\n').map((line, i) => (
-          <p key={i} className={line.startsWith('•') || line.startsWith('-') ? 'list-item' : ''}>
-            {line}
-          </p>
-        ))}
+        {aiAnswer.split('\n').filter((line) => line.trim()).slice(0, 6).map((line, i) => {
+          const cleanLine = line.replace(/\*\*/g, '').replace(/^[🤖🎁💖✅⚠️📦💡]\s*/u, '').trim()
+          return (
+            <p key={i} className={cleanLine.startsWith('•') || cleanLine.startsWith('-') ? 'list-item' : ''}>
+              {cleanLine}
+            </p>
+          )
+        })}
       </div>
       {aiChatQuestions.length > 0 && (
         <div className="ai-followups">
-          <b>Уточняющие вопросы:</b>
-          {aiChatQuestions.map((question) => (
+          <b>Уточнить:</b>
+          {aiChatQuestions.slice(0, 2).map((question) => (
             <button key={question} className="chip-button" type="button" onClick={() => setAiQuestion(question)}>
               {question}
             </button>
@@ -573,7 +579,7 @@ function ProductsPage({ auth, setAuth }) {
       )}
       {aiChatRecommendations.length > 0 && (
         <div className="recommendations-list compact">
-          {aiChatRecommendations.map((rec) => (
+          {aiChatRecommendations.slice(0, 3).map((rec) => (
             <div className="recommendation-card" key={rec.product_id}>
               <div className="card-content">
                 <div className="card-header">

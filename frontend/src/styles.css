@@ -801,7 +801,7 @@ select option {
 
 .ai-answer {
   margin-top: 12px;
-  padding: 12px 14px;
+  padding: 11px 12px;
   background: #1d222a;
   border-radius: 6px;
   border-left: 3px solid var(--accent);
@@ -815,9 +815,17 @@ select option {
 }
 
 .ai-answer-content {
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: 0.88rem;
+  line-height: 1.42;
   color: var(--ink);
+}
+
+.ai-answer-content p {
+  margin: 0 0 6px;
+}
+
+.ai-answer-content p:last-child {
+  margin-bottom: 0;
 }
 
 .ai-followups {
@@ -850,6 +858,62 @@ select option {
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 10px;
+}
+
+.recommendations-list.compact {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.recommendation-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px;
+  background: var(--control-bg);
+}
+
+.recommendation-card .card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.recommendation-card h4 {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.25;
+}
+
+.price-badge {
+  color: var(--price-color);
+  font-weight: 750;
+  white-space: nowrap;
+  font-size: 0.86rem;
+}
+
+.recommendation-card .reason {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.btn-small {
+  min-height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px 9px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.btn-small:hover {
+  background: var(--control-bg-hover);
 }
 
 /* Фильтры */

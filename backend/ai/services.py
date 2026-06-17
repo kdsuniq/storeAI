@@ -21,15 +21,15 @@ SYSTEM_PROMPT_JSON = (
 )
 
 SYSTEM_PROMPT_CHAT = (
-    "Ты AI-помощник интернет-магазина. Отвечай структурированно, используя только обычный текст, "
-    "без маркдауна и без символов **. Правила форматирования:\n"
+    "Ты AI-помощник интернет-магазина. Отвечай коротко, спокойно и по делу. "
+    "Используй только обычный текст: без маркдауна, без **, без эмодзи и без CAPS-заголовков. "
+    "Правила форматирования:\n"
     "\n"
-    "1. Заголовки делай ЗАГЛАВНЫМИ БУКВАМИ с двоеточием\n"
-    "2. Для списков используй дефис с пробелом в начале строки\n"
-    "3. Для нумерованных списков используй цифры с точкой\n"
-    "4. Делай пустые строки между разделами\n"
-    "5. Используй эмодзи для выделения (✅, ⚠️, 📦, 💡)\n"
-    "6. Пиши на русском, грамотно, дружелюбно"
+    "1. Максимум 4 короткие строки.\n"
+    "2. Если нужен список, используй максимум 3 пункта с дефисом.\n"
+    "3. Не перечисляй товары из каталога: интерфейс покажет их отдельно.\n"
+    "4. Не используй слова вроде 'ЗАГЛАВНЫМИ'.\n"
+    "5. Пиши на русском, грамотно и дружелюбно."
 )
 
 SYSTEM_PROMPT_PRODUCT = (
@@ -280,7 +280,11 @@ def build_chat_prompt(user_message: str, response_format: str = "structured") ->
             "}"
         )
     else:
-        return f"Пользователь спрашивает: {user_message}\n\nОтветь структурированно, используя заголовки и списки."
+        return (
+            f"Пользователь спрашивает: {user_message}\n\n"
+            "Дай короткий ответ для боковой панели магазина. "
+            "Не добавляй список найденных товаров, цены и длинные подборки: они отображаются отдельными карточками."
+        )
 
 
 def build_market_insights_prompt(raw_stats: dict) -> str:
@@ -344,7 +348,7 @@ def get_products_with_prices(limit: int = 100) -> List[Dict]:
     """
     Получает товары с ценами для AI анализа
     """
-    products = Product.objects.select_related('category').filter(stock__gt=0)[:limit]
+    products = Product.objects.select_related('category').filter(stock__gt=0).order_by("-created_at")[:limit]
     
     return [
         {
@@ -364,6 +368,36 @@ def _tokens(text: str) -> set:
     return {token for token in re.findall(r"[a-zа-яё0-9]+", text.lower()) if len(token) > 2}
 
 
+def is_unhelpful_ai_answer(answer: str) -> bool:
+    if not isinstance(answer, str) or not answer.strip():
+        return True
+    normalized = answer.strip().lower()
+    service_markers = ("user safety:", "safety:", "safe", "unsafe", "policy:")
+    if normalized in {"safe", "user safety: safe"}:
+        return True
+    return any(normalized.startswith(marker) for marker in service_markers)
+
+
+def build_compact_chat_fallback(user_query: str, semantic_result: Dict[str, Any]) -> str:
+    recommendations = semantic_result.get("recommendations", [])
+    if recommendations:
+        categories = []
+        for rec in recommendations[:3]:
+            category = (rec.get("product") or {}).get("category")
+            if category and category not in categories:
+                categories.append(category)
+        category_text = ", ".join(categories) if categories else "подходящих товаров"
+        return (
+            f"Нашёл несколько вариантов под запрос «{user_query.strip()}».\n"
+            f"Начните с категории: {category_text}.\n"
+            "Ниже показал самые подходящие товары из каталога."
+        )
+    questions = semantic_result.get("clarifying_questions", [])
+    if questions:
+        return f"Нужно немного уточнить запрос.\n{questions[0]}"
+    return "Не нашёл точного совпадения. Попробуйте указать бюджет, категорию или назначение товара."
+
+
 def _product_search_text(product: Dict[str, Any]) -> str:
     specs = product.get("specs") or {}
     specs_text = " ".join([f"{key} {value}" for key, value in specs.items()])
@@ -379,9 +413,11 @@ def _product_search_text(product: Dict[str, Any]) -> str:
 
 def enrich_recommendations(raw_recommendations: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     enriched_recommendations = []
+    seen_products = set()
     for rec in raw_recommendations:
         product = Product.objects.select_related("category").filter(id=rec.get("product_id")).first()
-        if product:
+        if product and product.id not in seen_products:
+            seen_products.add(product.id)
             image = ""
             if product.image:
                 try:
@@ -410,10 +446,27 @@ def enrich_recommendations(raw_recommendations: List[Dict[str, Any]]) -> List[Di
 
 def fallback_rank_products(user_query: str, products: List[Dict[str, Any]], limit: int = 6) -> List[Dict[str, Any]]:
     query_tokens = _tokens(user_query)
+    lower_query = user_query.lower()
+    gift_tokens = {"подар", "жене", "девуш", "женщ", "подруг", "маме", "сестре"}
+    beauty_tokens = {"космет", "уход", "сыворот", "крем", "маск"}
+    tech_tokens = {"телефон", "ноутбук", "техника", "гаджет", "наушник", "часы"}
+    home_tokens = {"дом", "уют", "кухн", "свеч", "плед"}
     scored = []
     for product in products:
-        product_tokens = _tokens(_product_search_text(product))
-        score = len(query_tokens & product_tokens)
+        search_text = _product_search_text(product).lower()
+        product_tokens = _tokens(search_text)
+        score = len(query_tokens & product_tokens) * 3
+
+        if any(token in lower_query for token in gift_tokens):
+            if any(word in search_text for word in ("подар", "космет", "аксессуар", "уход", "дом и уют", "книг", "платье", "серьги", "свеч")):
+                score += 8
+        if any(token in lower_query for token in beauty_tokens) and any(word in search_text for word in ("космет", "уход", "сыворот", "крем", "маск")):
+            score += 7
+        if any(token in lower_query for token in tech_tokens) and any(word in search_text for word in ("техника", "телефон", "наушник", "часы", "камера")):
+            score += 7
+        if any(token in lower_query for token in home_tokens) and any(word in search_text for word in ("дом", "уют", "кухн", "свеч", "плед")):
+            score += 6
+
         if score:
             scored.append((score, product))
 
@@ -421,15 +474,26 @@ def fallback_rank_products(user_query: str, products: List[Dict[str, Any]], limi
         scored = [(1, product) for product in products[:limit]]
 
     scored.sort(key=lambda item: (-item[0], item[1]["price"]))
+    picked = []
+    seen_names = set()
+    for score, product in scored:
+        name_key = product["name"].strip().lower()
+        if name_key in seen_names:
+            continue
+        seen_names.add(name_key)
+        picked.append((score, product))
+        if len(picked) >= limit:
+            break
+
     return [
         {
             "product_id": product["id"],
             "name": product["name"],
             "price": product["price"],
-            "why_fits": "Подходит по совпадению с запросом и доступен в наличии",
+            "why_fits": "Подходит по смыслу запроса и доступен в наличии",
             "price_rating": "средний",
         }
-        for _, product in scored[:limit]
+        for _, product in picked
     ]
 
 
