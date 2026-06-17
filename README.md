@@ -108,3 +108,10 @@ python manage.py dumpdata products.category --indent 2 > products/fixtures/categ
 python manage.py loaddata products/fixtures/categories.json 
 python manage.py loaddata products/fixtures/products.json
 ```
+
+
+
+
+## Удаление данных товаров для создания заново
+```
+python manage.py shell -c "from products.models import Product; Product.objects.all().delete()"
