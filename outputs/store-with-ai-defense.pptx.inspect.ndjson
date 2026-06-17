@@ -1,0 +1,454 @@
+{"kind":"deck","id":"pr/zz64wi","name":"Deck"}
+{"kind":"layout","layoutId":"97b420ae-57a6-481e-bf9f-de20435d141e","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"d469a5fd-c2b7-4b8b-90c0-ce91e7022bd4","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/u3zng1","slide":1,"title":"DIPLOMA PROJECT / WEB APP","textShapes":13}
+{"kind":"shape","id":"sh/m58z25kb","slide":1,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/twra5gbq","slide":1,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/4byhgn29","slide":1,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/b2hwfyxo","slide":1,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/mhk3q5o7","slide":1,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/t83itgfm","slide":1,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/4nap4r65","slide":1,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/bat47y1k","slide":1,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/mp0bi9s3","slide":1,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/4byhgn29","slide":1,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/twra5gbq","slide":1,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/m58z25kb","slide":1,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/bq1oryts","slide":1,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/4nap4r65","slide":1,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/t83itgfm","slide":1,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/mhk3q5o7","slide":1,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/b2hwfyxo","slide":1,"bbox":[72,68,214,34]}
+{"kind":"textbox","id":"sh/4vmtwra5","slide":1,"text":"DIPLOMA PROJECT / WEB APP","textPreview":"DIPLOMA PROJECT / WEB APP","textChars":25,"textLines":1,"bbox":[86,75,186,24]}
+{"kind":"textbox","id":"sh/tgfmlkjm","slide":1,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[72,148,760,90]}
+{"kind":"textbox","id":"sh/xc3ylc7u","slide":1,"text":"Маркетплейс с AI-помощником, кабинетами покупателя и продавца, заказами, оплатой, загрузкой фото и админ-панелью.","textPreview":"Маркетплейс с AI-помощником, кабинетами покупателя и продавца, заказами, оплатой, загрузкой фото и админ-панелью.","textChars":113,"textLines":1,"bbox":[76,250,690,92]}
+{"kind":"shape","id":"sh/4r65wjud","slide":1,"bbox":[72,438,250,132]}
+{"kind":"textbox","id":"sh/f6dcbulw","slide":1,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[92,456,210,58]}
+{"kind":"textbox","id":"sh/mlkjm1cf","slide":1,"text":"роли: покупатель, продавец, админ","textPreview":"роли: покупатель, продавец, админ","textChars":33,"textLines":1,"bbox":[94,516,206,44]}
+{"kind":"shape","id":"sh/xkf6dcbu","slide":1,"bbox":[348,438,250,132]}
+{"kind":"textbox","id":"sh/4zidonyd","slide":1,"text":"AI","textPreview":"AI","textChars":2,"textLines":1,"bbox":[368,456,210,58]}
+{"kind":"textbox","id":"sh/fepkzupw","slide":1,"text":"чат, описания, аналитика спроса","textPreview":"чат, описания, аналитика спроса","textChars":31,"textLines":1,"bbox":[370,516,206,44]}
+{"kind":"shape","id":"sh/mtwra5gb","slide":1,"bbox":[624,438,250,132]}
+{"kind":"textbox","id":"sh/xobm58z2","slide":1,"text":"DevOps","textPreview":"DevOps","textChars":6,"textLines":1,"bbox":[644,456,210,58]}
+{"kind":"textbox","id":"sh/83itgfml","slide":1,"text":"Docker, Kubernetes, Yandex Cloud","textPreview":"Docker, Kubernetes, Yandex Cloud","textChars":32,"textLines":1,"bbox":[646,516,206,44]}
+{"kind":"shape","id":"sh/i5sneloj","slide":1,"bbox":[930,96,250,470]}
+{"kind":"textbox","id":"sh/7qpg3ex0","slide":1,"text":"React SPA\nDjango API","textPreview":"React SPA | Django API","textChars":20,"textLines":2,"bbox":[958,132,194,88]}
+{"kind":"textbox","id":"sh/0bi9s36h","slide":1,"text":"JWT авторизация\nEmail verification\nCart / Checkout\nYooKassa mock\nSPA Admin\nDark UI","textPreview":"JWT авторизация | Email verification | Cart / Checkout | YooKassa mock | SPA Admin | Dark UI","textChars":82,"textLines":6,"bbox":[958,248,190,236]}
+{"kind":"textbox","id":"sh/pwb2hwfy","slide":1,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/ed8v6psf","slide":1,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/7y1kre1w","slide":1,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"notes","id":"nt/u3zng1","slide":1,"text":""}
+{"kind":"slide","id":"sl/y9s6ib","slide":2,"title":"STORE WITH AI","textShapes":12}
+{"kind":"shape","id":"sh/yhgn29gr","slide":2,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/58z25kb6","slide":2,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/gn29gr2p","slide":2,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/nuxc3ylc","slide":2,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/y90je9cv","slide":2,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/5wjudg7a","slide":2,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/gbq1oryt","slide":2,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/nqxs72x4","slide":2,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/u54zidon","slide":2,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/cbulwval","slide":2,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/5sneloj2","slide":2,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/u54zidon","slide":2,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/nqxs72x4","slide":2,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/czed8v6p","slide":2,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/5kb6xkf6","slide":2,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/ytsvu9kn","slide":2,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/neloj2t8","slide":2,"bbox":[72,54,138,32]}
+{"kind":"textbox","id":"sh/gn29gr2p","slide":2,"text":"STORE WITH AI","textPreview":"STORE WITH AI","textChars":13,"textLines":1,"bbox":[86,61,110,22]}
+{"kind":"textbox","id":"sh/58z25kb6","slide":2,"text":"Проблема и цель проекта","textPreview":"Проблема и цель проекта","textChars":23,"textLines":1,"bbox":[72,106,720,60]}
+{"kind":"textbox","id":"sh/tcj6tova","slide":2,"text":"Обычный каталог не закрывает задачи всех участников: покупателю нужен быстрый выбор, продавцу — управление, администратору — контроль.","textPreview":"Обычный каталог не закрывает задачи всех участников: покупателю нужен быстрый выбор, продавцу — управление, администратору — контроль.","textChars":134,"textLines":1,"bbox":[72,164,850,54]}
+{"kind":"textbox","id":"sh/0rqd4vmt","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/b6xkf6dc","slide":2,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/il0rqd4v","slide":2,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"shape","id":"sh/t47y1kre","slide":2,"bbox":[72,260,340,188]}
+{"kind":"shape","id":"sh/0je9cvix","slide":2,"bbox":[72,260,5,188]}
+{"kind":"textbox","id":"sh/byhgn29g","slide":2,"text":"Покупатель","textPreview":"Покупатель","textChars":10,"textLines":1,"bbox":[96,280,292,36]}
+{"kind":"textbox","id":"sh/idonyd0z","slide":2,"text":"Хочет быстро найти товар, понять наличие, оформить заказ и отслеживать статус без лишних действий.","textPreview":"Хочет быстро найти товар, понять наличие, оформить заказ и отслеживать статус без лишних действий.","textChars":98,"textLines":1,"bbox":[96,322,292,106]}
+{"kind":"shape","id":"sh/p0bi9s36","slide":2,"bbox":[470,260,340,188]}
+{"kind":"shape","id":"sh/0fepkzup","slide":2,"bbox":[470,260,5,188]}
+{"kind":"textbox","id":"sh/e9cvixcz","slide":2,"text":"Продавец","textPreview":"Продавец","textChars":8,"textLines":1,"bbox":[494,280,292,36]}
+{"kind":"textbox","id":"sh/3q5o7qpg","slide":2,"text":"Нужно публиковать товары, загружать фото, контролировать остатки, видеть входящие заказы и получать аналитику.","textPreview":"Нужно публиковать товары, загружать фото, контролировать остатки, видеть входящие заказы и получать аналитику.","textChars":110,"textLines":1,"bbox":[494,322,292,106]}
+{"kind":"shape","id":"sh/wb2hwfyx","slide":2,"bbox":[868,260,340,188]}
+{"kind":"shape","id":"sh/lwval87e","slide":2,"bbox":[868,260,5,188]}
+{"kind":"textbox","id":"sh/ex0nuxc3","slide":2,"text":"Администратор","textPreview":"Администратор","textChars":13,"textLines":1,"bbox":[892,280,292,36]}
+{"kind":"textbox","id":"sh/3itgfmlk","slide":2,"text":"Нужен обзор пользователей, заказов, статусов, выручки, активности AI и состояния каталога.","textPreview":"Нужен обзор пользователей, заказов, статусов, выручки, активности AI и состояния каталога.","textChars":90,"textLines":1,"bbox":[892,322,292,106]}
+{"kind":"textbox","id":"sh/w3m94fu1","slide":2,"text":"Цель: создать полнофункциональный маркетплейс, где бизнес-логика, интерфейс и AI-функции работают как единая система.","textPreview":"Цель: создать полнофункциональный маркетплейс, где бизнес-логика, интерфейс и AI-функции работают как единая система.","textChars":117,"textLines":1,"bbox":[122,506,1036,54]}
+{"kind":"notes","id":"nt/y9s6ib","slide":2,"text":""}
+{"kind":"slide","id":"sl/eghqag","slide":3,"title":"STORE WITH AI","textShapes":12}
+{"kind":"shape","id":"sh/3ylc7u54","slide":3,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/sji5snel","slide":3,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/h4byhgn2","slide":3,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/a5gbq1or","slide":3,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/3m94fu18","slide":3,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/s72x4nap","slide":3,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/lszqtcj6","slide":3,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/a1gvy90j","slide":3,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/zidonyd0","slide":3,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/re1w7mp0","slide":3,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/2t83itgf","slide":3,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/9knih4by","slide":3,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/kzupwb2h","slide":3,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/rqd4vmtw","slide":3,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/25kb6xkf","slide":3,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/9w3m94fu","slide":3,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/kb6xkf6d","slide":3,"bbox":[72,54,138,32]}
+{"kind":"textbox","id":"sh/r2p8nqxs","slide":3,"text":"STORE WITH AI","textPreview":"STORE WITH AI","textChars":13,"textLines":1,"bbox":[86,61,110,22]}
+{"kind":"textbox","id":"sh/2hwfyxob","slide":3,"text":"Роли и пользовательские сценарии","textPreview":"Роли и пользовательские сценарии","textChars":32,"textLines":1,"bbox":[72,106,720,60]}
+{"kind":"textbox","id":"sh/q1orytsv","slide":3,"text":"Система разделяет интерфейс и права доступа по ролям, а ключевые ограничения проверяются на backend.","textPreview":"Система разделяет интерфейс и права доступа по ролям, а ключевые ограничения проверяются на backend.","textChars":100,"textLines":1,"bbox":[72,164,850,54]}
+{"kind":"textbox","id":"sh/fmlkjm1c","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/87ed8bat","slide":3,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/xs72x4na","slide":3,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"shape","id":"sh/qtcj6tov","slide":3,"bbox":[90,278,300,126]}
+{"kind":"textbox","id":"sh/je9cvixc","slide":3,"text":"Покупатель","textPreview":"Покупатель","textChars":10,"textLines":1,"bbox":[108,294,264,28]}
+{"kind":"textbox","id":"sh/8z25kb6x","slide":3,"text":"Каталог → корзина → оформление → оплата → мои заказы → повтор заказа","textPreview":"Каталог → корзина → оформление → оплата → мои заказы → повтор заказа","textChars":68,"textLines":1,"bbox":[108,328,264,52]}
+{"kind":"shape","id":"sh/1gvy90je","slide":3,"bbox":[490,278,300,126]}
+{"kind":"textbox","id":"sh/qpg3ex0n","slide":3,"text":"Продавец","textPreview":"Продавец","textChars":8,"textLines":1,"bbox":[508,294,264,28]}
+{"kind":"textbox","id":"sh/fa9w3m94","slide":3,"text":"Категории → публикация товара → фото → остатки → входящие заказы → AI-аналитика","textPreview":"Категории → публикация товара → фото → остатки → входящие заказы → AI-аналитика","textChars":79,"textLines":1,"bbox":[508,328,264,52]}
+{"kind":"shape","id":"sh/58z25kb6","slide":3,"bbox":[890,278,300,126]}
+{"kind":"textbox","id":"sh/gn29gr2p","slide":3,"text":"Администратор","textPreview":"Администратор","textChars":13,"textLines":1,"bbox":[908,294,264,28]}
+{"kind":"textbox","id":"sh/n29gr2p8","slide":3,"text":"KPI → пользователи → заказы → статусы → Django Admin","textPreview":"KPI → пользователи → заказы → статусы → Django Admin","textChars":52,"textLines":1,"bbox":[908,328,264,52]}
+{"kind":"shape","id":"sh/yhgn29gr","slide":3,"bbox":[390,340,100,0]}
+{"kind":"shape","id":"sh/5wjudg7a","slide":3,"bbox":[790,340,100,0]}
+{"kind":"textbox","id":"sh/gbq1oryt","slide":3,"text":"Общий принцип: пользователь видит только те действия, которые соответствуют его роли, а API дополнительно защищает операции permissions-классами.","textPreview":"Общий принцип: пользователь видит только те действия, которые соответствуют его роли, а API дополнительно защищает операции permissions-к...","textChars":145,"textLines":1,"bbox":[150,502,980,62]}
+{"kind":"notes","id":"nt/eghqag","slide":3,"text":""}
+{"kind":"slide","id":"sl/7d79wi","slide":4,"title":"STORE WITH AI","textShapes":15}
+{"kind":"shape","id":"sh/7y1kre1w","slide":4,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/wjudg7ad","slide":4,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/p4r65wju","slide":4,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/i5sneloj","slide":4,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/7qpg3ex0","slide":4,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/0bi9s36h","slide":4,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/pwb2hwfy","slide":4,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/itgfmlkj","slide":4,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/7ed8bat4","slide":4,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/r2p8nqxs","slide":4,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/2hwfyxob","slide":4,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/94fu18jq","slide":4,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/kjm1cfa9","slide":4,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/ra5gbq1o","slide":4,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/2p8nqxs7","slide":4,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/9gr2p8nq","slide":4,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/gvy90je9","slide":4,"bbox":[72,54,138,32]}
+{"kind":"textbox","id":"sh/re1w7mp0","slide":4,"text":"STORE WITH AI","textPreview":"STORE WITH AI","textChars":13,"textLines":1,"bbox":[86,61,110,22]}
+{"kind":"textbox","id":"sh/2t83itgf","slide":4,"text":"Архитектура решения","textPreview":"Архитектура решения","textChars":19,"textLines":1,"bbox":[72,106,720,60]}
+{"kind":"textbox","id":"sh/qpg3ex0n","slide":4,"text":"Проект разделён на независимые слои: SPA-интерфейс, REST API, доменная логика, AI-сервис и инфраструктура.","textPreview":"Проект разделён на независимые слои: SPA-интерфейс, REST API, доменная логика, AI-сервис и инфраструктура.","textChars":106,"textLines":1,"bbox":[72,164,850,54]}
+{"kind":"textbox","id":"sh/fa9w3m94","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/8v6psfil","slide":4,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/xczed8v6","slide":4,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"shape","id":"sh/qd4vmtwr","slide":4,"bbox":[72,280,210,120]}
+{"kind":"textbox","id":"sh/fyxobm58","slide":4,"text":"React / Vite","textPreview":"React / Vite","textChars":12,"textLines":1,"bbox":[90,296,174,28]}
+{"kind":"textbox","id":"sh/8jqh0fep","slide":4,"text":"SPA: каталог, аккаунт, корзина, админка, тёмная тема","textPreview":"SPA: каталог, аккаунт, корзина, админка, тёмная тема","textChars":52,"textLines":1,"bbox":[90,330,174,52]}
+{"kind":"shape","id":"sh/x4nap4r6","slide":4,"bbox":[330,280,210,120]}
+{"kind":"textbox","id":"sh/q1orytsv","slide":4,"text":"Django REST","textPreview":"Django REST","textChars":11,"textLines":1,"bbox":[348,296,174,28]}
+{"kind":"textbox","id":"sh/fmlkjm1c","slide":4,"text":"ViewSets, APIView, JWT, Swagger, permissions","textPreview":"ViewSets, APIView, JWT, Swagger, permissions","textChars":44,"textLines":1,"bbox":[348,330,174,52]}
+{"kind":"shape","id":"sh/5sneloj2","slide":4,"bbox":[588,280,210,120]}
+{"kind":"textbox","id":"sh/cbulwval","slide":4,"text":"Domain apps","textPreview":"Domain apps","textChars":11,"textLines":1,"bbox":[606,296,174,28]}
+{"kind":"textbox","id":"sh/nqxs72x4","slide":4,"text":"users, products, ai, payments, email","textPreview":"users, products, ai, payments, email","textChars":36,"textLines":1,"bbox":[606,330,174,52]}
+{"kind":"shape","id":"sh/u54zidon","slide":4,"bbox":[846,280,210,120]}
+{"kind":"textbox","id":"sh/5kb6xkf6","slide":4,"text":"External services","textPreview":"External services","textChars":17,"textLines":1,"bbox":[864,296,174,28]}
+{"kind":"textbox","id":"sh/czed8v6p","slide":4,"text":"OpenRouter, YooKassa/mock, SMTP console/prod","textPreview":"OpenRouter, YooKassa/mock, SMTP console/prod","textChars":44,"textLines":1,"bbox":[864,330,174,52]}
+{"kind":"shape","id":"sh/neloj2t8","slide":4,"bbox":[588,460,468,98]}
+{"kind":"textbox","id":"sh/ytsvu9kn","slide":4,"text":"Deploy","textPreview":"Deploy","textChars":6,"textLines":1,"bbox":[606,476,432,28]}
+{"kind":"textbox","id":"sh/58z25kb6","slide":4,"text":"Docker, nginx, Kubernetes, Yandex Cloud manifests","textPreview":"Docker, nginx, Kubernetes, Yandex Cloud manifests","textChars":49,"textLines":1,"bbox":[606,510,432,52]}
+{"kind":"shape","id":"sh/gn29gr2p","slide":4,"bbox":[282,340,48,0]}
+{"kind":"shape","id":"sh/032lszqt","slide":4,"bbox":[540,340,48,0]}
+{"kind":"shape","id":"sh/tovahoza","slide":4,"bbox":[798,340,48,0]}
+{"kind":"shape","id":"sh/ixczed8v","slide":4,"bbox":[690,400,0,60]}
+{"kind":"notes","id":"nt/7d79wi","slide":4,"text":""}
+{"kind":"slide","id":"sl/o64qsg","slide":5,"title":"STORE WITH AI","textShapes":17}
+{"kind":"shape","id":"sh/upwb2hwf","slide":5,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/5gbq1ory","slide":5,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/cvixczed","slide":5,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/nyd0z610","slide":5,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/udg7adsj","slide":5,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/54zidony","slide":5,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/cj6tovah","slide":5,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/judg7ads","slide":5,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/u9knih4b","slide":5,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/47y1kre1","slide":5,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/tsvu9kni","slide":5,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/m1cfa9w3","slide":5,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/bm58z25k","slide":5,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/4vmtwra5","slide":5,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/tgfmlkjm","slide":5,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/mp0bi9s3","slide":5,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/bat47y1k","slide":5,"bbox":[72,54,138,32]}
+{"kind":"textbox","id":"sh/4nap4r65","slide":5,"text":"STORE WITH AI","textPreview":"STORE WITH AI","textChars":13,"textLines":1,"bbox":[86,61,110,22]}
+{"kind":"textbox","id":"sh/t83itgfm","slide":5,"text":"Backend: доменная модель","textPreview":"Backend: доменная модель","textChars":24,"textLines":1,"bbox":[72,106,720,60]}
+{"kind":"textbox","id":"sh/xs72x4na","slide":5,"text":"Django-модели отражают реальную структуру маркетплейса: пользователи, товары, корзина, заказы, платежи и AI-события.","textPreview":"Django-модели отражают реальную структуру маркетплейса: пользователи, товары, корзина, заказы, платежи и AI-события.","textChars":116,"textLines":1,"bbox":[72,164,850,54]}
+{"kind":"textbox","id":"sh/87ed8bat","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/fmlkjm1c","slide":5,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/q1orytsv","slide":5,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"shape","id":"sh/1gvy90je","slide":5,"bbox":[86,254,330,118]}
+{"kind":"shape","id":"sh/8z25kb6x","slide":5,"bbox":[86,254,5,118]}
+{"kind":"textbox","id":"sh/je9cvixc","slide":5,"text":"UserProfile","textPreview":"UserProfile","textChars":11,"textLines":1,"bbox":[110,274,282,36]}
+{"kind":"textbox","id":"sh/qtcj6tov","slide":5,"text":"роль, магазин, email_verified","textPreview":"роль, магазин, email_verified","textChars":29,"textLines":1,"bbox":[110,316,282,36]}
+{"kind":"shape","id":"sh/xczed8v6","slide":5,"bbox":[468,254,330,118]}
+{"kind":"shape","id":"sh/8v6psfil","slide":5,"bbox":[468,254,5,118]}
+{"kind":"textbox","id":"sh/25kb6xkf","slide":5,"text":"Product","textPreview":"Product","textChars":7,"textLines":1,"bbox":[492,274,282,36]}
+{"kind":"textbox","id":"sh/rqd4vmtw","slide":5,"text":"цена, категория, specs, фото, stock","textPreview":"цена, категория, specs, фото, stock","textChars":35,"textLines":1,"bbox":[492,316,282,36]}
+{"kind":"shape","id":"sh/kb6xkf6d","slide":5,"bbox":[850,254,330,118]}
+{"kind":"shape","id":"sh/9w3m94fu","slide":5,"bbox":[850,254,5,118]}
+{"kind":"textbox","id":"sh/2t83itgf","slide":5,"text":"CartItem","textPreview":"CartItem","textChars":8,"textLines":1,"bbox":[874,274,282,36]}
+{"kind":"textbox","id":"sh/re1w7mp0","slide":5,"text":"пользователь + товар + количество","textPreview":"пользователь + товар + количество","textChars":33,"textLines":1,"bbox":[874,316,282,36]}
+{"kind":"shape","id":"sh/kzupwb2h","slide":5,"bbox":[86,414,330,118]}
+{"kind":"shape","id":"sh/9knih4by","slide":5,"bbox":[86,414,5,118]}
+{"kind":"textbox","id":"sh/2p8nqxs7","slide":5,"text":"Order / OrderItem","textPreview":"Order / OrderItem","textChars":17,"textLines":1,"bbox":[110,434,282,36]}
+{"kind":"textbox","id":"sh/ra5gbq1o","slide":5,"text":"адрес, статус, сумма, позиции","textPreview":"адрес, статус, сумма, позиции","textChars":29,"textLines":1,"bbox":[110,476,282,36]}
+{"kind":"shape","id":"sh/b6xkf6dc","slide":5,"bbox":[468,414,330,118]}
+{"kind":"shape","id":"sh/il0rqd4v","slide":5,"bbox":[468,414,5,118]}
+{"kind":"textbox","id":"sh/tcj6tova","slide":5,"text":"Payment","textPreview":"Payment","textChars":7,"textLines":1,"bbox":[492,434,282,36]}
+{"kind":"textbox","id":"sh/0rqd4vmt","slide":5,"text":"external_id, статус, сумма","textPreview":"external_id, статус, сумма","textChars":26,"textLines":1,"bbox":[492,476,282,36]}
+{"kind":"shape","id":"sh/byhgn29g","slide":5,"bbox":[850,414,330,118]}
+{"kind":"shape","id":"sh/idonyd0z","slide":5,"bbox":[850,414,5,118]}
+{"kind":"textbox","id":"sh/t47y1kre","slide":5,"text":"AIInteraction","textPreview":"AIInteraction","textChars":13,"textLines":1,"bbox":[874,434,282,36]}
+{"kind":"textbox","id":"sh/0je9cvix","slide":5,"text":"запрос, ответ, feedback, review flag","textPreview":"запрос, ответ, feedback, review flag","textChars":36,"textLines":1,"bbox":[874,476,282,36]}
+{"kind":"notes","id":"nt/o64qsg","slide":5,"text":""}
+{"kind":"slide","id":"sl/9ik6ye","slide":6,"title":"STORE WITH AI","textShapes":21}
+{"kind":"shape","id":"sh/donyd0z6","slide":6,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/2x4nap4r","slide":6,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/vixczed8","slide":6,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/kre1w7mp","slide":6,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/dcbulwva","slide":6,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/6psfil0r","slide":6,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/val87ed8","slide":6,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/knih4byh","slide":6,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/d8bat47y","slide":6,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/pkzupwb2","slide":6,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/0z61032l","slide":6,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/7ed8bat4","slide":6,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/itgfmlkj","slide":6,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/p8nqxs72","slide":6,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/0nuxc3yl","slide":6,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/72x4nap4","slide":6,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/ih4byhgn","slide":6,"bbox":[72,54,138,32]}
+{"kind":"textbox","id":"sh/p4r65wju","slide":6,"text":"STORE WITH AI","textPreview":"STORE WITH AI","textChars":13,"textLines":1,"bbox":[86,61,110,22]}
+{"kind":"textbox","id":"sh/wjudg7ad","slide":6,"text":"Покупательский сценарий","textPreview":"Покупательский сценарий","textChars":23,"textLines":1,"bbox":[72,106,720,60]}
+{"kind":"textbox","id":"sh/szqtcj6t","slide":6,"text":"Путь пользователя построен вокруг быстрого выбора товара и прозрачного заказа.","textPreview":"Путь пользователя построен вокруг быстрого выбора товара и прозрачного заказа.","textChars":78,"textLines":1,"bbox":[72,164,850,54]}
+{"kind":"textbox","id":"sh/lkjm1cfa","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/at47y1kr","slide":6,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/3ex0nuxc","slide":6,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"shape","id":"sh/sneloj2t","slide":6,"bbox":[78,250,160,116]}
+{"kind":"textbox","id":"sh/l87ed8ba","slide":6,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[98,268,120,58]}
+{"kind":"textbox","id":"sh/ahoza1gv","slide":6,"text":"Каталог","textPreview":"Каталог","textChars":7,"textLines":1,"bbox":[100,328,116,44]}
+{"kind":"textbox","id":"sh/32lszqtc","slide":6,"text":"поиск, категории, цена, сортировка","textPreview":"поиск, категории, цена, сортировка","textChars":34,"textLines":1,"bbox":[78,382,172,62]}
+{"kind":"shape","id":"sh/wb2hwfyx","slide":6,"bbox":[248,308,52,0]}
+{"kind":"shape","id":"sh/lwval87e","slide":6,"bbox":[314,250,160,116]}
+{"kind":"textbox","id":"sh/bq1oryts","slide":6,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[334,268,120,58]}
+{"kind":"textbox","id":"sh/m58z25kb","slide":6,"text":"Карточка","textPreview":"Карточка","textChars":8,"textLines":1,"bbox":[336,328,116,44]}
+{"kind":"textbox","id":"sh/twra5gbq","slide":6,"text":"фото, цена, наличие, магазин","textPreview":"фото, цена, наличие, магазин","textChars":28,"textLines":1,"bbox":[314,382,172,62]}
+{"kind":"shape","id":"sh/4byhgn29","slide":6,"bbox":[484,308,52,0]}
+{"kind":"shape","id":"sh/b2hwfyxo","slide":6,"bbox":[550,250,160,116]}
+{"kind":"textbox","id":"sh/mhk3q5o7","slide":6,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[570,268,120,58]}
+{"kind":"textbox","id":"sh/t83itgfm","slide":6,"text":"Корзина","textPreview":"Корзина","textChars":7,"textLines":1,"bbox":[572,328,116,44]}
+{"kind":"textbox","id":"sh/4nap4r65","slide":6,"text":"количество, итог, удаление","textPreview":"количество, итог, удаление","textChars":26,"textLines":1,"bbox":[550,382,172,62]}
+{"kind":"shape","id":"sh/bat47y1k","slide":6,"bbox":[720,308,52,0]}
+{"kind":"shape","id":"sh/mp0bi9s3","slide":6,"bbox":[786,250,160,116]}
+{"kind":"textbox","id":"sh/ylc7u54z","slide":6,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[806,268,120,58]}
+{"kind":"textbox","id":"sh/r65wjudg","slide":6,"text":"Checkout","textPreview":"Checkout","textChars":8,"textLines":1,"bbox":[808,328,116,44]}
+{"kind":"textbox","id":"sh/gr2p8nqx","slide":6,"text":"контакты, адрес, комментарий","textPreview":"контакты, адрес, комментарий","textChars":28,"textLines":1,"bbox":[786,382,172,62]}
+{"kind":"shape","id":"sh/9cvixcze","slide":6,"bbox":[956,308,52,0]}
+{"kind":"shape","id":"sh/yxobm58z","slide":6,"bbox":[1022,250,160,116]}
+{"kind":"textbox","id":"sh/nih4byhg","slide":6,"text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[1042,268,120,58]}
+{"kind":"textbox","id":"sh/g3ex0nux","slide":6,"text":"Заказы","textPreview":"Заказы","textChars":6,"textLines":1,"bbox":[1044,328,116,44]}
+{"kind":"textbox","id":"sh/5o7qpg3e","slide":6,"text":"статус и повтор заказа","textPreview":"статус и повтор заказа","textChars":22,"textLines":1,"bbox":[1022,382,172,62]}
+{"kind":"textbox","id":"sh/y1kre1w7","slide":6,"text":"Сервер дополнительно проверяет остатки при добавлении в корзину и оформлении заказа, поэтому нельзя купить больше, чем есть на складе.","textPreview":"Сервер дополнительно проверяет остатки при добавлении в корзину и оформлении заказа, поэтому нельзя купить больше, чем есть на складе.","textChars":134,"textLines":1,"bbox":[144,520,990,52]}
+{"kind":"notes","id":"nt/9ik6ye","slide":6,"text":""}
+{"kind":"slide","id":"sl/okyomw","slide":7,"title":"STORE WITH AI","textShapes":17}
+{"kind":"shape","id":"sh/4vmtwra5","slide":7,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/bat47y1k","slide":7,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/mp0bi9s3","slide":7,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/tsvu9kni","slide":7,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/47y1kre1","slide":7,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/bm58z25k","slide":7,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/m1cfa9w3","slide":7,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/twra5gbq","slide":7,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/4byhgn29","slide":7,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/m58z25kb","slide":7,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/bq1oryts","slide":7,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/4byhgn29","slide":7,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/twra5gbq","slide":7,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/mhk3q5o7","slide":7,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/b2hwfyxo","slide":7,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/4nap4r65","slide":7,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/t83itgfm","slide":7,"bbox":[72,54,138,32]}
+{"kind":"textbox","id":"sh/mp0bi9s3","slide":7,"text":"STORE WITH AI","textPreview":"STORE WITH AI","textChars":13,"textLines":1,"bbox":[86,61,110,22]}
+{"kind":"textbox","id":"sh/bat47y1k","slide":7,"text":"Кабинет продавца","textPreview":"Кабинет продавца","textChars":16,"textLines":1,"bbox":[72,106,720,60]}
+{"kind":"textbox","id":"sh/3ex0nuxc","slide":7,"text":"Продавец управляет витриной и заказами в одном рабочем месте.","textPreview":"Продавец управляет витриной и заказами в одном рабочем месте.","textChars":61,"textLines":1,"bbox":[72,164,850,54]}
+{"kind":"textbox","id":"sh/at47y1kr","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/lkjm1cfa","slide":7,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/szqtcj6t","slide":7,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"shape","id":"sh/32lszqtc","slide":7,"bbox":[72,250,348,160]}
+{"kind":"shape","id":"sh/ahoza1gv","slide":7,"bbox":[72,250,5,160]}
+{"kind":"textbox","id":"sh/l87ed8ba","slide":7,"text":"Публикация товара","textPreview":"Публикация товара","textChars":17,"textLines":1,"bbox":[96,270,300,36]}
+{"kind":"textbox","id":"sh/sneloj2t","slide":7,"text":"Название, цена, категория, характеристики, описание, остаток и порог низкого остатка.","textPreview":"Название, цена, категория, характеристики, описание, остаток и порог низкого остатка.","textChars":85,"textLines":1,"bbox":[96,312,300,78]}
+{"kind":"shape","id":"sh/3q5o7qpg","slide":7,"bbox":[466,250,348,160]}
+{"kind":"shape","id":"sh/e9cvixcz","slide":7,"bbox":[466,250,5,160]}
+{"kind":"textbox","id":"sh/o7qpg3ex","slide":7,"text":"Фото товара","textPreview":"Фото товара","textChars":11,"textLines":1,"bbox":[490,270,300,36]}
+{"kind":"textbox","id":"sh/dsji5sne","slide":7,"text":"Загрузка изображения через FormData, preview на frontend и хранение файла в media/products/.","textPreview":"Загрузка изображения через FormData, preview на frontend и хранение файла в media/products/.","textChars":92,"textLines":1,"bbox":[490,312,300,78]}
+{"kind":"shape","id":"sh/61032lsz","slide":7,"bbox":[860,250,348,160]}
+{"kind":"shape","id":"sh/vmtwra5g","slide":7,"bbox":[860,250,5,160]}
+{"kind":"textbox","id":"sh/oj2t83it","slide":7,"text":"Операции","textPreview":"Операции","textChars":8,"textLines":1,"bbox":[884,270,300,36]}
+{"kind":"textbox","id":"sh/d4vmtwra","slide":7,"text":"Редактирование цены и остатка, входящие заказы, смена статуса, AI-анализ спроса.","textPreview":"Редактирование цены и остатка, входящие заказы, смена статуса, AI-анализ спроса.","textChars":80,"textLines":1,"bbox":[884,312,300,78]}
+{"kind":"shape","id":"sh/6dcbulwv","slide":7,"bbox":[230,474,250,118]}
+{"kind":"textbox","id":"sh/vy90je9c","slide":7,"text":"Stock","textPreview":"Stock","textChars":5,"textLines":1,"bbox":[250,492,210,58]}
+{"kind":"textbox","id":"sh/onyd0z61","slide":7,"text":"низкий остаток и sold out видны в интерфейсе","textPreview":"низкий остаток и sold out видны в интерфейсе","textChars":44,"textLines":1,"bbox":[252,552,206,44]}
+{"kind":"shape","id":"sh/d8v6psfi","slide":7,"bbox":[514,474,250,118]}
+{"kind":"textbox","id":"sh/9gr2p8nq","slide":7,"text":"AI","textPreview":"AI","textChars":2,"textLines":1,"bbox":[534,492,210,58]}
+{"kind":"textbox","id":"sh/gvy90je9","slide":7,"text":"генерация описаний ускоряет заполнение карточек","textPreview":"генерация описаний ускоряет заполнение карточек","textChars":47,"textLines":1,"bbox":[536,552,206,44]}
+{"kind":"shape","id":"sh/ra5gbq1o","slide":7,"bbox":[798,474,250,118]}
+{"kind":"textbox","id":"sh/2p8nqxs7","slide":7,"text":"Orders","textPreview":"Orders","textChars":6,"textLines":1,"bbox":[818,492,210,58]}
+{"kind":"textbox","id":"sh/94fu18jq","slide":7,"text":"продавец видит заказы со своими товарами","textPreview":"продавец видит заказы со своими товарами","textChars":40,"textLines":1,"bbox":[820,552,206,44]}
+{"kind":"notes","id":"nt/okyomw","slide":7,"text":""}
+{"kind":"slide","id":"sl/milvg1","slide":8,"title":"STORE WITH AI","textShapes":14}
+{"kind":"shape","id":"sh/i5sneloj","slide":8,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/pwb2hwfy","slide":8,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/0bi9s36h","slide":8,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/7y1kre1w","slide":8,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/ed8v6psf","slide":8,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/p4r65wju","slide":8,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/wjudg7ad","slide":8,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/72x4nap4","slide":8,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/ih4byhgn","slide":8,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/032lszqt","slide":8,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/tovahoza","slide":8,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/ixczed8v","slide":8,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/bi9s36hc","slide":8,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/0fepkzup","slide":8,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/p0bi9s36","slide":8,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/i9s36hcr","slide":8,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/bulwval8","slide":8,"bbox":[72,54,138,32]}
+{"kind":"textbox","id":"sh/0je9cvix","slide":8,"text":"STORE WITH AI","textPreview":"STORE WITH AI","textChars":13,"textLines":1,"bbox":[86,61,110,22]}
+{"kind":"textbox","id":"sh/t47y1kre","slide":8,"text":"AI-слой проекта","textPreview":"AI-слой проекта","textChars":15,"textLines":1,"bbox":[72,106,720,60]}
+{"kind":"textbox","id":"sh/xobm58z2","slide":8,"text":"AI не заменяет бизнес-логику, а усиливает пользовательские сценарии и помогает продавцу.","textPreview":"AI не заменяет бизнес-логику, а усиливает пользовательские сценарии и помогает продавцу.","textChars":88,"textLines":1,"bbox":[72,164,850,54]}
+{"kind":"textbox","id":"sh/83itgfml","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/fil0rqd4","slide":8,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/qxs72x4n","slide":8,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"shape","id":"sh/x0nuxc3y","slide":8,"bbox":[92,260,250,124]}
+{"kind":"textbox","id":"sh/4fu18jqh","slide":8,"text":"AI Chat","textPreview":"AI Chat","textChars":7,"textLines":1,"bbox":[110,276,214,28]}
+{"kind":"textbox","id":"sh/fu18jqh0","slide":8,"text":"ответы на вопросы и подбор товаров по смыслу","textPreview":"ответы на вопросы и подбор товаров по смыслу","textChars":44,"textLines":1,"bbox":[110,310,214,52]}
+{"kind":"shape","id":"sh/m94fu18j","slide":8,"bbox":[392,260,250,124]}
+{"kind":"textbox","id":"sh/xc3ylc7u","slide":8,"text":"Description","textPreview":"Description","textChars":11,"textLines":1,"bbox":[410,276,214,28]}
+{"kind":"textbox","id":"sh/4r65wjud","slide":8,"text":"генерация описания товара по названию, категории и specs","textPreview":"генерация описания товара по названию, категории и specs","textChars":56,"textLines":1,"bbox":[410,310,214,52]}
+{"kind":"shape","id":"sh/ih4byhgn","slide":8,"bbox":[692,260,250,124]}
+{"kind":"textbox","id":"sh/72x4nap4","slide":8,"text":"Insights","textPreview":"Insights","textChars":8,"textLines":1,"bbox":[710,276,214,28]}
+{"kind":"textbox","id":"sh/0nuxc3yl","slide":8,"text":"аналитика спроса, корзин и остатков для продавца","textPreview":"аналитика спроса, корзин и остатков для продавца","textChars":48,"textLines":1,"bbox":[710,310,214,52]}
+{"kind":"shape","id":"sh/p8nqxs72","slide":8,"bbox":[992,260,196,124]}
+{"kind":"textbox","id":"sh/itgfmlkj","slide":8,"text":"Fallback","textPreview":"Fallback","textChars":8,"textLines":1,"bbox":[1010,276,160,28]}
+{"kind":"textbox","id":"sh/7ed8bat4","slide":8,"text":"при отсутствии API-ключа приложение возвращает базовый ответ","textPreview":"при отсутствии API-ключа приложение возвращает базовый ответ","textChars":60,"textLines":1,"bbox":[1010,310,160,52]}
+{"kind":"textbox","id":"sh/0z61032l","slide":8,"text":"OpenRouter API подключается через переменные окружения. Результаты сохраняются как AIInteraction, что позволяет хранить историю, feedback и признаки для ревью промптов.","textPreview":"OpenRouter API подключается через переменные окружения. Результаты сохраняются как AIInteraction, что позволяет хранить историю, feedback...","textChars":168,"textLines":1,"bbox":[132,486,1010,74]}
+{"kind":"notes","id":"nt/milvg1","slide":8,"text":""}
+{"kind":"slide","id":"sl/td3oc3","slide":9,"title":"STORE WITH AI","textShapes":15}
+{"kind":"shape","id":"sh/qd4vmtwr","slide":9,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/x4nap4r6","slide":9,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/8jqh0fep","slide":9,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/fa9w3m94","slide":9,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/qpg3ex0n","slide":9,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/xczed8v6","slide":9,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/8v6psfil","slide":9,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/je9cvixc","slide":9,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/qtcj6tov","slide":9,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/svu9knih","slide":9,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/hgn29gr2","slide":9,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/ap4r65wj","slide":9,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/za1gvy90","slide":9,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/s36hcrmh","slide":9,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/hoza1gvy","slide":9,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/a1gvy90j","slide":9,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/zidonyd0","slide":9,"bbox":[72,54,138,32]}
+{"kind":"textbox","id":"sh/s72x4nap","slide":9,"text":"STORE WITH AI","textPreview":"STORE WITH AI","textChars":13,"textLines":1,"bbox":[86,61,110,22]}
+{"kind":"textbox","id":"sh/lszqtcj6","slide":9,"text":"Админка и операционный контроль","textPreview":"Админка и операционный контроль","textChars":31,"textLines":1,"bbox":[72,106,720,60]}
+{"kind":"textbox","id":"sh/pg3ex0nu","slide":9,"text":"Для администратора сделана отдельная SPA-панель поверх API и сохранён стандартный Django Admin.","textPreview":"Для администратора сделана отдельная SPA-панель поверх API и сохранён стандартный Django Admin.","textChars":95,"textLines":1,"bbox":[72,164,850,54]}
+{"kind":"textbox","id":"sh/wval87ed","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/7adsji5s","slide":9,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/epkzupwb","slide":9,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"shape","id":"sh/psfil0rq","slide":9,"bbox":[86,260,248,136]}
+{"kind":"textbox","id":"sh/w7mp0bi9","slide":9,"text":"KPI","textPreview":"KPI","textChars":3,"textLines":1,"bbox":[106,278,208,58]}
+{"kind":"textbox","id":"sh/7mp0bi9s","slide":9,"text":"пользователи, продавцы, товары, заказы, выручка","textPreview":"пользователи, продавцы, товары, заказы, выручка","textChars":47,"textLines":1,"bbox":[108,338,204,44]}
+{"kind":"shape","id":"sh/e1w7mp0b","slide":9,"bbox":[374,260,248,136]}
+{"kind":"textbox","id":"sh/l0rqd4vm","slide":9,"text":"Status","textPreview":"Status","textChars":6,"textLines":1,"bbox":[394,278,208,58]}
+{"kind":"textbox","id":"sh/wfyxobm5","slide":9,"text":"воронка заказов: new, paid, shipped, done, canceled","textPreview":"воронка заказов: new, paid, shipped, done, canceled","textChars":51,"textLines":1,"bbox":[396,338,204,44]}
+{"kind":"shape","id":"sh/a9w3m94f","slide":9,"bbox":[662,260,248,136]}
+{"kind":"textbox","id":"sh/zupwb2hw","slide":9,"text":"Users","textPreview":"Users","textChars":5,"textLines":1,"bbox":[682,278,208,58]}
+{"kind":"textbox","id":"sh/sfil0rqd","slide":9,"text":"поиск, роли, магазины, email verification","textPreview":"поиск, роли, магазины, email verification","textChars":41,"textLines":1,"bbox":[684,338,204,44]}
+{"kind":"shape","id":"sh/h0fepkzu","slide":9,"bbox":[950,260,248,136]}
+{"kind":"textbox","id":"sh/al87ed8b","slide":9,"text":"AI log","textPreview":"AI log","textChars":6,"textLines":1,"bbox":[970,278,208,58]}
+{"kind":"textbox","id":"sh/z61032ls","slide":9,"text":"последние AI-запросы и активность","textPreview":"последние AI-запросы и активность","textChars":33,"textLines":1,"bbox":[972,338,204,44]}
+{"kind":"shape","id":"sh/orytsvu9","slide":9,"bbox":[188,478,904,104]}
+{"kind":"shape","id":"sh/hcrmhk3q","slide":9,"bbox":[188,478,5,104]}
+{"kind":"textbox","id":"sh/6xkf6dcb","slide":9,"text":"Почему две админки?","textPreview":"Почему две админки?","textChars":19,"textLines":1,"bbox":[212,498,856,36]}
+{"kind":"textbox","id":"sh/zed8v6ps","slide":9,"text":"SPA-админка удобна для демонстрации и ежедневных операций. Django Admin остаётся инструментом низкоуровневого управления данными.","textPreview":"SPA-админка удобна для демонстрации и ежедневных операций. Django Admin остаётся инструментом низкоуровневого управления данными.","textChars":129,"textLines":1,"bbox":[212,540,856,22]}
+{"kind":"notes","id":"nt/td3oc3","slide":9,"text":""}
+{"kind":"slide","id":"sl/jz5ol3","slide":10,"title":"STORE WITH AI","textShapes":11}
+{"kind":"shape","id":"sh/1kre1w7m","slide":10,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/uxc3ylc7","slide":10,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/ji5snelo","slide":10,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/crmhk3q5","slide":10,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/1cfa9w3m","slide":10,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/ulwval87","slide":10,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/j6tovaho","slide":10,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/8nqxs72x","slide":10,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/18jqh0fe","slide":10,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/psfil0rq","slide":10,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/w7mp0bi9","slide":10,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/7mp0bi9s","slide":10,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/e1w7mp0b","slide":10,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/pg3ex0nu","slide":10,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/wval87ed","slide":10,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/7adsji5s","slide":10,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/epkzupwb","slide":10,"bbox":[72,54,138,32]}
+{"kind":"textbox","id":"sh/lc7u54zi","slide":10,"text":"STORE WITH AI","textPreview":"STORE WITH AI","textChars":13,"textLines":1,"bbox":[86,61,110,22]}
+{"kind":"textbox","id":"sh/wra5gbq1","slide":10,"text":"Безопасность, деплой и проверка","textPreview":"Безопасность, деплой и проверка","textChars":31,"textLines":1,"bbox":[72,106,720,60]}
+{"kind":"textbox","id":"sh/s36hcrmh","slide":10,"text":"Ключевые ограничения реализованы на backend, а проект подготовлен к запуску вне локальной среды.","textPreview":"Ключевые ограничения реализованы на backend, а проект подготовлен к запуску вне локальной среды.","textChars":96,"textLines":1,"bbox":[72,164,850,54]}
+{"kind":"textbox","id":"sh/hoza1gvy","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/a1gvy90j","slide":10,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/zidonyd0","slide":10,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"shape","id":"sh/svu9knih","slide":10,"bbox":[96,260,316,250]}
+{"kind":"shape","id":"sh/hgn29gr2","slide":10,"bbox":[96,260,5,250]}
+{"kind":"textbox","id":"sh/ap4r65wj","slide":10,"text":"Security","textPreview":"Security","textChars":8,"textLines":1,"bbox":[120,280,268,36]}
+{"kind":"textbox","id":"sh/za1gvy90","slide":10,"text":"JWT access/refresh\npermissions по ролям\nIsOwnerOrReadOnly\nemail verification\nserver-side validation","textPreview":"JWT access/refresh | permissions по ролям | IsOwnerOrReadOnly | email verification | server-side validation","textChars":99,"textLines":5,"bbox":[120,322,268,168]}
+{"kind":"shape","id":"sh/sji5snel","slide":10,"bbox":[482,260,316,250]}
+{"kind":"shape","id":"sh/h4byhgn2","slide":10,"bbox":[482,260,5,250]}
+{"kind":"textbox","id":"sh/byhgn29g","slide":10,"text":"Deployment","textPreview":"Deployment","textChars":10,"textLines":1,"bbox":[506,280,268,36]}
+{"kind":"textbox","id":"sh/idonyd0z","slide":10,"text":"Dockerfile backend/frontend\ndocker-compose\nnginx\nKubernetes manifests\nYandex Cloud notes","textPreview":"Dockerfile backend/frontend | docker-compose | nginx | Kubernetes manifests | Yandex Cloud notes","textChars":88,"textLines":5,"bbox":[506,322,268,168]}
+{"kind":"shape","id":"sh/t47y1kre","slide":10,"bbox":[868,260,316,250]}
+{"kind":"shape","id":"sh/0je9cvix","slide":10,"bbox":[868,260,5,250]}
+{"kind":"textbox","id":"sh/b6xkf6dc","slide":10,"text":"Testing","textPreview":"Testing","textChars":7,"textLines":1,"bbox":[892,280,268,36]}
+{"kind":"textbox","id":"sh/il0rqd4v","slide":10,"text":"DRF API tests\nfrontend production build\npy_compile checks\nmanual browser smoke","textPreview":"DRF API tests | frontend production build | py_compile checks | manual browser smoke","textChars":78,"textLines":4,"bbox":[892,322,268,168]}
+{"kind":"notes","id":"nt/jz5ol3","slide":10,"text":""}
+{"kind":"slide","id":"sl/0mbcoq","slide":11,"title":"STORE WITH AI","textShapes":10}
+{"kind":"shape","id":"sh/2hwfyxob","slide":11,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/94fu18jq","slide":11,"bbox":[-220,-260,620,620]}
+{"kind":"shape","id":"sh/kjm1cfa9","slide":11,"bbox":[880,-180,560,560]}
+{"kind":"shape","id":"sh/ra5gbq1o","slide":11,"bbox":[72,96,0,540]}
+{"kind":"shape","id":"sh/2p8nqxs7","slide":11,"bbox":[168,96,0,540]}
+{"kind":"shape","id":"sh/9gr2p8nq","slide":11,"bbox":[264,96,0,540]}
+{"kind":"shape","id":"sh/gvy90je9","slide":11,"bbox":[360,96,0,540]}
+{"kind":"shape","id":"sh/re1w7mp0","slide":11,"bbox":[456,96,0,540]}
+{"kind":"shape","id":"sh/2t83itgf","slide":11,"bbox":[552,96,0,540]}
+{"kind":"shape","id":"sh/sneloj2t","slide":11,"bbox":[648,96,0,540]}
+{"kind":"shape","id":"sh/l87ed8ba","slide":11,"bbox":[744,96,0,540]}
+{"kind":"shape","id":"sh/ahoza1gv","slide":11,"bbox":[840,96,0,540]}
+{"kind":"shape","id":"sh/32lszqtc","slide":11,"bbox":[936,96,0,540]}
+{"kind":"shape","id":"sh/szqtcj6t","slide":11,"bbox":[1032,96,0,540]}
+{"kind":"shape","id":"sh/lkjm1cfa","slide":11,"bbox":[1128,96,0,540]}
+{"kind":"shape","id":"sh/at47y1kr","slide":11,"bbox":[1224,96,0,540]}
+{"kind":"shape","id":"sh/3ex0nuxc","slide":11,"bbox":[72,54,138,32]}
+{"kind":"textbox","id":"sh/w3m94fu1","slide":11,"text":"STORE WITH AI","textPreview":"STORE WITH AI","textChars":13,"textLines":1,"bbox":[86,61,110,22]}
+{"kind":"textbox","id":"sh/loj2t83i","slide":11,"text":"Итог и развитие","textPreview":"Итог и развитие","textChars":15,"textLines":1,"bbox":[72,106,720,60]}
+{"kind":"textbox","id":"sh/p8nqxs72","slide":11,"text":"Store with AI демонстрирует полный цикл разработки web-приложения: модели, API, UI, AI, админка и инфраструктура.","textPreview":"Store with AI демонстрирует полный цикл разработки web-приложения: модели, API, UI, AI, админка и инфраструктура.","textChars":113,"textLines":1,"bbox":[72,164,850,54]}
+{"kind":"textbox","id":"sh/0nuxc3yl","slide":11,"text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[72,664,54,22]}
+{"kind":"shape","id":"sh/72x4nap4","slide":11,"bbox":[124,675,786,0]}
+{"kind":"textbox","id":"sh/ih4byhgn","slide":11,"text":"Store with AI","textPreview":"Store with AI","textChars":13,"textLines":1,"bbox":[940,662,268,24]}
+{"kind":"shape","id":"sh/pkzupwb2","slide":11,"bbox":[72,244,520,210]}
+{"kind":"shape","id":"sh/0z61032l","slide":11,"bbox":[72,244,5,210]}
+{"kind":"textbox","id":"sh/7ed8bat4","slide":11,"text":"Реализовано","textPreview":"Реализовано","textChars":11,"textLines":1,"bbox":[96,264,472,36]}
+{"kind":"textbox","id":"sh/itgfmlkj","slide":11,"text":"Каталог, корзина, checkout, заказы, роли, email, фото товаров, AI-помощник, админка, тёмный UI, Docker/K8s.","textPreview":"Каталог, корзина, checkout, заказы, роли, email, фото товаров, AI-помощник, админка, тёмный UI, Docker/K8s.","textChars":107,"textLines":1,"bbox":[96,306,472,128]}
+{"kind":"shape","id":"sh/pwb2hwfy","slide":11,"bbox":[688,244,520,210]}
+{"kind":"shape","id":"sh/0bi9s36h","slide":11,"bbox":[688,244,5,210]}
+{"kind":"textbox","id":"sh/ulwval87","slide":11,"text":"Можно развить","textPreview":"Можно развить","textChars":13,"textLines":1,"bbox":[712,264,472,36]}
+{"kind":"textbox","id":"sh/j6tovaho","slide":11,"text":"Отзывы, избранное, несколько фото, промокоды, модерация, возвраты, уведомления, полноценная production-оплата.","textPreview":"Отзывы, избранное, несколько фото, промокоды, модерация, возвраты, уведомления, полноценная production-оплата.","textChars":110,"textLines":1,"bbox":[712,306,472,128]}
+{"kind":"textbox","id":"sh/crmhk3q5","slide":11,"text":"Главный результат: проект выглядит и работает как цельная e-commerce система, а не набор отдельных учебных функций.","textPreview":"Главный результат: проект выглядит и работает как цельная e-commerce система, а не набор отдельных учебных функций.","textChars":115,"textLines":1,"bbox":[166,524,948,64]}
+{"kind":"notes","id":"nt/0mbcoq","slide":11,"text":""}

@@ -1,10 +1,12 @@
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase
+from unittest.mock import patch
 
 from products.models import Category, Product
 
 from .models import AIInteraction
+from .services import build_local_product_description, normalize_specs, parse_json_response
 
 
 class AIAssistantTests(APITestCase):
@@ -57,3 +59,61 @@ class AIAssistantTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("items", response.data)
         self.assertIn("interaction_id", response.data)
+
+    def test_parse_json_response_ignores_empty_content(self):
+        self.assertIsNone(parse_json_response(None))
+
+    @patch("ai.services.ask_openrouter")
+    def test_generate_description_falls_back_when_ai_content_is_empty(self, mocked_openrouter):
+        async def fake_response(*args, **kwargs):
+            return {"success": False, "fallback": "AI временно недоступен"}
+
+        mocked_openrouter.side_effect = fake_response
+        self._login()
+
+        response = self.client.post(
+            "/api/ai/generate-description/",
+            {"name": "Тестовый товар", "category": "Outdoor", "specs": {}},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("description", response.data)
+        self.assertIn("full_description", response.data["description"])
+
+    @patch("ai.services.ask_openrouter")
+    def test_generate_description_accepts_russian_payload_keys(self, mocked_openrouter):
+        async def fake_response(*args, **kwargs):
+            return {"success": False, "fallback": "AI временно недоступен"}
+
+        mocked_openrouter.side_effect = fake_response
+        self._login()
+
+        response = self.client.post(
+            "/api/ai/generate-description/",
+            {"название": "сыворотка", "категория": "Корейская косметика", "характеристики": []},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        description = response.data["description"]
+        self.assertIn("сыворотка", description["short_description"].lower())
+        self.assertIn("Корейская косметика", description["full_description"])
+        self.assertIn("Описание не выдумывает состав и свойства", description["advantages"])
+
+    def test_normalize_specs_accepts_list_items(self):
+        specs = normalize_specs([
+            {"name": "Объём", "value": "30 мл"},
+            "для вечернего ухода",
+            {"title": "Тип кожи", "text": "сухая"},
+        ])
+
+        self.assertEqual(specs["Объём"], "30 мл")
+        self.assertEqual(specs["Характеристика 2"], "для вечернего ухода")
+        self.assertEqual(specs["Тип кожи"], "сухая")
+
+    def test_local_product_description_uses_cosmetics_copy(self):
+        description = build_local_product_description("сыворотка", "Корейская косметика", {})
+
+        self.assertIn("ежедневного ухода", description["short_description"])
+        self.assertIn("не содержит неподтверждённых обещаний", description["full_description"])

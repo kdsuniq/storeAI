@@ -54,6 +54,42 @@ SYSTEM_PROMPT_ANALYTICS = (
 )
 
 
+def extract_openrouter_content(data: Dict[str, Any]) -> Optional[str]:
+    """Достаёт текст ответа из разных форматов OpenRouter/OpenAI-compatible API."""
+    choices = data.get("choices") or []
+    if not choices:
+        return None
+
+    message = choices[0].get("message") or {}
+    content = message.get("content")
+    if isinstance(content, str) and content.strip():
+        return content
+
+    if isinstance(content, list):
+        parts = []
+        for item in content:
+            if isinstance(item, str):
+                parts.append(item)
+            elif isinstance(item, dict):
+                text = item.get("text") or item.get("content")
+                if isinstance(text, str):
+                    parts.append(text)
+        joined = "\n".join(part for part in parts if part.strip())
+        if joined:
+            return joined
+
+    for key in ("reasoning", "refusal"):
+        value = message.get(key)
+        if isinstance(value, str) and value.strip():
+            return value
+
+    text = choices[0].get("text")
+    if isinstance(text, str) and text.strip():
+        return text
+
+    return None
+
+
 async def ask_openrouter(
     message: str,
     system_prompt: str = SYSTEM_PROMPT_CHAT,
@@ -94,7 +130,14 @@ async def ask_openrouter(
             
             if response.status_code == 200:
                 data = response.json()
-                content = data["choices"][0]["message"]["content"]
+                content = extract_openrouter_content(data)
+                if not content:
+                    logger.error("OpenRouter returned empty content: %s", data)
+                    return {
+                        "success": False,
+                        "error": "empty AI response",
+                        "fallback": get_fallback_response(message)
+                    }
                 return {
                     "success": True,
                     "content": content,
@@ -128,8 +171,76 @@ def get_fallback_response(message: str) -> str:
     )
 
 
+def normalize_specs(specs: Any) -> Dict[str, Any]:
+    if isinstance(specs, dict):
+        return specs
+    if isinstance(specs, list):
+        normalized = {}
+        for index, item in enumerate(specs, start=1):
+            if isinstance(item, dict):
+                key = item.get("name") or item.get("key") or item.get("title") or f"Характеристика {index}"
+                value = item.get("value") or item.get("text") or item.get("description") or ""
+                if value:
+                    normalized[str(key)] = value
+            elif isinstance(item, str) and item.strip():
+                normalized[f"Характеристика {index}"] = item.strip()
+        return normalized
+    return {}
+
+
+def build_local_product_description(name: str, category: str = "", specs: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    clean_name = str(name).strip()
+    clean_category = str(category or "").strip()
+    specs = normalize_specs(specs)
+    category_text = clean_category or "товаров для ежедневного использования"
+    specs_text = ", ".join([f"{key}: {value}" for key, value in specs.items()]) if specs else ""
+    detail_sentence = f" Ключевые характеристики: {specs_text}." if specs_text else ""
+    lower_context = f"{clean_name} {clean_category}".lower()
+
+    if "космет" in lower_context or "сыворот" in lower_context:
+        product_kind = "сыворотка" if "сыворот" in lower_context else "средство"
+        product_label = product_kind if product_kind not in clean_name.lower() else "средство"
+        return {
+            "short_description": (
+                f"{clean_name} — {product_label} для ежедневного ухода из категории «{category_text}»."
+            ),
+            "full_description": (
+                f"{clean_name} подойдёт для аккуратной и понятной карточки в категории «{category_text}». "
+                "Описание не содержит неподтверждённых обещаний о составе или эффекте, поэтому его можно безопасно "
+                f"использовать как основу и дополнить реальными данными продавца.{detail_sentence}\n\n"
+                "Чтобы карточка выглядела убедительнее, добавьте фото товара, объём, способ применения, тип кожи "
+                "и ключевые компоненты, если они указаны на упаковке."
+            ),
+            "advantages": [
+                "Подходит для ежедневного ухода",
+                "Описание не выдумывает состав и свойства",
+                "Легко дополнить фото и характеристиками",
+            ],
+            "call_to_action": "Добавьте товар в корзину или уточните характеристики перед покупкой.",
+        }
+
+    return {
+        "short_description": f"{clean_name} — удачный выбор в категории «{category_text}» для ежедневного использования.",
+        "full_description": (
+            f"{clean_name} подойдёт покупателям, которые ищут практичный и аккуратно представленный товар "
+            f"в категории «{category_text}». Средство легко добавить в регулярный уход или использовать как "
+            f"универсальное решение для личной косметички.{detail_sentence}\n\n"
+            "Описание можно дополнить конкретными преимуществами состава, объёмом, способом применения и типом кожи, "
+            "если эти данные есть у продавца."
+        ),
+        "advantages": [
+            "Понятное назначение для покупателя",
+            "Подходит для регулярного использования",
+            "Карточку легко дополнить характеристиками и фото",
+        ],
+        "call_to_action": "Добавьте товар в корзину и дополните уход подходящими средствами.",
+    }
+
+
 def parse_json_response(content: str) -> Optional[Dict]:
     """Парсит JSON из ответа AI"""
+    if not isinstance(content, str) or not content.strip():
+        return None
     try:
         json_start = content.find('{')
         json_end = content.rfind('}') + 1
@@ -143,13 +254,16 @@ def parse_json_response(content: str) -> Optional[Dict]:
 
 def build_product_prompt(name: str, category: str, specs: dict) -> str:
     """Создает промпт для генерации описания товара"""
+    specs = normalize_specs(specs)
     specs_text = "\n".join([f"- {k}: {v}" for k, v in specs.items()]) if specs else "- Нет характеристик"
     return (
-        f"Создай описание товара в формате JSON.\n"
+        f"Создай продающее, но правдивое описание товара для интернет-магазина в формате JSON.\n"
         f"Название: {name}\n"
         f"Категория: {category or 'Не указана'}\n"
         f"Характеристики:\n{specs_text}\n\n"
-        "Верни ТОЛЬКО JSON, без пояснений."
+        "Не выдумывай состав, объём, бренд, страну производства или лечебные свойства, если их нет в характеристиках.\n"
+        "Для косметики не обещай медицинский эффект.\n"
+        "Верни ТОЛЬКО JSON с полями: short_description, full_description, advantages, call_to_action."
     )
 
 
@@ -183,7 +297,8 @@ def build_market_insights_prompt(raw_stats: dict) -> str:
 def ask_ai_sync(
     message: str,
     response_format: str = "structured",
-    temperature: float = 0.7
+    temperature: float = 0.7,
+    system_prompt_override: Optional[str] = None,
 ) -> str:
     """Синхронная версия для Django"""
     import asyncio
@@ -194,7 +309,7 @@ def ask_ai_sync(
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
     
-    system_prompt = SYSTEM_PROMPT_JSON if response_format == "json" else SYSTEM_PROMPT_CHAT
+    system_prompt = system_prompt_override or (SYSTEM_PROMPT_JSON if response_format == "json" else SYSTEM_PROMPT_CHAT)
     
     try:
         result = loop.run_until_complete(
@@ -267,6 +382,12 @@ def enrich_recommendations(raw_recommendations: List[Dict[str, Any]]) -> List[Di
     for rec in raw_recommendations:
         product = Product.objects.select_related("category").filter(id=rec.get("product_id")).first()
         if product:
+            image = ""
+            if product.image:
+                try:
+                    image = product.image.url
+                except ValueError:
+                    image = str(product.image)
             enriched_recommendations.append(
                 {
                     **rec,
@@ -279,7 +400,7 @@ def enrich_recommendations(raw_recommendations: List[Dict[str, Any]]) -> List[Di
                         "price": float(product.price),
                         "description": product.description,
                         "category": product.category.name if product.category else None,
-                        "image": product.image,
+                        "image": image,
                         "stock": product.stock,
                     },
                 }

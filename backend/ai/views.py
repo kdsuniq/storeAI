@@ -10,12 +10,15 @@ from products.models import CartItem, Product
 from .models import AIInteraction, ProductViewEvent
 from .services import (
     ask_ai_sync,
+    build_local_product_description,
     build_bundle,
     build_market_insights_prompt,
     build_product_prompt,
     build_chat_prompt,
     get_personal_recommendations,
     parse_json_response,
+    normalize_specs,
+    SYSTEM_PROMPT_PRODUCT,
     get_price_analysis,
     semantic_search_products,
 )
@@ -130,9 +133,10 @@ class AIDescriptionView(APIView):
         ]
     )
     def post(self, request):
-        name = request.data.get("name", "")
-        category = request.data.get("category", "")
-        specs = request.data.get("specs", {})
+        name = request.data.get("name") or request.data.get("название") or ""
+        category = request.data.get("category") or request.data.get("категория") or ""
+        specs = request.data.get("specs", request.data.get("характеристики", {}))
+        specs = normalize_specs(specs)
 
         if not name or not str(name).strip():
             return Response(
@@ -146,31 +150,23 @@ class AIDescriptionView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        if specs and not isinstance(specs, dict):
-            return Response(
-                {"error": "specs must be JSON object"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         prompt = build_product_prompt(
             name=name.strip(), 
             category=category, 
             specs=specs
         )
-        answer = ask_ai_sync(prompt, response_format="json")
+        answer = ask_ai_sync(
+            prompt,
+            response_format="json",
+            temperature=0.45,
+            system_prompt_override=SYSTEM_PROMPT_PRODUCT,
+        )
         
         parsed = parse_json_response(answer)
-        if parsed:
+        if parsed and isinstance(parsed, dict) and parsed.get("full_description"):
             return Response({"description": parsed})
         
-        return Response({
-            "description": {
-                "short_description": answer[:200],
-                "full_description": answer,
-                "advantages": ["Качественный товар", "Отличная цена", "Быстрая доставка"],
-                "call_to_action": "Добавьте товар в корзину!"
-            }
-        })
+        return Response({"description": build_local_product_description(name, category, specs)})
 
 
 class MarketInsightsView(APIView):

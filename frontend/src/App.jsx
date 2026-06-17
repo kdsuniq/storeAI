@@ -73,6 +73,11 @@ const getList = (data) => {
   return []
 }
 
+const getSavedTheme = () => {
+  if (typeof window === 'undefined') return 'dark'
+  return localStorage.getItem('theme') === 'light' ? 'light' : 'dark'
+}
+
 const getPageMeta = (data, fallbackLength = 0) => ({
   count: Number(data?.count ?? fallbackLength),
   next: data?.next || null,
@@ -153,8 +158,9 @@ async function apiFetch(path, { method = 'GET', body, auth, setAuth } = {}) {
   return { ok: res.ok, status: res.status, data }
 }
 
-function Header({ isAuth, profile, onLogout }) {
+function Header({ isAuth, profile, onLogout, theme, onToggleTheme }) {
   const isAdmin = profile?.is_staff
+  const isLight = theme === 'light'
   return (
     <header className="header-wrap">
       <div className="topline">
@@ -171,6 +177,19 @@ function Header({ isAuth, profile, onLogout }) {
           {isAuth && <Link className="btn btn-light" to="/account">Аккаунт</Link>}
           <Link className="btn btn-accent" to="/cart">Корзина</Link>
           {isAdmin && <Link className="btn btn-light" to="/admin">Админка</Link>}
+          <button
+            className="theme-toggle"
+            type="button"
+            aria-pressed={isLight}
+            aria-label={isLight ? 'Включить тёмную тему' : 'Включить светлую тему'}
+            title={isLight ? 'Тёмная тема' : 'Светлая тема'}
+            onClick={onToggleTheme}
+          >
+            <span className="theme-toggle-track" aria-hidden="true">
+              <span className="theme-toggle-thumb" />
+            </span>
+            <span className="theme-toggle-label">{isLight ? 'Светлая' : 'Тёмная'}</span>
+          </button>
           {isAuth ? <button className="btn btn-outline" onClick={onLogout}>Выйти</button> : <Link className="btn btn-outline" to="/auth/buyer">Вход</Link>}
         </div>
       </div>
@@ -2090,6 +2109,7 @@ function AdminPage({ auth, setAuth }) {
 export default function App() {
   const [auth, setAuth] = useState(getAuth())
   const [profile, setProfile] = useState(null)
+  const [theme, setTheme] = useState(getSavedTheme)
 
   useEffect(() => {
     const check = async () => {
@@ -2109,17 +2129,26 @@ export default function App() {
     check()
   }, [auth.access])
 
+  useEffect(() => {
+    document.body.dataset.theme = theme
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
   const onLogout = () => {
     clearAuth()
     setAuth({ access: '', refresh: '' })
     setProfile(null)
   }
 
+  const toggleTheme = () => {
+    setTheme((value) => (value === 'light' ? 'dark' : 'light'))
+  }
+
   const isAuth = Boolean(auth.access)
 
   return (
     <div className="page">
-      <Header isAuth={isAuth} profile={profile} onLogout={onLogout} />
+      <Header isAuth={isAuth} profile={profile} onLogout={onLogout} theme={theme} onToggleTheme={toggleTheme} />
       {isAuth && profile && !profile.email_verified && (
         <EmailVerificationBanner auth={auth} setAuth={setAuth} setProfile={setProfile} />
       )}
