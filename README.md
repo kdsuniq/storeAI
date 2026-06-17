@@ -8,6 +8,7 @@
 cd store_with_AI/backend
 cp .env.example .env
 # Добавьте OPENROUTER_API_KEY в .env
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
@@ -93,3 +94,17 @@ OPENROUTER_MODEL=openrouter/free
 ```
 
 Без ключа AI работает в fallback-режиме (базовые рекомендации по каталогу).
+
+
+## Фикстуры
+Файлы для начального заполнения базы данных
+
+Создание фикстур и определенной products.category
+```
+python manage.py dumpdata products.category --indent 2 > products/fixtures/categories.json
+```
+Загрузка данных из фикстур 
+```
+python manage.py loaddata products/fixtures/categories.json 
+python manage.py loaddata products/fixtures/products.json
+```
