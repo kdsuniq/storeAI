@@ -1,0 +1,58 @@
+[
+  {
+    "model": "products.category",
+    "pk": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "fields": {
+      "name": "Российская косметика",
+      "description": "Натуральная косметика от российских производителей"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "fields": {
+      "name": "Итальянская косметика",
+      "description": "Качественная косметика из Италии"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "fields": {
+      "name": "Американская косметика",
+      "description": "Инновационная косметика из США"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "fields": {
+      "name": "Французская косметика",
+      "description": "Люксовая косметика из Франции"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "fields": {
+      "name": "Корейская косметика",
+      "description": "Инновационная K-Beauty косметика из Кореи"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "fields": {
+      "name": "Японская косметика",
+      "description": "Высокотехнологичная косметика из Японии"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "fields": {
+      "name": "Немецкая косметика",
+      "description": "Надежная косметика из Германии с медицинским подходом"
+    }
+  }
+]
