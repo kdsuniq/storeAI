@@ -688,7 +688,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-edit-small {
-  background: #f0f0f0;
+  background: none;
   border: none;
   border-radius: 4px;
   padding: 2px 8px;
