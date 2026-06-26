@@ -3,7 +3,50 @@ import { useEffect, useMemo, useState } from 'react'
 
 const API = import.meta.env.VITE_API_URL || '/api'
 
-const getToken = () => localStorage.getItem('token') || ''
+const getAuth = () => ({
+  access: localStorage.getItem('access_token') || '',
+  refresh: localStorage.getItem('refresh_token') || '',
+})
+
+const saveAuth = (tokens) => {
+  localStorage.setItem('access_token', tokens?.access || '')
+  localStorage.setItem('refresh_token', tokens?.refresh || '')
+}
+
+const clearAuth = () => {
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+}
+
+const authHeaders = (auth) => auth?.access ? { Authorization: `Bearer ${auth.access}` } : {}
+
+const refreshAuth = async (auth, setAuth) => {
+  if (!auth.refresh) return null
+  const res = await fetch(`${API}/auth/token/refresh/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refresh: auth.refresh }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok || !data.access) {
+    clearAuth()
+    setAuth({ access: '', refresh: '' })
+    return null
+  }
+  const nextAuth = { access: data.access, refresh: data.refresh || auth.refresh }
+  saveAuth(nextAuth)
+  setAuth(nextAuth)
+  return nextAuth
+}
+
+const authFetch = async (path, auth, setAuth, options = {}) => {
+  const headers = { ...(options.headers || {}), ...authHeaders(auth) }
+  let res = await fetch(`${API}${path}`, { ...options, headers })
+  if (res.status !== 401) return res
+  const nextAuth = await refreshAuth(auth, setAuth)
+  if (!nextAuth) return res
+  return fetch(`${API}${path}`, { ...options, headers: { ...(options.headers || {}), ...authHeaders(nextAuth) } })
+}
 
 const parseSpecs = (text) => {
   if (!text.trim()) return {}
@@ -24,15 +67,15 @@ const extractError = (data) => {
   return Array.isArray(val) ? val[0] : String(val)
 }
 
-function Header({ token, onLogout }) {
+function Header({ isAuth, onLogout }) {
   return (
     <header className="header-wrap">
       <div className="topline">
         <div className="brand">Store with AI</div>
         <div className="actions">
-          {token ? <Link className="btn btn-light" to="/account">Разместить товар</Link> : <Link className="btn btn-light" to="/auth">Стать продавцом</Link>}
+          {isAuth ? <Link className="btn btn-light" to="/account">Разместить товар</Link> : <Link className="btn btn-light" to="/auth">Стать продавцом</Link>}
           <Link className="btn btn-accent" to="/cart">Корзина</Link>
-          {token ? <button className="btn btn-outline" onClick={onLogout}>Выйти</button> : <Link className="btn btn-outline" to="/auth">Вход</Link>}
+          {isAuth ? <button className="btn btn-outline" onClick={onLogout}>Выйти</button> : <Link className="btn btn-outline" to="/auth">Вход</Link>}
         </div>
       </div>
       <nav className="menu">
@@ -43,7 +86,7 @@ function Header({ token, onLogout }) {
   )
 }
 
-function ProductsPage({ token }) {
+function ProductsPage({ auth, setAuth }) {
   const [products, setProducts] = useState([])
   const [query, setQuery] = useState('')
   const [aiQuestion, setAiQuestion] = useState('')
@@ -66,10 +109,10 @@ function ProductsPage({ token }) {
 
   const addToCart = async (productId) => {
     setError('')
-    if (!token) return setError('Чтобы добавить в корзину, нужно войти в аккаунт.')
-    const res = await fetch(`${API}/products/cart/`, {
+    if (!auth.access) return setError('Чтобы добавить в корзину, нужно войти в аккаунт.')
+    const res = await authFetch('/products/cart/', auth, setAuth, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ product_id: productId, quantity: 1 })
     })
     if (!res.ok) {
@@ -138,7 +181,9 @@ function AuthPage({ onAuth }) {
     e.preventDefault()
     setError('')
     const url = mode === 'login' ? `${API}/auth/login/` : `${API}/auth/register/`
-    const payload = mode === 'login' ? { username: form.username, password: form.password } : form
+    const payload = mode === 'login'
+      ? { username: form.username, password: form.password }
+      : { ...form, role: 'seller', store_name: form.username }
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -147,8 +192,8 @@ function AuthPage({ onAuth }) {
     const data = await res.json().catch(() => ({}))
     if (!res.ok) return setError(extractError(data))
 
-    localStorage.setItem('token', data.token)
-    onAuth(data.token)
+    saveAuth(data.tokens)
+    onAuth(getAuth())
     navigate('/account')
   }
 
@@ -159,7 +204,7 @@ function AuthPage({ onAuth }) {
         <form onSubmit={submit}>
           <input placeholder="Логин" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} required />
           {mode === 'register' && <input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />}
-          <input type="password" placeholder="Пароль (мин. 6 символов)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+          <input type="password" placeholder="Пароль (мин. 8 символов)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
           {error && <p className="note">{error}</p>}
           <button className="btn btn-accent" type="submit">{mode === 'login' ? 'Войти' : 'Создать аккаунт'}</button>
         </form>
@@ -171,7 +216,7 @@ function AuthPage({ onAuth }) {
   )
 }
 
-function AccountPage({ token }) {
+function AccountPage({ auth, setAuth }) {
   const [categories, setCategories] = useState([])
   const [myProducts, setMyProducts] = useState([])
   const [cat, setCat] = useState({ name: '', description: '' })
@@ -181,7 +226,7 @@ function AccountPage({ token }) {
   const load = async () => {
     const [cRes, pRes] = await Promise.all([
       fetch(`${API}/categories/`),
-      fetch(`${API}/products/my-products/`, { headers: { Authorization: `Token ${token}` } })
+      authFetch('/products/my-products/', auth, setAuth)
     ])
     if (pRes.status === 401) {
       setMsg('Сессия истекла. Войдите заново.')
@@ -193,13 +238,13 @@ function AccountPage({ token }) {
     setMyProducts(Array.isArray(pData) ? pData : [])
   }
 
-  useEffect(() => { load() }, [token])
+  useEffect(() => { load() }, [auth.access])
 
   const addCategory = async (e) => {
     e.preventDefault()
-    const res = await fetch(`${API}/categories/`, {
+    const res = await authFetch('/categories/', auth, setAuth, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(cat)
     })
     if (!res.ok) return setMsg('Не удалось создать категорию')
@@ -218,20 +263,23 @@ function AccountPage({ token }) {
     })
     const data = await res.json().catch(() => ({}))
     if (!res.ok) return setMsg(extractError(data))
-    setForm((p) => ({ ...p, description: data.description || p.description }))
+    const description = typeof data.description === 'string'
+      ? data.description
+      : data.description?.full_description || data.description?.short_description || ''
+    setForm((p) => ({ ...p, description: description || p.description }))
     setMsg('Описание сгенерировано')
   }
 
   const addProduct = async (e) => {
     e.preventDefault()
-    const res = await fetch(`${API}/products/`, {
+    const res = await authFetch('/products/', auth, setAuth, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: form.name,
         description: form.description,
         price: Number(form.price),
-        category_id: form.category_id,
+        category: form.category_id,
         specs: parseSpecs(form.specsText)
       })
     })
@@ -289,11 +337,11 @@ function AccountPage({ token }) {
   )
 }
 
-function CartPage({ token }) {
+function CartPage({ auth, setAuth }) {
   const [cart, setCart] = useState({ items: [], total: 0 })
 
   const load = async () => {
-    const res = await fetch(`${API}/products/cart/`, { headers: { Authorization: `Token ${token}` } })
+    const res = await authFetch('/products/cart/', auth, setAuth)
     if (!res.ok) return
     const data = await res.json().catch(() => ({ items: [], total: 0 }))
     setCart({
@@ -302,14 +350,14 @@ function CartPage({ token }) {
     })
   }
 
-  useEffect(() => { if (token) load() }, [token])
+  useEffect(() => { if (auth.access) load() }, [auth.access])
 
   const removeItem = async (id) => {
-    await fetch(`${API}/products/cart/${id}/`, { method: 'DELETE', headers: { Authorization: `Token ${token}` } })
+    await authFetch(`/products/cart/${id}/`, auth, setAuth, { method: 'DELETE' })
     load()
   }
 
-  if (!token) return <section className="panel"><p>Войдите в аккаунт, чтобы пользоваться корзиной.</p></section>
+  if (!auth.access) return <section className="panel"><p>Войдите в аккаунт, чтобы пользоваться корзиной.</p></section>
 
   return (
     <section className="panel">
@@ -329,33 +377,35 @@ function CartPage({ token }) {
 }
 
 export default function App() {
-  const [token, setToken] = useState(getToken())
+  const [auth, setAuth] = useState(getAuth())
 
   useEffect(() => {
     const check = async () => {
-      if (!token) return
-      const res = await fetch(`${API}/auth/me/`, { headers: { Authorization: `Token ${token}` } })
+      if (!auth.access) return
+      const res = await authFetch('/auth/me/', auth, setAuth)
       if (!res.ok) {
-        localStorage.removeItem('token')
-        setToken('')
+        clearAuth()
+        setAuth({ access: '', refresh: '' })
       }
     }
     check()
-  }, [token])
+  }, [auth.access])
 
   const onLogout = () => {
-    localStorage.removeItem('token')
-    setToken('')
+    clearAuth()
+    setAuth({ access: '', refresh: '' })
   }
+
+  const isAuth = Boolean(auth.access)
 
   return (
     <div className="page">
-      <Header token={token} onLogout={onLogout} />
+      <Header isAuth={isAuth} onLogout={onLogout} />
       <Routes>
-        <Route path="/" element={<ProductsPage token={token} />} />
-        <Route path="/auth" element={<AuthPage onAuth={setToken} />} />
-        <Route path="/cart" element={<CartPage token={token} />} />
-        <Route path="/account" element={token ? <AccountPage token={token} /> : <Navigate to="/auth" replace />} />
+        <Route path="/" element={<ProductsPage auth={auth} setAuth={setAuth} />} />
+        <Route path="/auth" element={<AuthPage onAuth={setAuth} />} />
+        <Route path="/cart" element={<CartPage auth={auth} setAuth={setAuth} />} />
+        <Route path="/account" element={isAuth ? <AccountPage auth={auth} setAuth={setAuth} /> : <Navigate to="/auth" replace />} />
       </Routes>
     </div>
   )
