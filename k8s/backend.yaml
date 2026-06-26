@@ -4,7 +4,7 @@ metadata:
   name: backend
   namespace: store-ai
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: backend
@@ -13,6 +13,18 @@ spec:
       labels:
         app: backend
     spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16-alpine
+          command:
+            - sh
+            - -c
+            - until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 2; done
+          envFrom:
+            - configMapRef:
+                name: store-ai-config
+            - secretRef:
+                name: store-ai-secret
       containers:
         - name: backend
           image: cr.yandex/<REGISTRY_ID>/store-ai-backend:latest
@@ -24,6 +36,9 @@ spec:
                 name: store-ai-config
             - secretRef:
                 name: store-ai-secret
+          volumeMounts:
+            - name: media
+              mountPath: /app/media
           readinessProbe:
             httpGet:
               path: /api/schema/
@@ -36,6 +51,10 @@ spec:
               port: 8000
             initialDelaySeconds: 30
             periodSeconds: 20
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: backend-media
 ---
 apiVersion: v1
 kind: Service
@@ -48,3 +67,15 @@ spec:
   ports:
     - port: 8000
       targetPort: 8000
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backend-media
+  namespace: store-ai
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

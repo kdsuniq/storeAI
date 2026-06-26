@@ -1,0 +1,5113 @@
+[
+{
+  "model": "products.category",
+  "pk": "01cc6d87-fc48-4adb-9a02-e84b043d482e",
+  "fields": {
+    "name": "Спорт",
+    "description": "Инвентарь, бутылки, коврики и товары для активного дня"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "16ec5f6e-0961-4df9-8a2e-9ce74b5e2d2b",
+  "fields": {
+    "name": "телефон",
+    "description": ""
+  }
+},
+{
+  "model": "products.category",
+  "pk": "1cc87ac1-5f09-48ca-8148-44e5eaaebae8",
+  "fields": {
+    "name": "Зоотовары",
+    "description": "Товары для ухода, игр и прогулок с питомцами"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+  "fields": {
+    "name": "Российская косметика",
+    "description": "Натуральная косметика от российских производителей"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "3710e7c2-757f-4c96-ac0f-544a365c3917",
+  "fields": {
+    "name": "комп",
+    "description": "большой"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+  "fields": {
+    "name": "Техника",
+    "description": "Гаджеты и электроника для повседневных задач"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "3d194b95-f68b-4afe-8f86-ec83b6fc3d16",
+  "fields": {
+    "name": "Офис",
+    "description": "Товары для рабочего места, планирования и учёбы"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "44850e19-4a3a-49c6-97ca-e07cd8239126",
+  "fields": {
+    "name": "Кухня",
+    "description": "Посуда, хранение, аксессуары и техника для кухни"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "54a8351b-a875-42ea-be94-5415cc4db7fe",
+  "fields": {
+    "name": "прикол",
+    "description": ""
+  }
+},
+{
+  "model": "products.category",
+  "pk": "55e49ac3-e4b0-4183-afe6-7dfbac6bb60c",
+  "fields": {
+    "name": "Детские товары",
+    "description": "Игрушки, наборы для творчества и полезные детские товары"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "55f72091-18d2-4904-8256-008f5193d995",
+  "fields": {
+    "name": "Подарки",
+    "description": "Идеи для подарков, уютные наборы и приятные мелочи"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+  "fields": {
+    "name": "одежда",
+    "description": "вещи"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+  "fields": {
+    "name": "Дом и уют",
+    "description": "Товары для дома, ароматы, текстиль и организация пространства"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+  "fields": {
+    "name": "Итальянская косметика",
+    "description": "Качественная косметика из Италии"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+  "fields": {
+    "name": "Аксессуары",
+    "description": "Украшения, сумки и повседневные аксессуары"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+  "fields": {
+    "name": "Американская косметика",
+    "description": "Инновационная косметика из США"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+  "fields": {
+    "name": "Французская косметика",
+    "description": "Люксовая косметика из Франции"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+  "fields": {
+    "name": "Книги",
+    "description": "Книги для отдыха, развития и красивого подарка"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "d32ac587-4cbf-42f9-a46d-a343270c3c16",
+  "fields": {
+    "name": "компьютер",
+    "description": "большой"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+  "fields": {
+    "name": "Корейская косметика",
+    "description": "Инновационная K-Beauty косметика из Кореи"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+  "fields": {
+    "name": "Японская косметика",
+    "description": "Высокотехнологичная косметика из Японии"
+  }
+},
+{
+  "model": "products.category",
+  "pk": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+  "fields": {
+    "name": "Немецкая косметика",
+    "description": "Надежная косметика из Германии с медицинским подходом"
+  }
+},
+{
+  "model": "products.product",
+  "pk": "004ed48f-b293-48e4-9925-d8b38e141ba2",
+  "fields": {
+    "owner": 12,
+    "name": "Рюкзак Minimal Day",
+    "description": "Городской рюкзак для ноутбука и повседневных вещей.",
+    "price": "3490.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "18 л",
+      "Отделение": "ноутбук 14"
+    },
+    "created_at": "2026-06-17T12:38:53.041Z",
+    "stock": 11,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "01570215-390f-4335-967a-3353d27e3de6",
+  "fields": {
+    "owner": 12,
+    "name": "Кружка Stone Morning",
+    "description": "Керамическая кружка для кофе или чая.",
+    "price": "690.00",
+    "category": "44850e19-4a3a-49c6-97ca-e07cd8239126",
+    "image": "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "350 мл",
+      "Материал": "керамика"
+    },
+    "created_at": "2026-06-17T12:38:53.073Z",
+    "stock": 28,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "01c48826-1376-4396-bb65-1d98b8534903",
+  "fields": {
+    "owner": 7,
+    "name": "штаны",
+    "description": "{\"name\":\"штаны\",\"category\":\"одежда\",\"description\":\"Описание товара\",\"characteristics\":{}}",
+    "price": "1000.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-15T22:54:42.604Z",
+    "stock": 209,
+    "low_stock_threshold": 59
+  }
+},
+{
+  "model": "products.product",
+  "pk": "045aa402-3884-45e4-b602-dc1e045203d8",
+  "fields": {
+    "owner": 12,
+    "name": "Худи Basic Cloud",
+    "description": "Мягкое базовое худи свободного кроя для прогулок, дома и повседневного образа.",
+    "price": "3290.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размеры": "S-XL",
+      "Материал": "хлопок, полиэстер",
+      "Цвет": "серый"
+    },
+    "created_at": "2026-06-17T12:36:13.432Z",
+    "stock": 20,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "05d6d317-5a59-4254-9ce5-55880adf9bf3",
+  "fields": {
+    "owner": 12,
+    "name": "Тонер Hyaluronic Fresh",
+    "description": "Увлажняющий тонер для базового ухода после очищения.",
+    "price": "1190.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "200 мл",
+      "Текстура": "водная"
+    },
+    "created_at": "2026-06-17T12:38:53.049Z",
+    "stock": 15,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "08c7007b-65d2-4091-bea6-219e324c5249",
+  "fields": {
+    "owner": 12,
+    "name": "Рубашка Linen Day",
+    "description": "Лёгкая рубашка свободного кроя.",
+    "price": "2990.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "лён, хлопок",
+      "Цвет": "белый"
+    },
+    "created_at": "2026-06-17T12:38:53.053Z",
+    "stock": 35,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "08ce632c-d94b-4f84-b895-5909ef794c49",
+  "fields": {
+    "owner": 12,
+    "name": "Игрушка Rope Ball",
+    "description": "Игрушка-канат для активных игр с собакой.",
+    "price": "490.00",
+    "category": "1cc87ac1-5f09-48ca-8148-44e5eaaebae8",
+    "image": "https://images.unsplash.com/photo-1601758063541-d2f50b4aafb2?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "хлопок",
+      "Размер": "средний"
+    },
+    "created_at": "2026-06-17T12:38:53.069Z",
+    "stock": 8,
+    "low_stock_threshold": 2
+  }
+},
+{
+  "model": "products.product",
+  "pk": "0b10cf63-8d36-4930-b0d6-a60c23233144",
+  "fields": {
+    "owner": 5,
+    "name": "телефон",
+    "description": "AI временно недоступен\n\nВот базовые рекомендации:\n- Смотрите на товары с высоким спросом\n- Держите актуальные цены\n- Добавляйте качественные фото\n- Указывайте наличие на складе",
+    "price": "100.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-15T21:19:38.234Z",
+    "stock": 10,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "0b92eefc-563b-4132-af57-82f7d63f6083",
+  "fields": {
+    "owner": 12,
+    "name": "Набор закладок Botanical",
+    "description": "Комплект красивых закладок для книг и ежедневников.",
+    "price": "290.00",
+    "category": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+    "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплект": "6 шт",
+      "Стиль": "ботаника"
+    },
+    "created_at": "2026-06-17T12:38:53.044Z",
+    "stock": 24,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "0ce16f05-b5ad-4b9c-b323-2f07597d7f33",
+  "fields": {
+    "owner": 2,
+    "name": "прикол",
+    "description": "хзхз",
+    "price": "50090900.00",
+    "category": "54a8351b-a875-42ea-be94-5415cc4db7fe",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-05-24T13:23:53.273Z",
+    "stock": 0,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "0f6a6204-277e-4b48-baed-2c0fb8fd5097",
+  "fields": {
+    "owner": 12,
+    "name": "Лежанка Pet Cloud S",
+    "description": "Мягкая лежанка для кошки или небольшой собаки.",
+    "price": "2490.00",
+    "category": "1cc87ac1-5f09-48ca-8148-44e5eaaebae8",
+    "image": "https://images.unsplash.com/photo-1601758063541-d2f50b4aafb2?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размер": "S",
+      "Материал": "плюш"
+    },
+    "created_at": "2026-06-17T12:38:53.068Z",
+    "stock": 37,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000001",
+  "fields": {
+    "owner": 9,
+    "name": "Chanel Тональный крем",
+    "description": "Тональный крем-уход SUBLIMAGE LE TEINT от Chanel — это больше, чем просто тональное средство. Его легкая кремовая текстура обеспечивает естественное атласное покрытие и ухаживает за кожей благодаря эффективным ингредиентам. Средство дарит коже сияние, упругость и длительное увлажнение.",
+    "price": "5000.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Тип покрытия": "Среднее, регулируемое, с атласным финишем.",
+      "Объем": "30 г.",
+      "Тип кожи": "Для всех типов кожи.",
+      "Уходовые свойства": "Увлажнение на 12 часов."
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 3,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000002",
+  "fields": {
+    "owner": 9,
+    "name": "Dior Помада",
+    "description": "Помада Dior Rouge Forever — стойкая формула с натуральным маслом, которая сохраняет цвет до 16 часов и комфортно ощущается на губах.",
+    "price": "3500.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Финиш": "Матовый",
+      "Стойкость": "До 16 часов",
+      "Объем": "3.5 г.",
+      "Особенности": "Увлажняет губы"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000003",
+  "fields": {
+    "owner": 9,
+    "name": "Lancôme Сыворотка",
+    "description": "Сыворотка Lancôme Advanced Génifique — восстанавливает кожу, ускоряет обновление клеток и дарит молодость и сияние.",
+    "price": "7500.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "30 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Восстановление, сияние",
+      "Ключевой ингредиент": "Пребиотики"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 2,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000004",
+  "fields": {
+    "owner": 9,
+    "name": "La Roche-Posay Крем",
+    "description": "Увлажняющий крем La Roche-Posay Hydraphase Intense — восстанавливает водный баланс кожи, устраняет сухость и дискомфорт.",
+    "price": "2500.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Тип кожи": "Для чувствительной, сухой кожи",
+      "Эффект": "Интенсивное увлажнение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 8,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000005",
+  "fields": {
+    "owner": 9,
+    "name": "Chanel Тушь",
+    "description": "Тушь Chanel Le Volume de Chanel — создает невероятный объем и изгиб, не склеивая ресницы. Стойкая до 12 часов.",
+    "price": "3200.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "6 г.",
+      "Эффект": "Объем и изгиб",
+      "Стойкость": "До 12 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 4,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000006",
+  "fields": {
+    "owner": 9,
+    "name": "L'Oréal Очищающий гель",
+    "description": "Гель-пенка для умывания L'Oréal Pure Clay — глубоко очищает поры, удаляет загрязнения и матирует кожу без пересушивания.",
+    "price": "1800.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "150 мл.",
+      "Тип кожи": "Для жирной и комбинированной",
+      "Эффект": "Глубокое очищение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 10,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000007",
+  "fields": {
+    "owner": 9,
+    "name": "Guerlain Пудра",
+    "description": "Рассветная пудра Guerlain Météorites — придает лицу естественное сияние, выравнивает тон и мягко подсвечивает кожу.",
+    "price": "4200.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "25 г.",
+      "Эффект": "Сияние, мягкий финиш",
+      "Финиш": "Сатиновый"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 3,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000008",
+  "fields": {
+    "owner": 9,
+    "name": "Vichy Мицеллярная вода",
+    "description": "Мицеллярная вода Vichy Pureté Thermale — эффективно снимает макияж и очищает кожу, успокаивая чувствительную кожу.",
+    "price": "1600.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "200 мл.",
+      "Тип кожи": "Для чувствительной",
+      "Эффект": "Очищение, успокоение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 12,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000009",
+  "fields": {
+    "owner": 9,
+    "name": "Dior Консилер",
+    "description": "Консилер Dior Forever Skin Correct — маскирует темные круги и несовершенства, сохраняя стойкость до 24 часов.",
+    "price": "2800.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "11 мл.",
+      "Стойкость": "До 24 часов",
+      "Финиш": "Натуральный"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000010",
+  "fields": {
+    "owner": 9,
+    "name": "YSL Парфюм",
+    "description": "Парфюм YSL Libre — цветочный аромат с нотами лаванды, апельсинового цвета и ванили. Символ свободы.",
+    "price": "8900.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Тип аромата": "Цветочный, древесный",
+      "Стойкость": "До 8 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 2,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000011",
+  "fields": {
+    "owner": 9,
+    "name": "Natura Siberica Шампунь",
+    "description": "Шампунь Natura Siberica для объема — укрепляет волосы, придает естественный объем и блеск благодаря экстрактам сибирских трав.",
+    "price": "900.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {
+      "Объем": "400 мл.",
+      "Тип волос": "Для всех типов",
+      "Эффект": "Объем, блеск"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 15,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000012",
+  "fields": {
+    "owner": 9,
+    "name": "Planeta Organica Маска",
+    "description": "Маска для лица Planeta Organica с глиной и водорослями — очищает, сужает поры, насыщает минералами.",
+    "price": "1200.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {
+      "Объем": "100 мл.",
+      "Тип кожи": "Для жирной и проблемной",
+      "Эффект": "Очищение, сужение пор"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 7,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000013",
+  "fields": {
+    "owner": 9,
+    "name": "Levrana Крем",
+    "description": "Крем для лица Levrana с оливковым маслом — питает, смягчает и восстанавливает сухую кожу, защищая от шелушений.",
+    "price": "800.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Тип кожи": "Для сухой и чувствительной",
+      "Эффект": "Питание, смягчение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 9,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000014",
+  "fields": {
+    "owner": 9,
+    "name": "Mi&Ko Пилинг",
+    "description": "Энзимный пилинг Mi&Ko — мягко отшелушивает ороговевший слой, обновляет кожу и улучшает цвет лица.",
+    "price": "1700.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {
+      "Объем": "60 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Обновление, сияние"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 4,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000015",
+  "fields": {
+    "owner": 9,
+    "name": "Clean Line Скраб",
+    "description": "Скраб для лица Clean Line с абрикосовыми косточками — мягко удаляет отмершие клетки, разглаживает и освежает кожу.",
+    "price": "350.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {
+      "Объем": "100 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Очищение, обновление"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 20,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000016",
+  "fields": {
+    "owner": 9,
+    "name": "Natura Siberica Бальзам",
+    "description": "Бальзам-ополаскиватель для волос Natura Siberica с облепихой — облегчает расчесывание, придает гладкость и блеск.",
+    "price": "850.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {
+      "Объем": "400 мл.",
+      "Тип волос": "Для всех типов",
+      "Эффект": "Гладкость, блеск"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 11,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000017",
+  "fields": {
+    "owner": 9,
+    "name": "Teana Сыворотка",
+    "description": "Сыворотка Teana с гиалуроновой кислотой — интенсивно увлажняет, разглаживает морщины и повышает упругость кожи.",
+    "price": "2500.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {
+      "Объем": "30 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Увлажнение, разглаживание"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 3,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000018",
+  "fields": {
+    "owner": 9,
+    "name": "Organic Shop Масло",
+    "description": "Масло для тела Organic Shop с кокосом — питает, увлажняет и дарит коже мягкость и аромат.",
+    "price": "650.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {
+      "Объем": "200 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Питание, увлажнение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 14,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000019",
+  "fields": {
+    "owner": 9,
+    "name": "Агафья Скраб",
+    "description": "Скраб для тела от бабушки Агафьи с солью и маслом — глубоко очищает, тонизирует и борется с целлюлитом.",
+    "price": "400.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {
+      "Объем": "300 г.",
+      "Эффект": "Очищение, тонус",
+      "Особенность": "Борется с целлюлитом"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 18,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000020",
+  "fields": {
+    "owner": 9,
+    "name": "Planeta Organica Тонер",
+    "description": "Тонер для лица Planeta Organica с ромашкой — успокаивает, освежает и подготавливает кожу к нанесению крема.",
+    "price": "1100.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {
+      "Объем": "200 мл.",
+      "Тип кожи": "Для чувствительной",
+      "Эффект": "Успокоение, освежение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000021",
+  "fields": {
+    "owner": 9,
+    "name": "Collistar Тональный",
+    "description": "Тональный крем Collistar Perfect Skin — легкое покрытие с эффектом вуали, выравнивает тон, защищает от солнца.",
+    "price": "3800.00",
+    "category": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "image": "",
+    "specs": {
+      "Объем": "30 г.",
+      "SPF": "SPF 15",
+      "Финиш": "Натуральный"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000022",
+  "fields": {
+    "owner": 9,
+    "name": "Bottega Verde Крем",
+    "description": "Ночной крем Bottega Verde с коллагеном — восстанавливает кожу во время сна, разглаживает морщины, повышает тонус.",
+    "price": "2200.00",
+    "category": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Эффект": "Восстановление, тонус",
+      "Ключевой ингредиент": "Коллаген"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 7,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000023",
+  "fields": {
+    "owner": 9,
+    "name": "Kiko Помада",
+    "description": "Стойкая помада Kiko Milano Unlimited Double Touch — не смывается в течение 16 часов, легкая, с эффектом блеска.",
+    "price": "1800.00",
+    "category": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "image": "",
+    "specs": {
+      "Объем": "6 мл.",
+      "Стойкость": "До 16 часов",
+      "Финиш": "Глянцевый"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 8,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000024",
+  "fields": {
+    "owner": 9,
+    "name": "Collistar Сыворотка",
+    "description": "Сыворотка Collistar с гиалуроновой кислотой — интенсивно увлажняет, разглаживает морщины и улучшает цвет лица.",
+    "price": "4200.00",
+    "category": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "image": "",
+    "specs": {
+      "Объем": "30 мл.",
+      "Эффект": "Увлажнение, разглаживание",
+      "Тип кожи": "Для всех типов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 3,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000025",
+  "fields": {
+    "owner": 9,
+    "name": "Bottega Verde Маска",
+    "description": "Маска для лица Bottega Verde с глиной и экстрактом граната — очищает, матирует и сужает поры.",
+    "price": "1500.00",
+    "category": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "image": "",
+    "specs": {
+      "Объем": "75 мл.",
+      "Тип кожи": "Для жирной и комбинированной",
+      "Эффект": "Очищение, сужение пор"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 9,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000026",
+  "fields": {
+    "owner": 9,
+    "name": "Valceno Молочко",
+    "description": "Молочко для тела Valceno с оливковым маслом и экстрактом ромашки — питает, успокаивает и смягчает кожу.",
+    "price": "1700.00",
+    "category": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "image": "",
+    "specs": {
+      "Объем": "200 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Питание, успокоение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000027",
+  "fields": {
+    "owner": 9,
+    "name": "Kiko Тени",
+    "description": "Палетка теней Kiko Milano Smart Colour — стойкая пигментация, легкое нанесение, 10 оттенков в одной палетке.",
+    "price": "2500.00",
+    "category": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "image": "",
+    "specs": {
+      "Вес": "12 г.",
+      "Количество оттенков": "10",
+      "Стойкость": "До 12 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 4,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000028",
+  "fields": {
+    "owner": 9,
+    "name": "Collistar Тушь",
+    "description": "Тушь Collistar Magnifying Lashes — создает интенсивный объем и удлиняет ресницы, стойкая до 24 часов.",
+    "price": "2300.00",
+    "category": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "image": "",
+    "specs": {
+      "Объем": "10 мл.",
+      "Эффект": "Объем, удлинение",
+      "Стойкость": "До 24 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000029",
+  "fields": {
+    "owner": 9,
+    "name": "Bottega Verde Крем для рук",
+    "description": "Крем для рук Bottega Verde с маслом ши и миндаля — заживляет трещины, смягчает и питает кожу рук.",
+    "price": "1100.00",
+    "category": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "image": "",
+    "specs": {
+      "Объем": "75 мл.",
+      "Эффект": "Питание, смягчение",
+      "Особенность": "Заживляет трещины"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 8,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000030",
+  "fields": {
+    "owner": 9,
+    "name": "Valceno Кондиционер",
+    "description": "Кондиционер для волос Valceno с кератином — восстанавливает поврежденные волосы, разглаживает и придает блеск.",
+    "price": "1900.00",
+    "category": "9a75883d-acdd-44a5-b88c-a0ef9a3e7190",
+    "image": "",
+    "specs": {
+      "Объем": "250 мл.",
+      "Тип волос": "Поврежденные, окрашенные",
+      "Эффект": "Восстановление, блеск"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000031",
+  "fields": {
+    "owner": 9,
+    "name": "Estée Lauder Сыворотка",
+    "description": "Сыворотка Estée Lauder Advanced Night Repair — восстанавливает кожу в ночное время, уменьшает морщины и улучшает тонус.",
+    "price": "8500.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "30 мл.",
+      "Эффект": "Восстановление, антивозрастной",
+      "Тип кожи": "Для всех типов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 2,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000032",
+  "fields": {
+    "owner": 9,
+    "name": "MAC Помада",
+    "description": "Матовый помада MAC Retro Matte — стойкий цвет, не сушит губы, пигментированный, более 30 оттенков.",
+    "price": "2800.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "3 г.",
+      "Финиш": "Матовый",
+      "Стойкость": "До 10 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 7,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000033",
+  "fields": {
+    "owner": 9,
+    "name": "Clinique Крем",
+    "description": "Увлажняющий крем Clinique Dramatically Different — интенсивно увлажняет и питает кожу, делая ее мягкой и гладкой.",
+    "price": "3900.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Тип кожи": "Для сухой и нормальной",
+      "Эффект": "Интенсивное увлажнение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000034",
+  "fields": {
+    "owner": 9,
+    "name": "Urban Decay Грунтовка",
+    "description": "Грунтовка под тени Urban Decay Eyeshadow Primer Potion — фиксирует тени, предотвращает скатывание и усиливает цвет.",
+    "price": "2000.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "10 мл.",
+      "Стойкость": "До 24 часов",
+      "Эффект": "Фиксация, усиление цвета"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000035",
+  "fields": {
+    "owner": 9,
+    "name": "Origins Маска",
+    "description": "Маска-очищение Origins Clear Improvement с активированным углем — глубоко очищает поры, удаляет токсины.",
+    "price": "3200.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "75 мл.",
+      "Тип кожи": "Для жирной и комбинированной",
+      "Эффект": "Глубокое очищение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 4,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000036",
+  "fields": {
+    "owner": 9,
+    "name": "Kiehl's Тонер",
+    "description": "Тоник без спирта Kiehl's Cucumber Herbal — успокаивает кожу, восстанавливает pH, освежает и тонизирует.",
+    "price": "2500.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "250 мл.",
+      "Тип кожи": "Для сухой и чувствительной",
+      "Эффект": "Успокоение, тонизирование"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 8,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000037",
+  "fields": {
+    "owner": 9,
+    "name": "Bobbi Brown Консилер",
+    "description": "Консилер Bobbi Brown Skin Long-Wear — стойкое покрытие до 16 часов, маскирует темные круги и покраснения.",
+    "price": "3400.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "7 мл.",
+      "Стойкость": "До 16 часов",
+      "Финиш": "Натуральный"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 3,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000038",
+  "fields": {
+    "owner": 9,
+    "name": "Tom Ford Парфюм",
+    "description": "Парфюм Tom Ford Black Orchid — восточный древесный аромат с нотами черного трюфеля, сливы, иланг-иланга.",
+    "price": "15000.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Тип аромата": "Восточный, древесный",
+      "Стойкость": "До 12 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 1,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000039",
+  "fields": {
+    "owner": 9,
+    "name": "Too Faced Тушь",
+    "description": "Тушь Too Faced Better Than Sex — создает объем, подкручивает и удлиняет ресницы, не склеивает.",
+    "price": "2200.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "8 мл.",
+      "Эффект": "Объем, подкручивание",
+      "Стойкость": "До 12 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 7,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000040",
+  "fields": {
+    "owner": 9,
+    "name": "CeraVe Очищающий гель",
+    "description": "Гель для умывания CeraVe Hydrating Cleanser — мягко очищает, увлажняет и восстанавливает защитный барьер кожи.",
+    "price": "1500.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "236 мл.",
+      "Тип кожи": "Для сухой и чувствительной",
+      "Эффект": "Мягкое очищение, увлажнение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 12,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000041",
+  "fields": {
+    "owner": 9,
+    "name": "Emlami Крем для лица",
+    "description": "Крем Emlami с экстрактом центеллы — успокаивает, восстанавливает и укрепляет кожу, подходит для чувствительной кожи.",
+    "price": "1800.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Тип кожи": "Для чувствительной",
+      "Эффект": "Успокоение, укрепление"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 8,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000042",
+  "fields": {
+    "owner": 9,
+    "name": "Cosrx Сыворотка",
+    "description": "Сыворотка Cosrx Advanced Snail 96 — восстанавливает кожу, увлажняет и выравнивает тон благодаря муцину улитки.",
+    "price": "2100.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "100 мл.",
+      "Эффект": "Восстановление, увлажнение",
+      "Ключевой ингредиент": "Муцин улитки"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000043",
+  "fields": {
+    "owner": 9,
+    "name": "Innisfree Маска",
+    "description": "Тканевая маска Innisfree с зеленым чаем — интенсивно увлажняет, успокаивает и придает коже сияние.",
+    "price": "350.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Тип": "Тканевая",
+      "Эффект": "Увлажнение, успокоение",
+      "Ключевой ингредиент": "Зеленый чай"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 15,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000044",
+  "fields": {
+    "owner": 9,
+    "name": "Sulwhasoo Тонер",
+    "description": "Тонер Sulwhasoo First Care — улучшает текстуру кожи, подготавливает к уходу, успокаивает и увлажняет.",
+    "price": "4500.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "120 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Тонизирование, подготовка к уходу"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 3,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000045",
+  "fields": {
+    "owner": 9,
+    "name": "Etude House Помада",
+    "description": "Помада Etude House Dear Darling — легкий тинт с водянистой текстурой, дает естественный оттенок, стойкий до 12 часов.",
+    "price": "1200.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "4.5 г.",
+      "Тип": "Тинт",
+      "Стойкость": "До 12 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 10,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000046",
+  "fields": {
+    "owner": 9,
+    "name": "Laneige Крем",
+    "description": "Ночная маска-крем Laneige Water Sleeping Mask — увлажняет кожу во время сна, восстанавливает и тонизирует.",
+    "price": "2800.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "70 мл.",
+      "Эффект": "Интенсивное увлажнение, восстановление",
+      "Тип кожи": "Для всех типов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000047",
+  "fields": {
+    "owner": 9,
+    "name": "Beauty of Joseon Сыворотка",
+    "description": "Сыворотка Beauty of Joseon с рисовым экстрактом — осветляет пигментацию, выравнивает тон, увлажняет.",
+    "price": "1900.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "30 мл.",
+      "Эффект": "Осветление, выравнивание тона",
+      "Ключевой ингредиент": "Рисовый экстракт"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 7,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000048",
+  "fields": {
+    "owner": 9,
+    "name": "Dr. Jart Маска",
+    "description": "Маска-гель Dr. Jart Dermask — интенсивно увлажняет, успокаивает и восстанавливает кожу с керамидами.",
+    "price": "1600.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Тип": "Гелевая маска",
+      "Эффект": "Увлажнение, восстановление",
+      "Ключевой ингредиент": "Керамиды"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 9,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000049",
+  "fields": {
+    "owner": 9,
+    "name": "Missha Тушь",
+    "description": "Тушь Missha Mascara — объемная формула, фиксирует изгиб и удлиняет ресницы, не осыпается.",
+    "price": "1400.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "7 мл.",
+      "Эффект": "Объем, удлинение",
+      "Стойкость": "До 12 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000050",
+  "fields": {
+    "owner": 9,
+    "name": "Klairs Мицеллярная вода",
+    "description": "Мицеллярная вода Klairs Gentle Black Deep Cleansing — очищает, успокаивает и увлажняет чувствительную кожу.",
+    "price": "1300.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "200 мл.",
+      "Тип кожи": "Для чувствительной",
+      "Эффект": "Очищение, успокоение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 11,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000051",
+  "fields": {
+    "owner": 9,
+    "name": "Shiseido Крем",
+    "description": "Крем Shiseido Essential Energy — улучшает плотность кожи, разглаживает морщины и дарит энергию.",
+    "price": "6000.00",
+    "category": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Разглаживание, уплотнение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 3,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000052",
+  "fields": {
+    "owner": 9,
+    "name": "SK-II Тонер",
+    "description": "Тонер SK-II Facial Treatment Essence — легкая текстура с ферментированным экстрактом, улучшает текстуру и сияние кожи.",
+    "price": "12000.00",
+    "category": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "image": "",
+    "specs": {
+      "Объем": "75 мл.",
+      "Эффект": "Улучшение текстуры, сияние",
+      "Ключевой ингредиент": "Pitera"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 1,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000053",
+  "fields": {
+    "owner": 9,
+    "name": "DHC Масло",
+    "description": "Очищающее масло DHC Deep Cleansing Oil — удаляет макияж и загрязнения, увлажняет и не сушит кожу.",
+    "price": "2500.00",
+    "category": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "image": "",
+    "specs": {
+      "Объем": "200 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Глубокое очищение, увлажнение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 8,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000054",
+  "fields": {
+    "owner": 9,
+    "name": "Mandom Маска",
+    "description": "Японская маска Mandom Barrier Repair — интенсивно увлажняет и восстанавливает кожу с керамидами и гиалуроновой кислотой.",
+    "price": "800.00",
+    "category": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "image": "",
+    "specs": {
+      "Тип": "Тканевая маска",
+      "Эффект": "Увлажнение, восстановление",
+      "Ключевые ингредиенты": "Керамиды, гиалуроновая кислота"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 14,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000055",
+  "fields": {
+    "owner": 9,
+    "name": "Kanebo Тональный",
+    "description": "Тональный крем Kanebo Sensai — обеспечивает естественное покрытие, увлажняет и защищает кожу от внешних факторов.",
+    "price": "4800.00",
+    "category": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "image": "",
+    "specs": {
+      "Объем": "30 г.",
+      "Финиш": "Естественный, светящийся",
+      "Тип кожи": "Для всех типов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 4,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000056",
+  "fields": {
+    "owner": 9,
+    "name": "Kose Очищающий гель",
+    "description": "Гель для умывания Kose Softymo — глубоко очищает поры, удаляет излишки кожного сала и не сушит.",
+    "price": "1500.00",
+    "category": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "image": "",
+    "specs": {
+      "Объем": "150 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Глубокое очищение, контроль жирности"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 9,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000057",
+  "fields": {
+    "owner": 9,
+    "name": "Hada Labo Лосьон",
+    "description": "Увлажняющий лосьон Hada Labo Gokujyun — с гиалуроновой кислотой, удерживает влагу и улучшает текстуру кожи.",
+    "price": "1600.00",
+    "category": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "image": "",
+    "specs": {
+      "Объем": "170 мл.",
+      "Эффект": "Интенсивное увлажнение",
+      "Ключевой ингредиент": "Гиалуроновая кислота"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 12,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000058",
+  "fields": {
+    "owner": 9,
+    "name": "Curel Крем",
+    "description": "Крем Curel Intensive Moisture — восстанавливает барьер кожи, устраняет сухость и успокаивает раздражения.",
+    "price": "2200.00",
+    "category": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "image": "",
+    "specs": {
+      "Объем": "40 г.",
+      "Тип кожи": "Для сухой и чувствительной",
+      "Эффект": "Увлажнение, восстановление"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000059",
+  "fields": {
+    "owner": 9,
+    "name": "Sofina Праймер",
+    "description": "Праймер Sofina Primavista — фиксирует макияж, матирует кожу, защищает от жирного блеска до 10 часов.",
+    "price": "2800.00",
+    "category": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "image": "",
+    "specs": {
+      "Объем": "25 г.",
+      "Эффект": "Матирование, фиксация",
+      "Стойкость": "До 10 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000060",
+  "fields": {
+    "owner": 9,
+    "name": "Kiss Me Тушь",
+    "description": "Тушь Kiss Me Heroine Make — водостойкая, удлиняет и подкручивает ресницы, держится до 24 часов.",
+    "price": "1800.00",
+    "category": "e4a2b5c8-7d9e-4f1a-8b3c-5d6e7f8a9b0c",
+    "image": "",
+    "specs": {
+      "Объем": "6 г.",
+      "Эффект": "Удлинение, подкручивание",
+      "Стойкость": "До 24 часов, водостойкая"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 7,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000061",
+  "fields": {
+    "owner": 9,
+    "name": "Dr. Hauschka Крем",
+    "description": "Крем Dr. Hauschka для лица с календулой — успокаивает, восстанавливает и защищает кожу от раздражений.",
+    "price": "3200.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Тип кожи": "Для чувствительной",
+      "Эффект": "Успокоение, восстановление"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000062",
+  "fields": {
+    "owner": 9,
+    "name": "Nivea Крем",
+    "description": "Классический крем Nivea для лица и тела — интенсивно питает, смягчает и защищает кожу.",
+    "price": "850.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Объем": "100 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Питание, смягчение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 15,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000063",
+  "fields": {
+    "owner": 9,
+    "name": "Eucerin Сыворотка",
+    "description": "Сыворотка Eucerin с гиалуроновой кислотой — интенсивно увлажняет, разглаживает морщины и укрепляет кожу.",
+    "price": "2900.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Объем": "30 мл.",
+      "Эффект": "Увлажнение, разглаживание",
+      "Тип кожи": "Для всех типов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 4,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000064",
+  "fields": {
+    "owner": 9,
+    "name": "La Roche-Posay Крем",
+    "description": "Восстанавливающий крем La Roche-Posay Cicaplast Baume B5 — заживляет, успокаивает и восстанавливает кожу.",
+    "price": "1800.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Объем": "100 мл.",
+      "Тип кожи": "Для поврежденной и чувствительной",
+      "Эффект": "Заживление, восстановление"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 8,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000065",
+  "fields": {
+    "owner": 9,
+    "name": "Balea Масло",
+    "description": "Масло для тела Balea с витамином Е — питает, разглаживает и придает коже упругость.",
+    "price": "650.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Объем": "200 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Питание, разглаживание"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 12,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000066",
+  "fields": {
+    "owner": 9,
+    "name": "Catrice Помада",
+    "description": "Стойкая помада Catrice Ultimate Stay — держится до 12 часов, имеет матовый финиш и сочный цвет.",
+    "price": "1200.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Объем": "5 мл.",
+      "Финиш": "Матовый",
+      "Стойкость": "До 12 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 9,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000067",
+  "fields": {
+    "owner": 9,
+    "name": "Ebelin Спонжи",
+    "description": "Спонжи Ebelin для макияжа — набор из 2 спонжей с эргономичной формой, не впитывают много продукта.",
+    "price": "400.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Количество": "2 шт.",
+      "Эффект": "Экономичный расход",
+      "Особенность": "Эргономичная форма"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 20,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000068",
+  "fields": {
+    "owner": 9,
+    "name": "Dermasel Скраб",
+    "description": "Скраб для тела Dermasel с морской солью — отшелушивает, тонизирует и улучшает микроциркуляцию крови.",
+    "price": "800.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Объем": "300 г.",
+      "Эффект": "Отшелушивание, тонизирование",
+      "Ключевой ингредиент": "Морская соль"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 7,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000069",
+  "fields": {
+    "owner": 9,
+    "name": "Babor Крем",
+    "description": "Крем Babor Beauty Hydration — интенсивное увлажнение и защита кожи от обезвоживания с алоэ вера.",
+    "price": "4200.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Эффект": "Увлажнение, защита",
+      "Тип кожи": "Для всех типов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 3,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000070",
+  "fields": {
+    "owner": 9,
+    "name": "Alverde Тушь",
+    "description": "Органическая тушь Alverde с натуральными маслами — подкручивает, удлиняет и ухаживает за ресницами.",
+    "price": "900.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Объем": "8 мл.",
+      "Эффект": "Удлинение, подкручивание",
+      "Особенность": "Натуральные ингредиенты"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 8,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000071",
+  "fields": {
+    "owner": 9,
+    "name": "Weleda Крем для рук",
+    "description": "Крем для рук Weleda с гранатом — питает, защищает и восстанавливает кожу рук, ароматный.",
+    "price": "1100.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Эффект": "Питание, восстановление",
+      "Ключевой ингредиент": "Гранат"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000072",
+  "fields": {
+    "owner": 9,
+    "name": "La Prairie Сыворотка",
+    "description": "Сыворотка La Prairie Skin Caviar — роскошный уход с экстрактом черной икры, повышает упругость и эластичность кожи.",
+    "price": "25000.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "30 мл.",
+      "Эффект": "Лифтинг, упругость",
+      "Ключевой ингредиент": "Экстракт икры"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 1,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000073",
+  "fields": {
+    "owner": 9,
+    "name": "Nuxe Масло",
+    "description": "Масло для лица и тела Nuxe Huile Prodigieuse — питательное сухое масло с ароматом цветов, увлажняет и сияет.",
+    "price": "3500.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "100 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Увлажнение, сияние"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000074",
+  "fields": {
+    "owner": 9,
+    "name": "Helena Rubinstein Крем",
+    "description": "Крем Helena Rubinstein Collagenist — разглаживает морщины, восстанавливает коллаген, упругость кожи.",
+    "price": "8500.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Эффект": "Восстановление коллагена, разглаживание",
+      "Тип кожи": "Для всех типов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 2,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000075",
+  "fields": {
+    "owner": 9,
+    "name": "Givenchy Пудра",
+    "description": "Пудра Givenchy Prisme Libre — деликатно матирует, фиксирует макияж и придает лицу сияние.",
+    "price": "4800.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "12 г.",
+      "Финиш": "Матирующий, сияющий",
+      "Стойкость": "До 12 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 4,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000076",
+  "fields": {
+    "owner": 9,
+    "name": "Biotherm Сыворотка",
+    "description": "Сыворотка Biotherm Life Plankton — восстанавливает и укрепляет кожу, повышает устойчивость к стрессам.",
+    "price": "5200.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "30 мл.",
+      "Эффект": "Восстановление, укрепление",
+      "Ключевой ингредиент": "Планктон"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 3,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000077",
+  "fields": {
+    "owner": 9,
+    "name": "Clarins Тонер",
+    "description": "Тонер Clarins с ромашкой — успокаивает и освежает кожу, не содержит спирта.",
+    "price": "2400.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "200 мл.",
+      "Тип кожи": "Для чувствительной",
+      "Эффект": "Успокоение, освежение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000078",
+  "fields": {
+    "owner": 9,
+    "name": "Sisley Крем",
+    "description": "Крем Sisley Paris — интенсивно питает и восстанавливает кожу, разглаживает морщины.",
+    "price": "12000.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Эффект": "Питание, восстановление",
+      "Тип кожи": "Для сухой и зрелой"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 1,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000079",
+  "fields": {
+    "owner": 9,
+    "name": "Payot Помада",
+    "description": "Увлажняющая помада Payot с маслом ши — смягчает и защищает губы, дает натуральный цвет.",
+    "price": "2200.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "4 г.",
+      "Эффект": "Увлажнение, защита",
+      "Финиш": "Естественный"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000080",
+  "fields": {
+    "owner": 9,
+    "name": "Lierac Сыворотка",
+    "description": "Сыворотка Lierac Liftissime — лифтинг-эффект, повышает эластичность и разглаживает контуры лица.",
+    "price": "3900.00",
+    "category": "c5e2a4f8-9d3a-4b7c-8e5d-1a2b3c4d5e6f",
+    "image": "",
+    "specs": {
+      "Объем": "30 мл.",
+      "Эффект": "Лифтинг, эластичность",
+      "Тип кожи": "Для зрелой кожи"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 2,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000081",
+  "fields": {
+    "owner": 9,
+    "name": "Carmex Бальзам",
+    "description": "Бальзам для губ Carmex с ментолом — защищает и увлажняет, заживляет трещины.",
+    "price": "250.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "4.5 г.",
+      "Эффект": "Защита, заживление",
+      "Особенность": "С ментолом"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 20,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000082",
+  "fields": {
+    "owner": 9,
+    "name": "Fenty Beauty Тональный",
+    "description": "Тональный крем Fenty Beauty Pro Filt'r — 50 оттенков, матовый финиш, стойкость до 12 часов.",
+    "price": "3500.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "32 мл.",
+      "Финиш": "Матовый",
+      "Стойкость": "До 12 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 4,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000083",
+  "fields": {
+    "owner": 9,
+    "name": "NYX Консилер",
+    "description": "Консилер NYX HD Photogenic — скрывает несовершенства, не сушит кожу, легко растушевывается.",
+    "price": "900.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "8 мл.",
+      "Финиш": "Натуральный",
+      "Тип кожи": "Для всех типов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 12,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000084",
+  "fields": {
+    "owner": 9,
+    "name": "Anastasia Beverly Hills Палетка",
+    "description": "Палетка теней Anastasia Modern Renaissance — 14 оттенков от нейтральных до розовых, мягкая текстура.",
+    "price": "4200.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Вес": "13 г.",
+      "Количество оттенков": "14",
+      "Текстура": "Мягкая, пигментированная"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 3,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000085",
+  "fields": {
+    "owner": 9,
+    "name": "Benefit Хайлайтер",
+    "description": "Хайлайтер Benefit Cookie — золотистый оттенок, придает коже здоровое сияние и свечение.",
+    "price": "3000.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Вес": "8 г.",
+      "Финиш": "Сияющий",
+      "Стойкость": "До 8 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000086",
+  "fields": {
+    "owner": 9,
+    "name": "Sephora Маска",
+    "description": "Тканевая маска Sephora с кокосом — увлажняет и смягчает кожу, дарит отдых и свежесть.",
+    "price": "650.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Тип": "Тканевая",
+      "Эффект": "Увлажнение, смягчение",
+      "Ключевой ингредиент": "Кокос"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 14,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000087",
+  "fields": {
+    "owner": 9,
+    "name": "The Ordinary Сыворотка",
+    "description": "Сыворотка The Ordinary с ниацинамидом — регулирует выработку кожного сала, сужает поры, осветляет.",
+    "price": "1200.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "60 мл.",
+      "Тип кожи": "Для жирной и проблемной",
+      "Эффект": "Регулирование жирности, сужение пор"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 9,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000088",
+  "fields": {
+    "owner": 9,
+    "name": "Burt's Bees Бальзам",
+    "description": "Бальзам для губ Burt's Bees с медом — натуральный, увлажняет и защищает губы от ветра и холода.",
+    "price": "750.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "4.2 г.",
+      "Эффект": "Увлажнение, защита",
+      "Особенность": "Натуральные ингредиенты"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 11,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000089",
+  "fields": {
+    "owner": 9,
+    "name": "Tarte Тушь",
+    "description": "Тушь Tarte Maneater — удлиняет, подкручивает и дает объем без склеивания и осыпания.",
+    "price": "2300.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "9 мл.",
+      "Эффект": "Объем, удлинение",
+      "Стойкость": "До 12 часов"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000090",
+  "fields": {
+    "owner": 9,
+    "name": "Paula's Choice Тонер",
+    "description": "Тонер Paula's Choice с салициловой кислотой — BHA-уход, очищает поры, борется с акне и выравнивает тон.",
+    "price": "2800.00",
+    "category": "b4d19f3b-d9ef-44c4-a6d2-3c1a5eddd7e5",
+    "image": "",
+    "specs": {
+      "Объем": "118 мл.",
+      "Тип кожи": "Для жирной и проблемной",
+      "Эффект": "Очищение пор, борьба с акне"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 6,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000091",
+  "fields": {
+    "owner": 9,
+    "name": "Mizon Сыворотка",
+    "description": "Сыворотка Mizon Snail Repair — восстанавливает кожу и разглаживает морщины, увлажняет и питает.",
+    "price": "1500.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Эффект": "Восстановление, разглаживание",
+      "Ключевой ингредиент": "Муцин улитки"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 7,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000092",
+  "fields": {
+    "owner": 9,
+    "name": "Banila Co. Бальзам",
+    "description": "Бальзам-очищение Banila Co. Clean It Zero — удаляет макияж и загрязнения, оставляя кожу чистой и увлажненной.",
+    "price": "2200.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "100 мл.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Глубокое очищение, увлажнение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000093",
+  "fields": {
+    "owner": 9,
+    "name": "Some By Mi Тонер",
+    "description": "Тонер Some By Mi AHA-BHA-PHA — отшелушивает, сужает поры и борется с акне, освежает кожу.",
+    "price": "1800.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "150 мл.",
+      "Тип кожи": "Для жирной и проблемной",
+      "Эффект": "Отшелушивание, сужение пор"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 8,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000094",
+  "fields": {
+    "owner": 9,
+    "name": "Holika Holika Маска",
+    "description": "Тканевая маска Holika Holika с алоэ — успокаивает, увлажняет и смягчает чувствительную кожу.",
+    "price": "500.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Тип": "Тканевая",
+      "Эффект": "Успокоение, увлажнение",
+      "Ключевой ингредиент": "Алоэ вера"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 15,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000095",
+  "fields": {
+    "owner": 9,
+    "name": "Secret Key Крем",
+    "description": "Крем Secret Key с муцином улитки — повышает упругость, увлажняет и восстанавливает кожу.",
+    "price": "2100.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "50 мл.",
+      "Эффект": "Упругость, восстановление",
+      "Ключевой ингредиент": "Муцин улитки"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 4,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000096",
+  "fields": {
+    "owner": 9,
+    "name": "Nature Republic Гелевая маска",
+    "description": "Гелевая маска Nature Republic с алоэ вера — интенсивно увлажняет, снимает покраснения и успокаивает.",
+    "price": "1200.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "100 мл.",
+      "Тип кожи": "Для чувствительной",
+      "Эффект": "Увлажнение, успокоение"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 9,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000097",
+  "fields": {
+    "owner": 9,
+    "name": "Innisfree Пудра",
+    "description": "Матирующая пудра Innisfree No-Sebum — контролирует жирный блеск, сужает поры, легкая текстура.",
+    "price": "800.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "5 г.",
+      "Эффект": "Матирование, сужение пор",
+      "Тип кожи": "Для жирной и комбинированной"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 12,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000098",
+  "fields": {
+    "owner": 9,
+    "name": "Dr.G Сыворотка",
+    "description": "Сыворотка Dr.G с витамином С — осветляет пигментные пятна, выравнивает тон и укрепляет кожу.",
+    "price": "2500.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "40 мл.",
+      "Эффект": "Осветление, выравнивание тона",
+      "Ключевой ингредиент": "Витамин С"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 5,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000099",
+  "fields": {
+    "owner": 9,
+    "name": "COSRX Тонер",
+    "description": "Тонер COSRX с салициловой кислотой — очищает поры, регулирует жирность и борется с черными точками.",
+    "price": "1300.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "100 мл.",
+      "Тип кожи": "Для жирной и проблемной",
+      "Эффект": "Очищение пор, контроль жирности"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 8,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "10000000-0000-0000-0000-000000000100",
+  "fields": {
+    "owner": 9,
+    "name": "Neogen Пилинг",
+    "description": "Энзимный пилинг Neogen с зеленым чаем — мягко отшелушивает, обновляет кожу и улучшает цвет лица.",
+    "price": "2400.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {
+      "Объем": "70 г.",
+      "Тип кожи": "Для всех типов",
+      "Эффект": "Обновление, мягкое отшелушивание"
+    },
+    "created_at": "2026-06-17T09:11:34.649Z",
+    "stock": 4,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "11eae687-d59c-4b7d-bd57-cdb2a220929f",
+  "fields": {
+    "owner": 12,
+    "name": "Юбка Satin Midi",
+    "description": "Юбка миди с мягким блеском.",
+    "price": "3490.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Длина": "миди",
+      "Цвет": "шампань"
+    },
+    "created_at": "2026-06-17T12:38:53.055Z",
+    "stock": 20,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "1339fb81-4de4-47cb-a205-92630afa6a16",
+  "fields": {
+    "owner": 12,
+    "name": "Шарф Warm Street",
+    "description": "Мягкий шарф для прохладной погоды.",
+    "price": "1790.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "акрил",
+      "Цвет": "серый"
+    },
+    "created_at": "2026-06-17T12:38:53.040Z",
+    "stock": 47,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "16b780bb-debe-431c-a1b2-47ef48741468",
+  "fields": {
+    "owner": 12,
+    "name": "Набор для рисования Mini Artist",
+    "description": "Карандаши, альбом и краски для детского творчества.",
+    "price": "1290.00",
+    "category": "55e49ac3-e4b0-4183-afe6-7dfbac6bb60c",
+    "image": "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплектация": "24 предмета",
+      "Возраст": "4+"
+    },
+    "created_at": "2026-06-17T12:38:53.065Z",
+    "stock": 38,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "16fee715-8f8a-4bf1-b334-f0c7d52a949d",
+  "fields": {
+    "owner": 12,
+    "name": "Набор Relax Evening",
+    "description": "Свеча, соль для ванны и маска для спокойного вечера дома.",
+    "price": "2690.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплектация": "3 предмета",
+      "Стиль": "уют"
+    },
+    "created_at": "2026-06-17T12:38:53.029Z",
+    "stock": 22,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "1791a74c-7014-4e60-8d92-68ce032f2d9b",
+  "fields": {
+    "owner": 12,
+    "name": "Джинсы Straight Fit",
+    "description": "Прямые джинсы для базового гардероба.",
+    "price": "3890.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Посадка": "средняя",
+      "Цвет": "синий"
+    },
+    "created_at": "2026-06-17T12:38:53.054Z",
+    "stock": 42,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "17b59ba8-cf9b-44b3-b148-2e3f5c3b96bc",
+  "fields": {
+    "owner": 12,
+    "name": "Набор полотенец Fresh Set",
+    "description": "Комплект мягких полотенец для ванной.",
+    "price": "2490.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплект": "3 шт",
+      "Цвет": "бежевый"
+    },
+    "created_at": "2026-06-17T12:38:53.036Z",
+    "stock": 27,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "185be228-d4bf-4181-8c7f-1d3aad0c991f",
+  "fields": {
+    "owner": 12,
+    "name": "Мышь Silent Pro",
+    "description": "Беспроводная мышь с тихими кнопками.",
+    "price": "1790.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "DPI": "1600",
+      "Подключение": "2.4 ГГц"
+    },
+    "created_at": "2026-06-17T12:38:53.047Z",
+    "stock": 16,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "1936d5cc-5e5f-418d-9a97-99409bfe37a7",
+  "fields": {
+    "owner": 12,
+    "name": "Корзина для хранения Linen Box",
+    "description": "Текстильная корзина для вещей, игрушек или белья.",
+    "price": "990.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "текстиль",
+      "Размер": "средний"
+    },
+    "created_at": "2026-06-17T12:38:53.034Z",
+    "stock": 49,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "1a6fae0c-2be7-4e7f-9afe-19b38ea93103",
+  "fields": {
+    "owner": 5,
+    "name": "телефон",
+    "description": "AI временно недоступен\n\nВот базовые рекомендации:\n- Смотрите на товары с высоким спросом\n- Держите актуальные цены\n- Добавляйте качественные фото\n- Указывайте наличие на складе",
+    "price": "100.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-15T21:19:38.243Z",
+    "stock": 10,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "1b8d2afa-73b9-4b82-a27c-1afbb584233b",
+  "fields": {
+    "owner": 12,
+    "name": "Свеча Home Amber",
+    "description": "Ароматическая свеча для спокойного вечера, рабочего стола или подарочного набора.",
+    "price": "1190.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1602874801006-e26f673c86f6?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Аромат": "янтарь и ваниль",
+      "Время горения": "до 35 часов",
+      "Формат": "стеклянная банка"
+    },
+    "created_at": "2026-06-17T12:36:13.430Z",
+    "stock": 26,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "1c943ba8-d720-4dfb-bf02-985e88b8d6c7",
+  "fields": {
+    "owner": 12,
+    "name": "Подарочная коробка Sweet Moment",
+    "description": "Мини-набор сладостей и открытка для приятного сюрприза.",
+    "price": "1490.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Вкус": "ассорти",
+      "Упаковка": "подарочная"
+    },
+    "created_at": "2026-06-17T12:38:53.030Z",
+    "stock": 29,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "1cf23aac-b408-428e-a083-0176019ba607",
+  "fields": {
+    "owner": 12,
+    "name": "Кожаный кардхолдер Urban",
+    "description": "Тонкий кардхолдер для банковских карт и пропуска, удобно носить в кармане.",
+    "price": "990.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "экокожа",
+      "Отделения": "6",
+      "Цвет": "графит"
+    },
+    "created_at": "2026-06-17T12:36:13.429Z",
+    "stock": 27,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "1e79283c-15a6-46f6-8f58-cb9405aead23",
+  "fields": {
+    "owner": 12,
+    "name": "Подставка Monitor Rise",
+    "description": "Подставка для монитора с местом для аксессуаров.",
+    "price": "2190.00",
+    "category": "3d194b95-f68b-4afe-8f86-ec83b6fc3d16",
+    "image": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "металл",
+      "Нагрузка": "до 10 кг"
+    },
+    "created_at": "2026-06-17T12:38:53.062Z",
+    "stock": 39,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "21fc8f52-61b2-4871-beac-15fb87acc8c6",
+  "fields": {
+    "owner": 12,
+    "name": "Коврик Desk Mat Large",
+    "description": "Большой коврик для клавиатуры и мыши.",
+    "price": "1490.00",
+    "category": "3d194b95-f68b-4afe-8f86-ec83b6fc3d16",
+    "image": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размер": "80x30 см",
+      "Материал": "экокожа"
+    },
+    "created_at": "2026-06-17T12:38:53.062Z",
+    "stock": 32,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "222e57fa-7894-4aa1-b2f8-868fd9a74955",
+  "fields": {
+    "owner": null,
+    "name": "комп",
+    "description": "большой",
+    "price": "100.00",
+    "category": "d32ac587-4cbf-42f9-a46d-a343270c3c16",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-05-24T12:12:32.445Z",
+    "stock": 0,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "2475a2ec-9e85-43c7-a13c-161a816ab7ab",
+  "fields": {
+    "owner": 12,
+    "name": "Домик Cat Cube",
+    "description": "Мягкий домик-куб для отдыха кошки.",
+    "price": "2990.00",
+    "category": "1cc87ac1-5f09-48ca-8148-44e5eaaebae8",
+    "image": "https://images.unsplash.com/photo-1601758063541-d2f50b4aafb2?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размер": "40x40 см",
+      "Материал": "текстиль"
+    },
+    "created_at": "2026-06-17T12:38:53.071Z",
+    "stock": 36,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "274dd7c6-f8e2-4258-a24c-5bceb32f9a5f",
+  "fields": {
+    "owner": 2,
+    "name": "Телефон",
+    "description": "раовро",
+    "price": "14454.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-05-25T09:00:29.846Z",
+    "stock": 0,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "2983b310-0040-4d37-baa9-271b31c038b8",
+  "fields": {
+    "owner": 12,
+    "name": "Плед Soft Weekend",
+    "description": "Мягкий плед для дивана, спальни или уютного подарка.",
+    "price": "2490.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размер": "150x200 см",
+      "Материал": "микрофибра",
+      "Цвет": "молочный"
+    },
+    "created_at": "2026-06-17T12:36:13.430Z",
+    "stock": 12,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "2ce2f77b-8c72-4365-b27d-0dcb331d60eb",
+  "fields": {
+    "owner": 5,
+    "name": "телефон",
+    "description": "AI временно недоступен\n\nВот базовые рекомендации:\n- Смотрите на товары с высоким спросом\n- Держите актуальные цены\n- Добавляйте качественные фото\n- Указывайте наличие на складе",
+    "price": "100.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-15T21:19:38.241Z",
+    "stock": 10,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "309efe72-4ab2-4b61-beae-68e5fb3d038d",
+  "fields": {
+    "owner": 12,
+    "name": "Солнцезащитный крем Daily SPF50",
+    "description": "Лёгкий SPF-крем для ежедневного городского ухода.",
+    "price": "1390.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "SPF": "50",
+      "Объём": "50 мл"
+    },
+    "created_at": "2026-06-17T12:38:53.051Z",
+    "stock": 36,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "31358a08-ec04-4fd6-9f7c-61fc16849b1f",
+  "fields": {
+    "owner": 12,
+    "name": "Блокнот Work Notes A5",
+    "description": "Блокнот для рабочих задач и быстрых заметок.",
+    "price": "490.00",
+    "category": "3d194b95-f68b-4afe-8f86-ec83b6fc3d16",
+    "image": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Формат": "A5",
+      "Листы": "120"
+    },
+    "created_at": "2026-06-17T12:38:53.061Z",
+    "stock": 18,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "3198896c-4de9-4ff6-be32-50c8973c828a",
+  "fields": {
+    "owner": 12,
+    "name": "Серебристые серьги Minimal Drop",
+    "description": "Лаконичные серьги на каждый день, подходят к офисному и вечернему образу.",
+    "price": "1490.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Стиль": "минимализм",
+      "Цвет": "серебристый",
+      "Застёжка": "гвоздик"
+    },
+    "created_at": "2026-06-17T12:36:13.429Z",
+    "stock": 19,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "36ce4140-98ee-4e2a-982d-5c2552358bca",
+  "fields": {
+    "owner": 12,
+    "name": "Подставка для ноутбука AirStand",
+    "description": "Складная подставка для удобной работы за ноутбуком.",
+    "price": "1990.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "алюминий",
+      "Регулировка": "есть"
+    },
+    "created_at": "2026-06-17T12:38:53.047Z",
+    "stock": 23,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "37a5034c-363a-4dfb-813b-870b9efc4ca0",
+  "fields": {
+    "owner": 12,
+    "name": "Заколка Pearl Clip",
+    "description": "Аккуратная заколка с жемчужным декором.",
+    "price": "590.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплект": "1 шт",
+      "Цвет": "жемчужный"
+    },
+    "created_at": "2026-06-17T12:38:53.039Z",
+    "stock": 26,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "3c9e2fea-29a5-46c0-8fe6-1e4c71e8fe6a",
+  "fields": {
+    "owner": 12,
+    "name": "Ночник Star Kids",
+    "description": "Детский ночник с мягким светом.",
+    "price": "1390.00",
+    "category": "55e49ac3-e4b0-4183-afe6-7dfbac6bb60c",
+    "image": "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Питание": "USB",
+      "Свет": "тёплый"
+    },
+    "created_at": "2026-06-17T12:38:53.066Z",
+    "stock": 45,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "3fd4e154-c3bf-44ea-b1e9-907d6bf7dba8",
+  "fields": {
+    "owner": 12,
+    "name": "Постер Abstract Calm",
+    "description": "Минималистичный постер для рабочего места или спальни.",
+    "price": "890.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размер": "30x40 см",
+      "Стиль": "минимализм"
+    },
+    "created_at": "2026-06-17T12:38:53.037Z",
+    "stock": 41,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "40ab2ebb-45da-40ca-8e16-eb90f49ed339",
+  "fields": {
+    "owner": 12,
+    "name": "Ночник Moon Soft",
+    "description": "Мягкий ночник с тёплым светом для спальни.",
+    "price": "1690.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Питание": "USB",
+      "Свет": "тёплый"
+    },
+    "created_at": "2026-06-17T12:38:53.035Z",
+    "stock": 13,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "452b788b-112a-407f-809a-7cb3f196f120",
+  "fields": {
+    "owner": 12,
+    "name": "Набор приборов Minimal Steel",
+    "description": "Комплект столовых приборов для 4 персон.",
+    "price": "2490.00",
+    "category": "44850e19-4a3a-49c6-97ca-e07cd8239126",
+    "image": "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Персон": "4",
+      "Материал": "нержавеющая сталь"
+    },
+    "created_at": "2026-06-17T12:38:53.074Z",
+    "stock": 42,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "4944f298-2aef-47d7-9e92-7bce653f70ab",
+  "fields": {
+    "owner": 12,
+    "name": "Мини-набор Aroma Home",
+    "description": "Диффузор и свеча для уютного аромата в комнате.",
+    "price": "1890.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Аромат": "мягкий",
+      "Упаковка": "коробка"
+    },
+    "created_at": "2026-06-17T12:38:53.032Z",
+    "stock": 21,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "4ad43f09-b064-4e0e-9e8d-49e839ee60f5",
+  "fields": {
+    "owner": 5,
+    "name": "футболка",
+    "description": "прикольная",
+    "price": "1000.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-16T19:49:50.286Z",
+    "stock": 792,
+    "low_stock_threshold": 398
+  }
+},
+{
+  "model": "products.product",
+  "pk": "4b8a83ce-904c-4933-b174-644b5d70a291",
+  "fields": {
+    "owner": 12,
+    "name": "Куртка Wind Light",
+    "description": "Лёгкая куртка для ветра и прохладной погоды.",
+    "price": "5990.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Сезон": "демисезон",
+      "Капюшон": "есть"
+    },
+    "created_at": "2026-06-17T12:38:53.055Z",
+    "stock": 13,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "4ddc1646-62bb-4bf0-85c2-6bba03744c23",
+  "fields": {
+    "owner": 12,
+    "name": "Кошелёк Compact Zip",
+    "description": "Небольшой кошелёк на молнии для карт и наличных.",
+    "price": "1690.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Отделения": "8",
+      "Материал": "экокожа"
+    },
+    "created_at": "2026-06-17T12:38:53.040Z",
+    "stock": 40,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "4fa75c16-724a-4bcf-ad92-2236c842b592",
+  "fields": {
+    "owner": 5,
+    "name": "трусы",
+    "description": "Базовые трусы для повседневного ношения. Комфортная посадка, мягкий эластичный пояс, дышащая ткань. Подходят для дома, спорта и ношения под одеждой.Машинная стирка при 40°C, не отбеливать, гладить при низкой температуре\"",
+    "price": "500.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-16T13:00:40.774Z",
+    "stock": 396,
+    "low_stock_threshold": 56
+  }
+},
+{
+  "model": "products.product",
+  "pk": "506944c9-7b25-473f-a208-e0cbc1791e28",
+  "fields": {
+    "owner": 12,
+    "name": "Книга «Дом, в котором спокойно»",
+    "description": "Книга о порядке, уюте и простых домашних ритуалах.",
+    "price": "760.00",
+    "category": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+    "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Жанр": "дом и быт",
+      "Язык": "русский"
+    },
+    "created_at": "2026-06-17T12:38:53.042Z",
+    "stock": 25,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "5073f224-7a7f-4318-922b-989b551a9e08",
+  "fields": {
+    "owner": 12,
+    "name": "Косметичка Travel Soft",
+    "description": "Мягкая косметичка для ухода, макияжа и дорожных мелочей.",
+    "price": "890.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размер": "средний",
+      "Материал": "текстиль",
+      "Назначение": "путешествия"
+    },
+    "created_at": "2026-06-17T12:36:13.434Z",
+    "stock": 35,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "51aaa1fe-bccd-47b4-b070-fe7ed7e1570a",
+  "fields": {
+    "owner": 12,
+    "name": "Расчёска Pet Care",
+    "description": "Расчёска для ухода за шерстью питомца.",
+    "price": "690.00",
+    "category": "1cc87ac1-5f09-48ca-8148-44e5eaaebae8",
+    "image": "https://images.unsplash.com/photo-1601758063541-d2f50b4aafb2?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Тип шерсти": "средняя, длинная",
+      "Ручка": "прорезиненная"
+    },
+    "created_at": "2026-06-17T12:38:53.070Z",
+    "stock": 29,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "52d4c129-d9e6-4271-81cd-56020e581667",
+  "fields": {
+    "owner": 12,
+    "name": "Развивающая игра Memory Cards",
+    "description": "Карточки для тренировки памяти и внимания.",
+    "price": "590.00",
+    "category": "55e49ac3-e4b0-4183-afe6-7dfbac6bb60c",
+    "image": "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Карточки": "40",
+      "Возраст": "4+"
+    },
+    "created_at": "2026-06-17T12:38:53.067Z",
+    "stock": 23,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "530034b2-160b-42d2-aeb4-f9a61c7645bc",
+  "fields": {
+    "owner": 12,
+    "name": "Power Bank Slim 10000",
+    "description": "Тонкий внешний аккумулятор для телефона и наушников.",
+    "price": "2490.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Ёмкость": "10000 мАч",
+      "Порты": "USB-C, USB-A"
+    },
+    "created_at": "2026-06-17T12:38:53.045Z",
+    "stock": 31,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "580cc260-1f09-4c2e-a178-5c892fce392b",
+  "fields": {
+    "owner": 5,
+    "name": "телефон",
+    "description": "AI временно недоступен\n\nВот базовые рекомендации:\n- Смотрите на товары с высоким спросом\n- Держите актуальные цены\n- Добавляйте качественные фото\n- Указывайте наличие на складе",
+    "price": "100.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-15T21:19:38.242Z",
+    "stock": 10,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "5a2f9089-ee99-4b54-b9d8-c53a008bd7d6",
+  "fields": {
+    "owner": 12,
+    "name": "Силиконовые крышки Flex Lid",
+    "description": "Набор крышек для мисок и контейнеров.",
+    "price": "590.00",
+    "category": "44850e19-4a3a-49c6-97ca-e07cd8239126",
+    "image": "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплект": "6 шт",
+      "Материал": "силикон"
+    },
+    "created_at": "2026-06-17T12:38:53.074Z",
+    "stock": 49,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "5c5f76b9-ca81-4240-a4b4-59f913b8d5f7",
+  "fields": {
+    "owner": 12,
+    "name": "Футболка Cotton Base",
+    "description": "Базовая футболка из хлопка для повседневного образа.",
+    "price": "990.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размеры": "S-XXL",
+      "Материал": "хлопок"
+    },
+    "created_at": "2026-06-17T12:38:53.053Z",
+    "stock": 28,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "602903eb-9e8c-4388-ba08-ceaeaaba90ce",
+  "fields": {
+    "owner": 12,
+    "name": "Миска Ceramic Paw",
+    "description": "Керамическая миска для воды или корма.",
+    "price": "790.00",
+    "category": "1cc87ac1-5f09-48ca-8148-44e5eaaebae8",
+    "image": "https://images.unsplash.com/photo-1601758063541-d2f50b4aafb2?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "400 мл",
+      "Материал": "керамика"
+    },
+    "created_at": "2026-06-17T12:38:53.068Z",
+    "stock": 44,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "614cdea5-11b8-41ba-b4b5-6bd23c332568",
+  "fields": {
+    "owner": 12,
+    "name": "Электронная книга ReadLight 6",
+    "description": "Устройство для чтения с подсветкой, удобно для поездок и вечернего чтения.",
+    "price": "8990.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Экран": "6 дюймов",
+      "Память": "16 ГБ",
+      "Подсветка": "есть"
+    },
+    "created_at": "2026-06-17T12:36:13.428Z",
+    "stock": 9,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "61fec8a9-faa6-446f-8824-680c34ac3068",
+  "fields": {
+    "owner": 12,
+    "name": "Настольная лампа LED Focus",
+    "description": "Лампа с регулировкой яркости для рабочего стола.",
+    "price": "2190.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Свет": "3 режима",
+      "Питание": "USB"
+    },
+    "created_at": "2026-06-17T12:38:53.046Z",
+    "stock": 45,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "62d5471c-e920-4064-936a-06e4fb2836eb",
+  "fields": {
+    "owner": 12,
+    "name": "Массажный ролл Recovery",
+    "description": "Ролл для восстановления после тренировок.",
+    "price": "1490.00",
+    "category": "01cc6d87-fc48-4adb-9a02-e84b043d482e",
+    "image": "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Длина": "33 см",
+      "Жёсткость": "средняя"
+    },
+    "created_at": "2026-06-17T12:38:53.060Z",
+    "stock": 47,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "63eaa8e0-0f5d-4290-8367-6cf1aaccec98",
+  "fields": {
+    "owner": 12,
+    "name": "Портативная колонка Beat Cube",
+    "description": "Небольшая колонка для кухни, дачи или встречи с друзьями.",
+    "price": "3590.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Мощность": "12 Вт",
+      "Защита": "IPX5",
+      "Подключение": "Bluetooth"
+    },
+    "created_at": "2026-06-17T12:36:13.427Z",
+    "stock": 14,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "660c894f-e31d-43e7-a616-0e98cc1f63e4",
+  "fields": {
+    "owner": 12,
+    "name": "Мельница Spice Duo",
+    "description": "Мельница для соли и перца.",
+    "price": "1190.00",
+    "category": "44850e19-4a3a-49c6-97ca-e07cd8239126",
+    "image": "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "стекло, металл",
+      "Формат": "2-в-1"
+    },
+    "created_at": "2026-06-17T12:38:53.075Z",
+    "stock": 13,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "665dacf3-1c85-4835-b980-1a6531d2944f",
+  "fields": {
+    "owner": 12,
+    "name": "Когтеточка Corner Cat",
+    "description": "Компактная когтеточка для кошек.",
+    "price": "1590.00",
+    "category": "1cc87ac1-5f09-48ca-8148-44e5eaaebae8",
+    "image": "https://images.unsplash.com/photo-1601758063541-d2f50b4aafb2?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Высота": "45 см",
+      "Материал": "сизаль"
+    },
+    "created_at": "2026-06-17T12:38:53.069Z",
+    "stock": 15,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "671147cd-80cd-43e0-837b-3982a44e345f",
+  "fields": {
+    "owner": 12,
+    "name": "Скакалка Speed Jump",
+    "description": "Лёгкая скакалка для кардио и разминки.",
+    "price": "590.00",
+    "category": "01cc6d87-fc48-4adb-9a02-e84b043d482e",
+    "image": "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Длина": "регулируемая",
+      "Ручки": "пластик"
+    },
+    "created_at": "2026-06-17T12:38:53.058Z",
+    "stock": 26,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "6efd50e4-c224-46c8-9e5c-7cda5c35b28d",
+  "fields": {
+    "owner": 12,
+    "name": "Набор кубиков Soft Build",
+    "description": "Мягкие кубики для игры и развития моторики.",
+    "price": "1590.00",
+    "category": "55e49ac3-e4b0-4183-afe6-7dfbac6bb60c",
+    "image": "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Возраст": "1+",
+      "Количество": "12 шт"
+    },
+    "created_at": "2026-06-17T12:38:53.064Z",
+    "stock": 24,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "6f270a0f-6d9a-4a2c-aa2a-273d32dbab5a",
+  "fields": {
+    "owner": 5,
+    "name": "телефон",
+    "description": "AI временно недоступен\n\nВот базовые рекомендации:\n- Смотрите на товары с высоким спросом\n- Держите актуальные цены\n- Добавляйте качественные фото\n- Указывайте наличие на складе",
+    "price": "5000.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-15T21:19:38.246Z",
+    "stock": 10,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "6f701abc-8c55-4b7f-9108-1c3ba1851027",
+  "fields": {
+    "owner": 12,
+    "name": "Эспандер Power Band",
+    "description": "Лента-эспандер для разминки и силовых упражнений.",
+    "price": "790.00",
+    "category": "01cc6d87-fc48-4adb-9a02-e84b043d482e",
+    "image": "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Сопротивление": "среднее",
+      "Материал": "латекс"
+    },
+    "created_at": "2026-06-17T12:38:53.057Z",
+    "stock": 12,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "6f9b3e33-ee88-4902-94f7-43d6645475c4",
+  "fields": {
+    "owner": 12,
+    "name": "Мист Cica Fresh",
+    "description": "Спрей-мист для быстрого освежения кожи.",
+    "price": "790.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "80 мл",
+      "Формат": "спрей"
+    },
+    "created_at": "2026-06-17T12:38:53.052Z",
+    "stock": 14,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "7616b482-dc7d-4382-9fc2-611503ab21f0",
+  "fields": {
+    "owner": 5,
+    "name": "рома",
+    "description": "{\"название\":\"рома\",\"категория\":\"Не указана\",\" Charakteristik\":[]}",
+    "price": "100.00",
+    "category": "54a8351b-a875-42ea-be94-5415cc4db7fe",
+    "image": "products/.jpg",
+    "specs": {},
+    "created_at": "2026-06-17T00:22:47.421Z",
+    "stock": 0,
+    "low_stock_threshold": 1
+  }
+},
+{
+  "model": "products.product",
+  "pk": "76917928-b59f-494a-8c5f-8db95c5c409d",
+  "fields": {
+    "owner": 12,
+    "name": "Книга «Путь дизайнера»",
+    "description": "Введение в дизайн-мышление, визуальную культуру и работу с продуктом.",
+    "price": "1290.00",
+    "category": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+    "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Жанр": "дизайн",
+      "Обложка": "мягкая"
+    },
+    "created_at": "2026-06-17T12:38:53.044Z",
+    "stock": 17,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "7cf97863-13e9-4aa4-9418-de37239d0e43",
+  "fields": {
+    "owner": 12,
+    "name": "Патчи Eye Cooling",
+    "description": "Гидрогелевые патчи для зоны вокруг глаз.",
+    "price": "990.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Количество": "60 шт",
+      "Формат": "банка"
+    },
+    "created_at": "2026-06-17T12:38:53.050Z",
+    "stock": 29,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "7d54af15-3555-496c-8cc9-1a1e0340546a",
+  "fields": {
+    "owner": 12,
+    "name": "Смарт-розетка Home Plug",
+    "description": "Умная розетка для управления техникой со смартфона.",
+    "price": "1490.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Wi-Fi": "2.4 ГГц",
+      "Таймер": "есть"
+    },
+    "created_at": "2026-06-17T12:38:53.048Z",
+    "stock": 37,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "7e07f30c-e8e9-46d7-a558-dd839a020c53",
+  "fields": {
+    "owner": 12,
+    "name": "Бутылка Sport Clear 750",
+    "description": "Бутылка для воды с удобной крышкой.",
+    "price": "690.00",
+    "category": "01cc6d87-fc48-4adb-9a02-e84b043d482e",
+    "image": "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "750 мл",
+      "Материал": "пластик BPA-free"
+    },
+    "created_at": "2026-06-17T12:38:53.057Z",
+    "stock": 48,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "7ec7c22e-964e-4dd0-bf35-ae4b128b8046",
+  "fields": {
+    "owner": 12,
+    "name": "Сумка Crossbody City",
+    "description": "Компактная сумка через плечо для прогулок и повседневных дел.",
+    "price": "2890.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "экокожа",
+      "Цвет": "чёрный"
+    },
+    "created_at": "2026-06-17T12:38:53.037Z",
+    "stock": 48,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "7f89120a-6d45-42e4-adce-cd4ae2458ca6",
+  "fields": {
+    "owner": 12,
+    "name": "Эссенция Rice Glow",
+    "description": "Лёгкая эссенция для ухода перед кремом.",
+    "price": "1290.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "120 мл",
+      "Текстура": "лёгкая"
+    },
+    "created_at": "2026-06-17T12:38:53.052Z",
+    "stock": 50,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "7fb484dc-8550-478e-8157-1e26c9421548",
+  "fields": {
+    "owner": 12,
+    "name": "Ремень Classic Line",
+    "description": "Базовый ремень для джинсов и брюк.",
+    "price": "1190.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "экокожа",
+      "Длина": "110 см"
+    },
+    "created_at": "2026-06-17T12:38:53.037Z",
+    "stock": 12,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "808bd8c5-3fac-4dfb-bee0-3729125f6544",
+  "fields": {
+    "owner": 12,
+    "name": "Очки Sun Daily",
+    "description": "Солнцезащитные очки для города и отпуска.",
+    "price": "1590.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "UV": "400",
+      "Цвет оправы": "чёрный"
+    },
+    "created_at": "2026-06-17T12:38:53.039Z",
+    "stock": 33,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "809b7356-474c-4bb2-868f-3d890e1923fe",
+  "fields": {
+    "owner": 12,
+    "name": "Стикеры Color Notes",
+    "description": "Набор цветных стикеров для заметок.",
+    "price": "290.00",
+    "category": "3d194b95-f68b-4afe-8f86-ec83b6fc3d16",
+    "image": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Блоков": "6",
+      "Цвета": "ассорти"
+    },
+    "created_at": "2026-06-17T12:38:53.063Z",
+    "stock": 17,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "829ef2ae-7197-41a4-8329-aa0cf4ca4a91",
+  "fields": {
+    "owner": 5,
+    "name": "крем",
+    "description": "Этот крем создан для ежедневного ухода за кожей. Он обладает мягкой текстурой и приятным нанесением. Подходит для использования в составе косметической процедуры, помогая поддерживать комфортный внешний вид кожи. Не содержит агрессивных компонентов, что делает его мягким и безопасным для регулярного применения.",
+    "price": "10000.00",
+    "category": "28be731d-5dd7-4a9e-be90-8b6610f07c5a",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-17T11:41:52.274Z",
+    "stock": 10,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "8358ef7a-e02b-4e80-b9d0-ccc2978f86d1",
+  "fields": {
+    "owner": 12,
+    "name": "Термокружка Daily Sip",
+    "description": "Термокружка для кофе с собой.",
+    "price": "1490.00",
+    "category": "44850e19-4a3a-49c6-97ca-e07cd8239126",
+    "image": "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "450 мл",
+      "Сохранение тепла": "до 6 часов"
+    },
+    "created_at": "2026-06-17T12:38:53.071Z",
+    "stock": 50,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "839bed22-f8db-4644-a789-b90cde129144",
+  "fields": {
+    "owner": 12,
+    "name": "Набор для письма Warm Notes",
+    "description": "Открытки, конверты и ручка для личных посланий.",
+    "price": "990.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплектация": "12 открыток",
+      "Материал": "бумага"
+    },
+    "created_at": "2026-06-17T12:38:53.030Z",
+    "stock": 36,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "85823e39-fcf6-4ee1-8e9e-e0a9627b26c7",
+  "fields": {
+    "owner": 6,
+    "name": "кофта",
+    "description": "{\"name\":\"кофта\",\"category\":\"одежда\",\"characteristics\":[]}",
+    "price": "100000.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-15T22:45:13.323Z",
+    "stock": 47,
+    "low_stock_threshold": 50
+  }
+},
+{
+  "model": "products.product",
+  "pk": "88249802-164d-4316-b046-74dd0be22baa",
+  "fields": {
+    "owner": 12,
+    "name": "Конструктор City Blocks",
+    "description": "Набор деталей для сборки городских сцен.",
+    "price": "2490.00",
+    "category": "55e49ac3-e4b0-4183-afe6-7dfbac6bb60c",
+    "image": "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Детали": "240",
+      "Возраст": "6+"
+    },
+    "created_at": "2026-06-17T12:38:53.066Z",
+    "stock": 9,
+    "low_stock_threshold": 2
+  }
+},
+{
+  "model": "products.product",
+  "pk": "882c013c-483c-4fab-ae0a-d251e95f5966",
+  "fields": {
+    "owner": 5,
+    "name": "сыворотка",
+    "description": "Эта высококачественная сыворотка представляет собой образец немецких стандартов качества в индустрии красоты. Благодаря своей легкой текстуре, средство легко распределяется по поверхности кожи, обеспечивая комфортное ощущение в течение всего дня.\r\n\r\nИспользование данного продукта в ежедневном ритуале ухода поможет вам поддерживать привычный баланс увлажненности и свежести кожи. Это универсальное решение, которое гармонично дополнит ваш текущий косметический набор.",
+    "price": "2000.00",
+    "category": "f6b9d2a4-8e1c-4d7f-9a3b-5c8e6f1d2a4b",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-17T11:39:03.996Z",
+    "stock": 10,
+    "low_stock_threshold": 2
+  }
+},
+{
+  "model": "products.product",
+  "pk": "89e36160-095b-4505-8198-da2bfbbba22a",
+  "fields": {
+    "owner": 12,
+    "name": "Пакеты для прогулок Eco Pet",
+    "description": "Комплект пакетов для уборки на прогулке.",
+    "price": "390.00",
+    "category": "1cc87ac1-5f09-48ca-8148-44e5eaaebae8",
+    "image": "https://images.unsplash.com/photo-1601758063541-d2f50b4aafb2?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Рулонов": "8",
+      "Материал": "биоразлагаемый"
+    },
+    "created_at": "2026-06-17T12:38:53.071Z",
+    "stock": 43,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "8a72fbf2-7a08-48e3-bf97-b8339d041220",
+  "fields": {
+    "owner": 12,
+    "name": "Роман «После дождя»",
+    "description": "Современный роман для спокойного чтения вечером.",
+    "price": "720.00",
+    "category": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+    "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Жанр": "проза",
+      "Возраст": "16+"
+    },
+    "created_at": "2026-06-17T12:38:53.043Z",
+    "stock": 10,
+    "low_stock_threshold": 2
+  }
+},
+{
+  "model": "products.product",
+  "pk": "8b39a806-b860-4986-b460-65d2c191d2a7",
+  "fields": {
+    "owner": 12,
+    "name": "Крем для рук Rice Soft",
+    "description": "Компактный крем для рук с мягкой текстурой, подходит для сумки, офиса и подарочного набора.",
+    "price": "420.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "50 мл",
+      "Формат": "тюбик",
+      "Аромат": "нейтральный"
+    },
+    "created_at": "2026-06-17T12:36:13.426Z",
+    "stock": 50,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "8ff72b4b-71c3-4e64-90f3-ebc4a25a566b",
+  "fields": {
+    "owner": 12,
+    "name": "Пазл Animals 100",
+    "description": "Пазл с животными для спокойной игры.",
+    "price": "690.00",
+    "category": "55e49ac3-e4b0-4183-afe6-7dfbac6bb60c",
+    "image": "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Детали": "100",
+      "Возраст": "5+"
+    },
+    "created_at": "2026-06-17T12:38:53.065Z",
+    "stock": 31,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "91bbc3af-df0d-4f9e-a1f3-eb4e0d90c0b3",
+  "fields": {
+    "owner": 12,
+    "name": "Умные часы Fit Mini",
+    "description": "Лёгкие умные часы для уведомлений, тренировок и повседневного контроля активности.",
+    "price": "4990.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Экран": "1.4 дюйма",
+      "Автономность": "до 7 дней",
+      "Цвет": "чёрный"
+    },
+    "created_at": "2026-06-17T12:36:13.426Z",
+    "stock": 16,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "936d8f7d-fd78-4abf-a945-d7fadd7fa1d8",
+  "fields": {
+    "owner": 12,
+    "name": "Планер Weekly Board",
+    "description": "Настольный планер для недели и важных задач.",
+    "price": "1190.00",
+    "category": "3d194b95-f68b-4afe-8f86-ec83b6fc3d16",
+    "image": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Формат": "недельный",
+      "Покрытие": "ламинированное"
+    },
+    "created_at": "2026-06-17T12:38:53.063Z",
+    "stock": 46,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "96637150-5c98-4e42-880d-72e98dd504c5",
+  "fields": {
+    "owner": 12,
+    "name": "Гантели Neo Pair 2 кг",
+    "description": "Пара гантелей для домашних тренировок.",
+    "price": "1990.00",
+    "category": "01cc6d87-fc48-4adb-9a02-e84b043d482e",
+    "image": "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Вес": "2 кг x 2",
+      "Покрытие": "неопрен"
+    },
+    "created_at": "2026-06-17T12:38:53.058Z",
+    "stock": 19,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "9854b8a7-2876-4273-b761-6fe7f9523ec9",
+  "fields": {
+    "owner": 12,
+    "name": "Кабель USB-C Fast 2м",
+    "description": "Кабель для зарядки и передачи данных.",
+    "price": "590.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Длина": "2 м",
+      "Мощность": "до 60 Вт"
+    },
+    "created_at": "2026-06-17T12:38:53.047Z",
+    "stock": 30,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "992f7454-7385-4514-bd07-7b0532a27e5d",
+  "fields": {
+    "owner": 6,
+    "name": "штаны",
+    "description": "{\"name\":\"штаны\",\"category\":\"одежда\",\"description\":\"Качественные штаны из удобного материала.\",\"price\":0,\"currency\":\"USD\",\"availability\":\"in_stock\",\"sku\":\"PANTS-001\",\"characteristics\":[]}",
+    "price": "300.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-15T22:50:39.175Z",
+    "stock": 10,
+    "low_stock_threshold": 8
+  }
+},
+{
+  "model": "products.product",
+  "pk": "a06416d5-c013-41ad-b16c-786efb5f4954",
+  "fields": {
+    "owner": 12,
+    "name": "Подушка Memory Rest",
+    "description": "Подушка с поддержкой шеи для сна и отдыха.",
+    "price": "2990.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Наполнитель": "memory foam",
+      "Размер": "50x30 см"
+    },
+    "created_at": "2026-06-17T12:38:53.036Z",
+    "stock": 34,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "a1fa0b25-2021-4461-a8c8-4df83e343e8f",
+  "fields": {
+    "owner": 12,
+    "name": "Плед Knit Comfort",
+    "description": "Фактурный плед для дивана или кровати.",
+    "price": "3190.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размер": "130x170 см",
+      "Материал": "акрил"
+    },
+    "created_at": "2026-06-17T12:38:53.034Z",
+    "stock": 42,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "a2b86eb6-2e6d-4b5e-a429-b29ec5c687a4",
+  "fields": {
+    "owner": 12,
+    "name": "Свитшот Soft Logo",
+    "description": "Мягкий свитшот без лишнего декора.",
+    "price": "2790.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "футер",
+      "Цвет": "молочный"
+    },
+    "created_at": "2026-06-17T12:38:53.054Z",
+    "stock": 49,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "a7889fa2-2ee2-4216-a5ea-ab543fe85dbe",
+  "fields": {
+    "owner": 12,
+    "name": "Набор для кофе Morning Box",
+    "description": "Подарочный набор с кружкой, зерновым кофе и открыткой для уютного утра.",
+    "price": "2190.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплектация": "кружка, кофе, открытка",
+      "Повод": "универсальный подарок",
+      "Упаковка": "подарочная коробка"
+    },
+    "created_at": "2026-06-17T12:36:13.434Z",
+    "stock": 13,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "a9d37bcc-b569-4ab0-90a4-eea208cfac69",
+  "fields": {
+    "owner": 12,
+    "name": "Пенка для умывания Green Tea Foam",
+    "description": "Мягкая пенка для ежедневного очищения кожи.",
+    "price": "890.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "150 мл",
+      "Тип кожи": "для всех типов"
+    },
+    "created_at": "2026-06-17T12:38:53.049Z",
+    "stock": 8,
+    "low_stock_threshold": 2
+  }
+},
+{
+  "model": "products.product",
+  "pk": "a9e7d4b8-b302-4581-bb7e-6886e8aad771",
+  "fields": {
+    "owner": 12,
+    "name": "Полотенце Sport Dry",
+    "description": "Быстросохнущее полотенце для тренировок.",
+    "price": "890.00",
+    "category": "01cc6d87-fc48-4adb-9a02-e84b043d482e",
+    "image": "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размер": "70x140 см",
+      "Материал": "микрофибра"
+    },
+    "created_at": "2026-06-17T12:38:53.059Z",
+    "stock": 40,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "aafbb322-873e-4754-a0c1-df2e4815a223",
+  "fields": {
+    "owner": null,
+    "name": "iPhone 15",
+    "description": "новый",
+    "price": "10.00",
+    "category": "16ec5f6e-0961-4df9-8a2e-9ce74b5e2d2b",
+    "image": "",
+    "specs": {
+      "\"Память\"": "\"256 ГБ\", \"Цвет\": \"Черный\""
+    },
+    "created_at": "2026-05-24T12:15:09.737Z",
+    "stock": 0,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "ab940180-8c3e-49cc-9885-4a61e4d2b933",
+  "fields": {
+    "owner": 12,
+    "name": "Диффузор Cotton Air",
+    "description": "Аромадиффузор с мягким чистым ароматом для спальни или гостиной.",
+    "price": "1390.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "100 мл",
+      "Аромат": "хлопок"
+    },
+    "created_at": "2026-06-17T12:38:53.033Z",
+    "stock": 28,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "aed6736f-afec-49d4-ad46-cf4de7958616",
+  "fields": {
+    "owner": 12,
+    "name": "Органайзер Desk Home",
+    "description": "Компактный органайзер для мелочей на столе.",
+    "price": "790.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "пластик",
+      "Отделения": "5"
+    },
+    "created_at": "2026-06-17T12:38:53.035Z",
+    "stock": 20,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "afc83194-e821-4f5d-b3ad-dd1bf87c8294",
+  "fields": {
+    "owner": 12,
+    "name": "Сумка Gym Compact",
+    "description": "Спортивная сумка для формы, обуви и бутылки.",
+    "price": "2490.00",
+    "category": "01cc6d87-fc48-4adb-9a02-e84b043d482e",
+    "image": "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "25 л",
+      "Отделение для обуви": "есть"
+    },
+    "created_at": "2026-06-17T12:38:53.059Z",
+    "stock": 33,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "b6395f43-c17f-4107-a60d-768b53e4fb35",
+  "fields": {
+    "owner": 12,
+    "name": "Браслет Silver Chain",
+    "description": "Лаконичный браслет с серебристым покрытием.",
+    "price": "990.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Стиль": "минимализм",
+      "Цвет": "серебристый"
+    },
+    "created_at": "2026-06-17T12:38:53.038Z",
+    "stock": 19,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "b8931616-34d9-48bc-8ed2-f04ede5468f4",
+  "fields": {
+    "owner": 12,
+    "name": "Лоток для документов Stack File",
+    "description": "Лоток для бумаг и документов.",
+    "price": "890.00",
+    "category": "3d194b95-f68b-4afe-8f86-ec83b6fc3d16",
+    "image": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Уровни": "3",
+      "Материал": "металл"
+    },
+    "created_at": "2026-06-17T12:38:53.063Z",
+    "stock": 10,
+    "low_stock_threshold": 2
+  }
+},
+{
+  "model": "products.product",
+  "pk": "b8e6238c-d3b4-4309-867b-2b43408d5f6d",
+  "fields": {
+    "owner": 12,
+    "name": "Подарочный сертификат Store AI",
+    "description": "Универсальный сертификат для покупки любых товаров магазина.",
+    "price": "3000.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Номинал": "3000 ₽",
+      "Формат": "электронный"
+    },
+    "created_at": "2026-06-17T12:38:53.031Z",
+    "stock": 43,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "b9f26938-7101-4c54-a204-efdd9e3e1148",
+  "fields": {
+    "owner": 12,
+    "name": "Роман «Тёплые письма»",
+    "description": "Лёгкий роман для спокойного вечера и подарка любителю душевных историй.",
+    "price": "650.00",
+    "category": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+    "image": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Жанр": "современная проза",
+      "Обложка": "мягкая",
+      "Возраст": "16+"
+    },
+    "created_at": "2026-06-17T12:36:13.432Z",
+    "stock": 15,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "bc24ef97-2215-42f8-a4da-d75b514a10bc",
+  "fields": {
+    "owner": 12,
+    "name": "Подарочный набор для ухода Glow Set",
+    "description": "Готовый набор для приятного ежедневного ухода: сыворотка, крем для рук и мягкая косметичка.",
+    "price": "3490.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Для кого": "женщине",
+      "Повод": "день рождения, 8 марта, без повода",
+      "Комплектация": "3 предмета"
+    },
+    "created_at": "2026-06-17T12:36:13.423Z",
+    "stock": 18,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "bdb52063-5fe7-4be0-b191-90b8a3c5c382",
+  "fields": {
+    "owner": 12,
+    "name": "Платье Midi Line",
+    "description": "Сдержанное платье миди для офиса, встречи или ужина.",
+    "price": "4590.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размеры": "XS-L",
+      "Длина": "миди",
+      "Цвет": "тёмно-синий"
+    },
+    "created_at": "2026-06-17T12:36:13.433Z",
+    "stock": 11,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "bdb85b06-b1d1-40c2-a1e4-8da71e553311",
+  "fields": {
+    "owner": 12,
+    "name": "Мягкая игрушка Bear Mini",
+    "description": "Небольшой мягкий медведь для подарка ребёнку.",
+    "price": "990.00",
+    "category": "55e49ac3-e4b0-4183-afe6-7dfbac6bb60c",
+    "image": "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Высота": "25 см",
+      "Материал": "плюш"
+    },
+    "created_at": "2026-06-17T12:38:53.066Z",
+    "stock": 16,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "c183077e-0c47-441e-a1e8-fa681a26db80",
+  "fields": {
+    "owner": 12,
+    "name": "Френч-пресс Coffee Home",
+    "description": "Френч-пресс для домашнего кофе и чая.",
+    "price": "1590.00",
+    "category": "44850e19-4a3a-49c6-97ca-e07cd8239126",
+    "image": "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "600 мл",
+      "Материал": "стекло"
+    },
+    "created_at": "2026-06-17T12:38:53.073Z",
+    "stock": 35,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "c263c925-dc71-44b3-981b-5d0b9384f3bb",
+  "fields": {
+    "owner": 12,
+    "name": "USB-C хаб MultiPort 6-в-1",
+    "description": "Компактный хаб для ноутбука с HDMI, USB и кардридером.",
+    "price": "2990.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Порты": "6",
+      "Подключение": "USB-C"
+    },
+    "created_at": "2026-06-17T12:38:53.045Z",
+    "stock": 38,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "c45cab05-4512-4170-86fb-c3ef4443407b",
+  "fields": {
+    "owner": 12,
+    "name": "Ночная маска Water Sleeping",
+    "description": "Маска для вечернего ухода перед сном.",
+    "price": "1690.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "70 мл",
+      "Формат": "банка"
+    },
+    "created_at": "2026-06-17T12:38:53.052Z",
+    "stock": 21,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "c61ef206-eb86-4c45-93ce-cdd2be283e50",
+  "fields": {
+    "owner": 12,
+    "name": "Настольный органайзер Focus Tray",
+    "description": "Органайзер для ручек, заметок и мелких аксессуаров.",
+    "price": "1290.00",
+    "category": "3d194b95-f68b-4afe-8f86-ec83b6fc3d16",
+    "image": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "дерево",
+      "Отделения": "6"
+    },
+    "created_at": "2026-06-17T12:38:53.060Z",
+    "stock": 11,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "c621b68e-42b0-4888-9589-9922c9b74c43",
+  "fields": {
+    "owner": 12,
+    "name": "Набор контейнеров Fresh Box",
+    "description": "Контейнеры для хранения еды и заготовок.",
+    "price": "1890.00",
+    "category": "44850e19-4a3a-49c6-97ca-e07cd8239126",
+    "image": "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплект": "5 шт",
+      "Материал": "пластик"
+    },
+    "created_at": "2026-06-17T12:38:53.072Z",
+    "stock": 14,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "c62c2a2f-8c98-456c-829d-5201b88733a7",
+  "fields": {
+    "owner": 12,
+    "name": "Наволочки Soft Pair",
+    "description": "Комплект из двух мягких декоративных наволочек.",
+    "price": "1290.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размер": "45x45 см",
+      "Комплект": "2 шт"
+    },
+    "created_at": "2026-06-17T12:38:53.033Z",
+    "stock": 35,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "c95b138e-d209-4673-84e5-49159983e388",
+  "fields": {
+    "owner": 12,
+    "name": "Бальзам для очищения Clean Melt",
+    "description": "Бальзам для первого этапа очищения кожи.",
+    "price": "1490.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "100 мл",
+      "Текстура": "бальзам"
+    },
+    "created_at": "2026-06-17T12:38:53.051Z",
+    "stock": 43,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "ca0bc6a2-9302-4778-8c8c-fe90b5aa8786",
+  "fields": {
+    "owner": 12,
+    "name": "Книга «Фокус на главном»",
+    "description": "Практичная книга о концентрации и рабочих привычках.",
+    "price": "890.00",
+    "category": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+    "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Жанр": "саморазвитие",
+      "Обложка": "мягкая"
+    },
+    "created_at": "2026-06-17T12:38:53.041Z",
+    "stock": 18,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "ce0964fc-ddf2-4219-be70-7e95efe9b822",
+  "fields": {
+    "owner": 12,
+    "name": "Тканевые маски Seoul Care, 5 шт",
+    "description": "Набор тканевых масок для ухода дома, удобно брать в поездку или добавить к подарку.",
+    "price": "690.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Количество": "5 шт",
+      "Формат": "одноразовые маски",
+      "Назначение": "ежедневный уход"
+    },
+    "created_at": "2026-06-17T12:36:13.425Z",
+    "stock": 45,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "cfe6a213-f450-4437-8f50-aa3f5d15e514",
+  "fields": {
+    "owner": 12,
+    "name": "Бокс для подруги Care Day",
+    "description": "Косметичка, крем для рук и тканевые маски в подарочной упаковке.",
+    "price": "3290.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Для кого": "подруга, жена, сестра",
+      "Комплектация": "3 предмета"
+    },
+    "created_at": "2026-06-17T12:38:53.032Z",
+    "stock": 14,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "d7c42e11-09b9-4d63-afa4-b926bca8742c",
+  "fields": {
+    "owner": 12,
+    "name": "Детский рюкзак Dino",
+    "description": "Лёгкий рюкзак с ярким рисунком.",
+    "price": "1890.00",
+    "category": "55e49ac3-e4b0-4183-afe6-7dfbac6bb60c",
+    "image": "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "8 л",
+      "Возраст": "3+"
+    },
+    "created_at": "2026-06-17T12:38:53.067Z",
+    "stock": 30,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "d981bbd2-efab-4d55-ba1e-119dec320909",
+  "fields": {
+    "owner": 12,
+    "name": "Подарочный бокс Tea & Honey",
+    "description": "Набор с чаем, мёдом и открыткой для тёплого подарка.",
+    "price": "1790.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплектация": "чай, мёд, открытка",
+      "Повод": "универсальный"
+    },
+    "created_at": "2026-06-17T12:38:53.028Z",
+    "stock": 15,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "db166e9d-ae4c-47ea-82d8-73f863578058",
+  "fields": {
+    "owner": 12,
+    "name": "Клавиатура Quiet Keys",
+    "description": "Тихая клавиатура для офиса и дома.",
+    "price": "3490.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Тип": "мембранная",
+      "Подключение": "Bluetooth"
+    },
+    "created_at": "2026-06-17T12:38:53.046Z",
+    "stock": 9,
+    "low_stock_threshold": 2
+  }
+},
+{
+  "model": "products.product",
+  "pk": "e1ff43a1-c3fd-4ae8-9eca-8dd0de3bf6b2",
+  "fields": {
+    "owner": 12,
+    "name": "Книга «Маленькие привычки»",
+    "description": "Практичная книга о привычках, планировании и маленьких шагах к изменениям.",
+    "price": "790.00",
+    "category": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+    "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Жанр": "саморазвитие",
+      "Обложка": "мягкая",
+      "Язык": "русский"
+    },
+    "created_at": "2026-06-17T12:36:13.431Z",
+    "stock": 22,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "e236b27e-8256-469d-92bb-83c70a7e39c7",
+  "fields": {
+    "owner": 12,
+    "name": "Носки Comfort Pack",
+    "description": "Комплект базовых носков на каждый день.",
+    "price": "590.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплект": "3 пары",
+      "Материал": "хлопок"
+    },
+    "created_at": "2026-06-17T12:38:53.056Z",
+    "stock": 27,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "e369fcf1-dc1c-4bd3-81e5-5e02be236618",
+  "fields": {
+    "owner": 12,
+    "name": "Ежедневник «Мой план»",
+    "description": "Планер на каждый день с блоками задач и заметок.",
+    "price": "690.00",
+    "category": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+    "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Формат": "A5",
+      "Страниц": "160"
+    },
+    "created_at": "2026-06-17T12:38:53.042Z",
+    "stock": 32,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "e549c5df-0a6f-4a18-82a0-7d8a746fbaf7",
+  "fields": {
+    "owner": 12,
+    "name": "Веб-камера WorkCam HD",
+    "description": "Камера для видеозвонков и онлайн-занятий.",
+    "price": "3290.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Разрешение": "1080p",
+      "Микрофон": "есть"
+    },
+    "created_at": "2026-06-17T12:38:53.048Z",
+    "stock": 44,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "e8905c0e-3d12-4254-99bc-14a360fdffb4",
+  "fields": {
+    "owner": 3,
+    "name": "телефон",
+    "description": "большой черный",
+    "price": "100000.00",
+    "category": "16ec5f6e-0961-4df9-8a2e-9ce74b5e2d2b",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-05-24T17:59:32.356Z",
+    "stock": 0,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "eaa94ef7-df23-4a82-ac76-41ed9be0ba0e",
+  "fields": {
+    "owner": 12,
+    "name": "Поводок City Walk",
+    "description": "Поводок для ежедневных прогулок.",
+    "price": "990.00",
+    "category": "1cc87ac1-5f09-48ca-8148-44e5eaaebae8",
+    "image": "https://images.unsplash.com/photo-1601758063541-d2f50b4aafb2?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Длина": "2 м",
+      "Материал": "нейлон"
+    },
+    "created_at": "2026-06-17T12:38:53.070Z",
+    "stock": 22,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "eaadb659-680b-46e6-a328-26fea1bbdcd1",
+  "fields": {
+    "owner": 12,
+    "name": "Крем Barrier Repair",
+    "description": "Крем для ежедневного ухода и поддержки кожного барьера.",
+    "price": "1590.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "50 мл",
+      "Формат": "банка"
+    },
+    "created_at": "2026-06-17T12:38:53.050Z",
+    "stock": 22,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "ed7ee9fb-b90b-445e-9992-e57045551bb7",
+  "fields": {
+    "owner": 12,
+    "name": "Коврик Yoga Flow",
+    "description": "Нескользящий коврик для йоги, растяжки и домашних тренировок.",
+    "price": "1890.00",
+    "category": "01cc6d87-fc48-4adb-9a02-e84b043d482e",
+    "image": "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Толщина": "6 мм",
+      "Материал": "TPE"
+    },
+    "created_at": "2026-06-17T12:38:53.057Z",
+    "stock": 41,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "ed970358-1a6d-4fd3-8e29-674780b41d06",
+  "fields": {
+    "owner": 6,
+    "name": "крем",
+    "description": "Этот крем сочетает в себе современные технологии и традиционный подход корейской косметики, предлагая мягкую, легко впитывающуюся формулу. Он подходит для ежедневного применения, помогая поддерживать комфортный уровень увлажнения и делая кожу более приятной на ощупь. Текстура крема не оставляет липкой пленки, а легко распределяется, обеспечивая приятное ощущение после нанесения.",
+    "price": "1000.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-17T13:06:59.125Z",
+    "stock": 100,
+    "low_stock_threshold": 50
+  }
+},
+{
+  "model": "products.product",
+  "pk": "ef5d1353-89e4-430b-9c18-90d105ade6c0",
+  "fields": {
+    "owner": 12,
+    "name": "Книга «Лёгкая кулинария»",
+    "description": "Сборник простых рецептов для быстрых домашних ужинов.",
+    "price": "990.00",
+    "category": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+    "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Жанр": "кулинария",
+      "Обложка": "твёрдая"
+    },
+    "created_at": "2026-06-17T12:38:53.043Z",
+    "stock": 46,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "f0b48e76-04b0-4d41-9f70-9effd03fbf91",
+  "fields": {
+    "owner": 12,
+    "name": "Доска Bamboo Cook",
+    "description": "Бамбуковая разделочная доска для кухни.",
+    "price": "990.00",
+    "category": "44850e19-4a3a-49c6-97ca-e07cd8239126",
+    "image": "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Размер": "30x20 см",
+      "Материал": "бамбук"
+    },
+    "created_at": "2026-06-17T12:38:53.072Z",
+    "stock": 21,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "f0be937f-5910-4e03-8a85-c23e77a8c118",
+  "fields": {
+    "owner": 12,
+    "name": "Пижама Home Soft",
+    "description": "Мягкая пижама для сна и отдыха дома.",
+    "price": "3290.00",
+    "category": "8765a840-b46f-4c93-b3ec-bf4106ee2c85",
+    "image": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплект": "верх и низ",
+      "Материал": "вискоза"
+    },
+    "created_at": "2026-06-17T12:38:53.056Z",
+    "stock": 34,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "f3910a74-1b31-4c89-84e7-55f9e5990333",
+  "fields": {
+    "owner": 12,
+    "name": "Органайзер для косметики Clear Box",
+    "description": "Прозрачный органайзер для косметики, украшений и мелочей на туалетном столике.",
+    "price": "1590.00",
+    "category": "92e70bfb-c582-4f38-8eed-e17043aacfaf",
+    "image": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "акрил",
+      "Отделения": "8",
+      "Назначение": "хранение"
+    },
+    "created_at": "2026-06-17T12:36:13.431Z",
+    "stock": 17,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "f3f2134c-d405-442a-a178-39c77904d5ba",
+  "fields": {
+    "owner": 12,
+    "name": "Подарочный набор Weekend Surprise",
+    "description": "Универсальный подарочный набор с открыткой, сладостями и небольшим аксессуаром для уютных выходных.",
+    "price": "2590.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплектация": "сладости, открытка, аксессуар",
+      "Повод": "универсальный подарок",
+      "Упаковка": "подарочная коробка"
+    },
+    "created_at": "2026-06-17T12:39:04.620Z",
+    "stock": 13,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "f522e94f-ab9f-47fd-b948-e7a44174c77e",
+  "fields": {
+    "owner": 7,
+    "name": "реп",
+    "description": "{\"name\":\"реп\",\"category\":\"прикол\",\"characteristics\":[]}",
+    "price": "999.00",
+    "category": "54a8351b-a875-42ea-be94-5415cc4db7fe",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-15T23:02:34.347Z",
+    "stock": 8,
+    "low_stock_threshold": 7
+  }
+},
+{
+  "model": "products.product",
+  "pk": "f52c79f3-918c-4833-8637-18f757053acb",
+  "fields": {
+    "owner": 12,
+    "name": "Скетчбук Creative A5",
+    "description": "Блокнот для зарисовок, идей и заметок.",
+    "price": "540.00",
+    "category": "c7ffa167-74be-4936-89f1-a6133f149a5e",
+    "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Формат": "A5",
+      "Бумага": "плотная"
+    },
+    "created_at": "2026-06-17T12:38:53.042Z",
+    "stock": 39,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "f79deb7a-6b4c-41fc-8e5c-b292a86e7d38",
+  "fields": {
+    "owner": 12,
+    "name": "Беспроводные наушники AirSound Lite",
+    "description": "Компактные беспроводные наушники для музыки, звонков и дороги.",
+    "price": "2990.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Подключение": "Bluetooth",
+      "Чехол": "зарядный",
+      "Автономность": "до 20 часов с кейсом"
+    },
+    "created_at": "2026-06-17T12:36:13.427Z",
+    "stock": 24,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "f7ee2cb2-f93f-454d-8b75-3bdd055e89e9",
+  "fields": {
+    "owner": 12,
+    "name": "Сыворотка с центеллой Calm Cica",
+    "description": "Лёгкая сыворотка для ежедневного ухода, которую удобно добавить в утреннюю или вечернюю рутину.",
+    "price": "1290.00",
+    "category": "d8f1a3e7-6b9c-4d2f-8a1e-3c5b7d9f1e3a",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Объём": "30 мл",
+      "Тип кожи": "для всех типов",
+      "Текстура": "лёгкая"
+    },
+    "created_at": "2026-06-17T12:36:13.424Z",
+    "stock": 32,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "f8328d2c-c5c1-401f-8f4c-ed702f91061b",
+  "fields": {
+    "owner": 12,
+    "name": "Шёлковый платок Aurora",
+    "description": "Акцентный платок для образа, который можно носить на шее, сумке или волосах.",
+    "price": "1890.00",
+    "category": "a9d4cd4c-062d-482b-bdd8-20455520ba9b",
+    "image": "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Материал": "искусственный шёлк",
+      "Размер": "70x70 см",
+      "Цвет": "пастельный"
+    },
+    "created_at": "2026-06-17T12:36:13.428Z",
+    "stock": 21,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.product",
+  "pk": "f8eb86da-aa1c-48e7-acf1-30e5d499332a",
+  "fields": {
+    "owner": 12,
+    "name": "Набор Movie Night",
+    "description": "Попкорн, пледовая открытка и сладости для домашнего киносеанса.",
+    "price": "2190.00",
+    "category": "55f72091-18d2-4904-8256-008f5193d995",
+    "image": "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Повод": "вечер дома",
+      "Комплектация": "4 предмета"
+    },
+    "created_at": "2026-06-17T12:38:53.031Z",
+    "stock": 50,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "fbbf6ab5-7988-42c2-ad25-90a61b66e55f",
+  "fields": {
+    "owner": 12,
+    "name": "Набор ручек Smooth Pen",
+    "description": "Комплект гелевых ручек для письма и учёбы.",
+    "price": "390.00",
+    "category": "3d194b95-f68b-4afe-8f86-ec83b6fc3d16",
+    "image": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+    "specs": {
+      "Комплект": "5 шт",
+      "Цвет": "синий"
+    },
+    "created_at": "2026-06-17T12:38:53.061Z",
+    "stock": 25,
+    "low_stock_threshold": 4
+  }
+},
+{
+  "model": "products.product",
+  "pk": "fcd40d5d-e83c-4cfe-9b93-c123ee10b35d",
+  "fields": {
+    "owner": 5,
+    "name": "телефон",
+    "description": "AI временно недоступен\n\nВот базовые рекомендации:\n- Смотрите на товары с высоким спросом\n- Держите актуальные цены\n- Добавляйте качественные фото\n- Указывайте наличие на складе",
+    "price": "100.00",
+    "category": "3bd33ef7-c6fa-4f8d-b89b-7158199d2f0f",
+    "image": "",
+    "specs": {},
+    "created_at": "2026-06-15T21:19:38.241Z",
+    "stock": 10,
+    "low_stock_threshold": 5
+  }
+},
+{
+  "model": "products.cartitem",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "product": "0ce16f05-b5ad-4b9c-b323-2f07597d7f33",
+    "quantity": 2,
+    "created_at": "2026-05-25T08:36:17.217Z"
+  }
+},
+{
+  "model": "products.cartitem",
+  "pk": 11,
+  "fields": {
+    "user": 10,
+    "product": "4fa75c16-724a-4bcf-ad92-2236c842b592",
+    "quantity": 26,
+    "created_at": "2026-06-16T20:01:46.640Z"
+  }
+},
+{
+  "model": "products.cartitem",
+  "pk": 12,
+  "fields": {
+    "user": 5,
+    "product": "4fa75c16-724a-4bcf-ad92-2236c842b592",
+    "quantity": 11,
+    "created_at": "2026-06-16T20:02:35.084Z"
+  }
+},
+{
+  "model": "products.cartitem",
+  "pk": 13,
+  "fields": {
+    "user": 5,
+    "product": "4ad43f09-b064-4e0e-9e8d-49e839ee60f5",
+    "quantity": 3,
+    "created_at": "2026-06-16T20:02:56.908Z"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 1,
+  "fields": {
+    "user": 6,
+    "full_name": "комарова Дарья Сергеевна",
+    "phone": "898983893892",
+    "city": "батумски",
+    "address": "переулок шлюхинский 4",
+    "comment": "быстро срочно",
+    "status": "new",
+    "total": "5300000.00",
+    "created_at": "2026-06-15T22:46:52.273Z"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 2,
+  "fields": {
+    "user": 9,
+    "full_name": "Комарова Дарья",
+    "phone": "34567890",
+    "city": "sdfghjk",
+    "address": "dfghjkl;ыываприотльдбжюдбльотрипмасвчыясм",
+    "comment": "",
+    "status": "paid",
+    "total": "1998.00",
+    "created_at": "2026-06-16T12:56:51.212Z"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 3,
+  "fields": {
+    "user": 9,
+    "full_name": "комарова Дарья Сергеевна",
+    "phone": "89892891829",
+    "city": "вапролд",
+    "address": "вапролдьбтимсвпарнгшольт",
+    "comment": "",
+    "status": "done",
+    "total": "1500.00",
+    "created_at": "2026-06-16T13:02:13.125Z"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 4,
+  "fields": {
+    "user": 5,
+    "full_name": "комарова дарья сергеевна",
+    "phone": "8976543",
+    "city": "вапролд",
+    "address": "ывфцуаыакверноглшдщжлдорипав",
+    "comment": "",
+    "status": "done",
+    "total": "4000.00",
+    "created_at": "2026-06-16T19:52:02.115Z"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 5,
+  "fields": {
+    "user": 5,
+    "full_name": "коамрвоа лао воашошв",
+    "phone": "89765432",
+    "city": "ячвсапмиролд",
+    "address": "фцывчасамит тьбдолропап",
+    "comment": "вчаспмриотлит",
+    "status": "paid",
+    "total": "4000.00",
+    "created_at": "2026-06-16T19:54:12.597Z"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 6,
+  "fields": {
+    "user": 11,
+    "full_name": "rjvfhjdf lfh dfh",
+    "phone": "23456787654",
+    "city": "cvbnm",
+    "address": "ddfghjkklkjhgfdcgvbjhgv",
+    "comment": "",
+    "status": "paid",
+    "total": "200.00",
+    "created_at": "2026-06-17T00:30:53.821Z"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 7,
+  "fields": {
+    "user": 6,
+    "full_name": "Клмарова Дароа првапввор",
+    "phone": "4567909865",
+    "city": "вчасапмролджлро",
+    "address": "яывчсапмролдорлпачпспль",
+    "comment": "",
+    "status": "paid",
+    "total": "12950.00",
+    "created_at": "2026-06-17T13:07:48.172Z"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "product": "85823e39-fcf6-4ee1-8e9e-e0a9627b26c7",
+    "quantity": 53,
+    "price": "100000.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 2,
+  "fields": {
+    "order": 2,
+    "product": "f522e94f-ab9f-47fd-b948-e7a44174c77e",
+    "quantity": 2,
+    "price": "999.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 3,
+  "fields": {
+    "order": 3,
+    "product": "4fa75c16-724a-4bcf-ad92-2236c842b592",
+    "quantity": 3,
+    "price": "500.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 4,
+  "fields": {
+    "order": 4,
+    "product": "4ad43f09-b064-4e0e-9e8d-49e839ee60f5",
+    "quantity": 4,
+    "price": "1000.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 5,
+  "fields": {
+    "order": 5,
+    "product": "4ad43f09-b064-4e0e-9e8d-49e839ee60f5",
+    "quantity": 4,
+    "price": "1000.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 6,
+  "fields": {
+    "order": 6,
+    "product": "7616b482-dc7d-4382-9fc2-611503ab21f0",
+    "quantity": 2,
+    "price": "100.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 7,
+  "fields": {
+    "order": 7,
+    "product": "f3f2134c-d405-442a-a178-39c77904d5ba",
+    "quantity": 5,
+    "price": "2590.00"
+  }
+},
+{
+  "model": "products.payment",
+  "pk": 1,
+  "fields": {
+    "order": 2,
+    "external_id": "mock-11ce6e8a-65be-41e2-b94e-6609e68a81cd",
+    "status": "succeeded",
+    "confirmation_url": "",
+    "amount": "1998.00",
+    "created_at": "2026-06-16T12:56:51.221Z",
+    "updated_at": "2026-06-16T12:56:51.221Z"
+  }
+},
+{
+  "model": "products.payment",
+  "pk": 2,
+  "fields": {
+    "order": 3,
+    "external_id": "mock-f71e57c1-b849-414f-bdf8-33fbb8945b8f",
+    "status": "succeeded",
+    "confirmation_url": "",
+    "amount": "1500.00",
+    "created_at": "2026-06-16T13:02:13.128Z",
+    "updated_at": "2026-06-16T13:02:13.129Z"
+  }
+},
+{
+  "model": "products.payment",
+  "pk": 3,
+  "fields": {
+    "order": 4,
+    "external_id": "mock-2d905726-f442-4214-91b1-0a2803530053",
+    "status": "succeeded",
+    "confirmation_url": "",
+    "amount": "4000.00",
+    "created_at": "2026-06-16T19:52:02.121Z",
+    "updated_at": "2026-06-16T19:52:02.121Z"
+  }
+},
+{
+  "model": "products.payment",
+  "pk": 4,
+  "fields": {
+    "order": 5,
+    "external_id": "mock-3ea76da9-5888-4b3a-bd79-eb09acdb1f21",
+    "status": "succeeded",
+    "confirmation_url": "",
+    "amount": "4000.00",
+    "created_at": "2026-06-16T19:54:12.605Z",
+    "updated_at": "2026-06-16T19:54:12.605Z"
+  }
+},
+{
+  "model": "products.payment",
+  "pk": 5,
+  "fields": {
+    "order": 6,
+    "external_id": "mock-59685750-79c5-4052-ae16-49ec229d3c24",
+    "status": "succeeded",
+    "confirmation_url": "",
+    "amount": "200.00",
+    "created_at": "2026-06-17T00:30:53.827Z",
+    "updated_at": "2026-06-17T00:30:53.827Z"
+  }
+},
+{
+  "model": "products.payment",
+  "pk": 6,
+  "fields": {
+    "order": 7,
+    "external_id": "mock-81e0352b-5308-44fc-8c7e-68809b35981a",
+    "status": "succeeded",
+    "confirmation_url": "",
+    "amount": "12950.00",
+    "created_at": "2026-06-17T13:07:48.178Z",
+    "updated_at": "2026-06-17T13:07:48.178Z"
+  }
+}
+]

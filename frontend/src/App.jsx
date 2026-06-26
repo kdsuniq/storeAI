@@ -1,52 +1,9 @@
 import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 const API = import.meta.env.VITE_API_URL || '/api'
 
-const ORDER_STATUSES = [
-  ['new', 'Новый'],
-  ['paid', 'Оплачен'],
-  ['shipped', 'Отправлен'],
-  ['done', 'Завершён'],
-  ['canceled', 'Отменён'],
-]
-
-const ORDER_STATUS_LABELS = Object.fromEntries(ORDER_STATUSES)
-
-const formatMoney = (value) => `${Number(value || 0).toLocaleString('ru-RU')} ₽`
-
-const formatDate = (value) => {
-  if (!value) return '—'
-  return new Intl.DateTimeFormat('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(value))
-}
-
-function ProductMedia({ product }) {
-  if (product?.image) {
-    return <img className="product-media" src={product.image} alt={product.name} loading="lazy" />
-  }
-  return <div className="mock-photo" aria-hidden="true" />
-}
-
-const getAuth = () => ({
-  access: localStorage.getItem('access_token') || '',
-  refresh: localStorage.getItem('refresh_token') || '',
-})
-
-const saveAuth = (tokens) => {
-  localStorage.setItem('access_token', tokens?.access || '')
-  localStorage.setItem('refresh_token', tokens?.refresh || '')
-}
-
-const clearAuth = () => {
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-}
+const getToken = () => localStorage.getItem('token') || ''
 
 const parseSpecs = (text) => {
   if (!text.trim()) return {}
@@ -67,969 +24,229 @@ const extractError = (data) => {
   return Array.isArray(val) ? val[0] : String(val)
 }
 
-const getList = (data) => {
-  if (Array.isArray(data)) return data
-  if (Array.isArray(data?.results)) return data.results
-  return []
-}
-
-const getSavedTheme = () => {
-  if (typeof window === 'undefined') return 'dark'
-  return localStorage.getItem('theme') === 'light' ? 'light' : 'dark'
-}
-
-const getPageMeta = (data, fallbackLength = 0) => ({
-  count: Number(data?.count ?? fallbackLength),
-  next: data?.next || null,
-  previous: data?.previous || null,
-})
-
-const validateAuthForm = (mode, form, role) => {
-  if (form.username.trim().length < 3) return 'Логин должен быть не короче 3 символов'
-  if (form.password.length < 8) return 'Пароль должен быть не короче 8 символов'
-  if (mode === 'register') {
-    if (!form.email.trim()) return 'Email обязателен'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return 'Введите корректный email'
-    if (role === 'seller' && !form.store_name.trim()) return 'Укажите название магазина'
-  }
-  return ''
-}
-
-const validateCheckoutForm = (data) => {
-  if (data.full_name.trim().split(/\s+/).length < 2) return 'Укажите имя и фамилию'
-  if (!/^[0-9+()\-\s]{7,20}$/.test(data.phone.trim())) return 'Введите корректный телефон'
-  if (data.city.trim().length < 2) return 'Укажите город'
-  if (data.address.trim().length < 10) return 'Адрес должен быть не короче 10 символов'
-  return ''
-}
-
-async function apiFetch(path, { method = 'GET', body, auth, setAuth } = {}) {
-  const headers = {}
-  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData
-  if (body && !isFormData) headers['Content-Type'] = 'application/json'
-  if (auth?.access) headers.Authorization = `Bearer ${auth.access}`
-
-  let res
-  try {
-    res = await fetch(`${API}${path}`, {
-      method,
-      headers,
-      body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
-    })
-  } catch (err) {
-    return { ok: false, status: 0, data: { error: 'Не удалось подключиться к серверу' } }
-  }
-
-  if (res.status === 401 && auth?.refresh && setAuth) {
-    let refreshRes
-    try {
-      refreshRes = await fetch(`${API}/auth/token/refresh/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh: auth.refresh }),
-      })
-    } catch (err) {
-      clearAuth()
-      setAuth({ access: '', refresh: '' })
-      return { ok: false, status: 0, data: { error: 'Не удалось обновить сессию' } }
-    }
-    const refreshData = await refreshRes.json().catch(() => ({}))
-    if (refreshRes.ok && refreshData.access) {
-      const nextAuth = { access: refreshData.access, refresh: refreshData.refresh || auth.refresh }
-      setAuth(nextAuth)
-      saveAuth(nextAuth)
-      const retryHeaders = { ...headers, Authorization: `Bearer ${nextAuth.access}` }
-      try {
-        res = await fetch(`${API}${path}`, {
-          method,
-          headers: retryHeaders,
-          body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
-        })
-      } catch (err) {
-        return { ok: false, status: 0, data: { error: 'Не удалось подключиться к серверу' } }
-      }
-    } else {
-      clearAuth()
-      setAuth({ access: '', refresh: '' })
-    }
-  }
-
-  const data = await res.json().catch(() => ({}))
-  return { ok: res.ok, status: res.status, data }
-}
-
-function Header({ isAuth, profile, onLogout, theme, onToggleTheme }) {
-  const isAdmin = profile?.is_staff
-  const isLight = theme === 'light'
+function Header({ token, onLogout }) {
   return (
     <header className="header-wrap">
       <div className="topline">
-        <Link to="/" className="brand-link">
-          <div className="brand">Store with AI</div>
-        </Link>
+        <div className="brand">Store with AI</div>
         <div className="actions">
-          {!isAuth && (
-            <>
-              <Link className="btn btn-light" to="/auth/buyer">Регистрация покупателя</Link>
-              <Link className="btn btn-light" to="/auth/seller">Стать продавцом</Link>
-            </>
-          )}
-          {isAuth && <Link className="btn btn-light" to="/account">Аккаунт</Link>}
+          {token ? <Link className="btn btn-light" to="/account">Разместить товар</Link> : <Link className="btn btn-light" to="/auth">Стать продавцом</Link>}
           <Link className="btn btn-accent" to="/cart">Корзина</Link>
-          {isAdmin && <Link className="btn btn-light" to="/admin">Админка</Link>}
-          <button
-            className="theme-toggle"
-            type="button"
-            aria-pressed={isLight}
-            aria-label={isLight ? 'Включить тёмную тему' : 'Включить светлую тему'}
-            title={isLight ? 'Тёмная тема' : 'Светлая тема'}
-            onClick={onToggleTheme}
-          >
-            <span className="theme-toggle-track" aria-hidden="true">
-              <span className="theme-toggle-thumb" />
-            </span>
-            <span className="theme-toggle-label">{isLight ? 'Светлая' : 'Тёмная'}</span>
-          </button>
-          {isAuth ? <button className="btn btn-outline" onClick={onLogout}>Выйти</button> : <Link className="btn btn-outline" to="/auth/buyer">Вход</Link>}
+          {token ? <button className="btn btn-outline" onClick={onLogout}>Выйти</button> : <Link className="btn btn-outline" to="/auth">Вход</Link>}
         </div>
       </div>
       <nav className="menu">
-        <Link to="/">Каталог</Link>
-        {isAuth && <Link to="/account">Аккаунт и заказы</Link>}
+        <Link to="/">Все товары</Link>
+        <Link to="/account">Кабинет продавца</Link>
       </nav>
     </header>
   )
 }
 
-function ProductsPage({ auth, setAuth }) {
+function ProductsPage({ token }) {
   const [products, setProducts] = useState([])
-  const [categories, setCategories] = useState([])
-  const [cartItems, setCartItems] = useState({})
-  const [filters, setFilters] = useState({
-    search: '',
-    category: '',
-    min_price: '',
-    max_price: '',
-    ordering: '-created_at',
-  })
-  const [page, setPage] = useState(1)
-  const [pageMeta, setPageMeta] = useState({ count: 0, next: null, previous: null })
+  const [query, setQuery] = useState('')
   const [aiQuestion, setAiQuestion] = useState('')
   const [aiAnswer, setAiAnswer] = useState('')
-  const [aiChatRecommendations, setAiChatRecommendations] = useState([])
-  const [aiChatQuestions, setAiChatQuestions] = useState([])
-  const [aiChatInteractionId, setAiChatInteractionId] = useState(null)
-  const [aiLoading, setAiLoading] = useState(false)
   const [error, setError] = useState('')
-  const [cartTotalCount, setCartTotalCount] = useState(0)
-  const [productsLoading, setProductsLoading] = useState(false)
 
-  const loadProducts = async (pageNumber = page) => {
-    setProductsLoading(true)
-    const params = new URLSearchParams({ page: String(pageNumber), page_size: '8' })
-    Object.entries(filters).forEach(([key, value]) => {
-      if (String(value).trim()) params.set(key, String(value).trim())
-    })
-    const { data } = await apiFetch(`/products/?${params.toString()}`)
-    const list = getList(data)
-    setProducts(list)
-    setPageMeta(getPageMeta(data, list.length))
-    setProductsLoading(false)
+  const load = async () => {
+    const res = await fetch(`${API}/products/`)
+    const data = await res.json().catch(() => [])
+    setProducts(Array.isArray(data) ? data : [])
   }
 
-  const loadCategories = async () => {
-    const { data } = await apiFetch('/categories/')
-    setCategories(getList(data))
-  }
+  useEffect(() => { load() }, [])
 
-  const loadCart = async () => {
-    if (!auth.access) return
-    const res = await apiFetch('/products/cart/', { auth, setAuth })
-    if (!res.ok) return
-    
-    const items = Array.isArray(res.data.items) ? res.data.items : []
-    const cartMap = {}
-    let totalCount = 0
-    items.forEach(item => {
-      cartMap[item.product.id] = {
-        quantity: item.quantity,
-        cartItemId: item.id
-      }
-      totalCount += item.quantity
-    })
-    setCartItems(cartMap)
-    setCartTotalCount(totalCount)
-  }
+  const filtered = useMemo(() => {
+    if (!query.trim()) return products
+    const q = query.toLowerCase()
+    return products.filter((p) => `${p.name} ${p.description}`.toLowerCase().includes(q))
+  }, [products, query])
 
-  useEffect(() => {
-    loadCategories()
-    loadCart()
-  }, [])
-
-  useEffect(() => {
-    loadProducts(page)
-  }, [page, filters.search, filters.category, filters.min_price, filters.max_price, filters.ordering])
-
-  useEffect(() => {
-    loadCart()
-  }, [auth.access])
-
-  const totalPages = Math.max(1, Math.ceil(pageMeta.count / 8))
-
-  const updateFilter = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value }))
-    setPage(1)
-  }
-
-  const updateCartQuantity = async (productId, newQuantity) => {
-    if (!auth.access) {
-      setError('Чтобы добавить в корзину, нужно войти в аккаунт.')
-      return
-    }
-
-    const product = products.find(p => p.id === productId)
-    if (!product) return
-
-    if (newQuantity < 0) newQuantity = 0
-    
-    if (newQuantity === 0) {
-      const cartItemId = cartItems[productId]?.cartItemId
-      if (cartItemId) {
-        const res = await apiFetch(`/products/cart/${cartItemId}/`, { 
-          method: 'DELETE', 
-          auth, 
-          setAuth 
-        })
-        if (!res.ok) {
-          setError(extractError(res.data))
-          return
-        }
-        await loadCart()
-      }
-      return
-    }
-
-    if (newQuantity > product.stock) {
-      setError(`Недостаточно товара. В наличии: ${product.stock} шт.`)
-      return
-    }
-
-    const res = await apiFetch('/products/cart/update/', {
-      method: 'PATCH',
-      body: { product_id: productId, quantity: newQuantity },
-      auth,
-      setAuth,
-    })
-
-    if (!res.ok) {
-      setError(extractError(res.data))
-      return
-    }
-
-    await apiFetch('/ai/track-view/', {
-      method: 'POST',
-      body: { product_id: productId, source: 'catalog', query: filters.search },
-      auth,
-      setAuth,
-    })
-    await loadCart()
+  const addToCart = async (productId) => {
     setError('')
-  }
-
-  const getQuantityInCart = (productId) => {
-    return cartItems[productId]?.quantity || 0
+    if (!token) return setError('Чтобы добавить в корзину, нужно войти в аккаунт.')
+    const res = await fetch(`${API}/products/cart/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` },
+      body: JSON.stringify({ product_id: productId, quantity: 1 })
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return setError(extractError(data))
+    }
+    setError('Товар добавлен в корзину.')
   }
 
   const askAI = async () => {
-    if (!aiQuestion.trim()) return
-    
-    setAiLoading(true)
-    setAiAnswer('')
-    setAiChatRecommendations([])
-    setAiChatQuestions([])
-    setAiChatInteractionId(null)
-    
-    try {
-      const res = await apiFetch('/ai/chat/', { 
-        method: 'POST', 
-        body: { message: aiQuestion, format: 'structured' },
-        auth,
-        setAuth,
-      })
-      
-      if (res.ok) {
-        setAiAnswer(res.data.answer || 'Ответ не получен')
-        setAiChatRecommendations(res.data.recommendations || [])
-        setAiChatQuestions(res.data.clarifying_questions || [])
-        setAiChatInteractionId(res.data.interaction_id || null)
-      } else {
-        setAiAnswer('Ошибка: ' + (res.data.error || 'Не удалось получить ответ'))
-        setAiChatRecommendations([])
-        setAiChatQuestions([])
-        setAiChatInteractionId(null)
-      }
-    } catch (err) {
-      setAiAnswer('Ошибка соединения. Попробуйте позже.')
-    } finally {
-      setAiLoading(false)
-    }
-  }
-
-  const addProductFromAI = async (productId, queryText = aiQuestion) => {
-    if (!auth.access) {
-      setError('Войдите в аккаунт, чтобы добавить товар в корзину')
-      return
-    }
-    const res = await apiFetch('/products/cart/', {
+    const res = await fetch(`${API}/ai/chat/`, {
       method: 'POST',
-      body: { product_id: productId, quantity: 1 },
-      auth,
-      setAuth,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: aiQuestion })
     })
-    if (res.ok) {
-      await apiFetch('/ai/track-view/', {
-        method: 'POST',
-        body: { product_id: productId, source: 'ai', query: queryText },
-        auth,
-        setAuth,
-      })
-      setError('Товар добавлен в корзину')
-      loadCart()
-    } else {
-      setError(extractError(res.data))
-    }
-  }
-
-  const sendAIFeedback = async (interactionId, helpful, feedbackText = '') => {
-    if (!interactionId) return
-    const res = await apiFetch('/ai/feedback/', {
-      method: 'POST',
-      body: { interaction_id: interactionId, helpful, feedback_text: feedbackText },
-      auth,
-      setAuth,
-    })
-    setError(res.ok ? 'Спасибо, оценка AI сохранена' : extractError(res.data))
-  }
-
-  const getStockClass = (status) => {
-    switch(status) {
-      case 'in_stock': return 'in-stock'
-      case 'low_stock': return 'low-stock'
-      default: return 'out-of-stock'
-    }
+    const data = await res.json()
+    setAiAnswer(data.answer || data.error || 'Ответ не получен')
   }
 
   return (
     <>
       <section className="hero-market">
-        <div className="catalog-command">
-          <div>
-            <h1>Каталог товаров</h1>
-            <p className="meta">{pageMeta.count ? `${pageMeta.count} позиций в каталоге` : 'Подберите товары по категории, цене или запросу'}</p>
-          </div>
-          {auth.access && (
-            <Link to="/cart" className="cart-icon-link" aria-label="Открыть корзину">
-              <div className="cart-icon">
-                <span>Корзина</span>
-                {cartTotalCount > 0 && (
-                  <span className="cart-badge">{cartTotalCount}</span>
-                )}
-              </div>
-            </Link>
-          )}
-        </div>
+        <h1>Маркетплейс товаров с AI</h1>
+        <p>Покупатели смотрят все товары, продавцы публикуют через личный кабинет.</p>
       </section>
 
       <div className="layout">
         <section className="panel">
           <div className="panel-head">
-            <h2>Товары</h2>
-          </div>
-          <div className="filters-grid">
-            <input placeholder="Поиск по товарам" value={filters.search} onChange={(e) => updateFilter('search', e.target.value)} />
-            <select value={filters.category} onChange={(e) => updateFilter('category', e.target.value)}>
-              <option value="">Все категории</option>
-              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-            <input type="number" min="0" step="0.01" placeholder="Цена от" value={filters.min_price} onChange={(e) => updateFilter('min_price', e.target.value)} />
-            <input type="number" min="0" step="0.01" placeholder="Цена до" value={filters.max_price} onChange={(e) => updateFilter('max_price', e.target.value)} />
-            <select value={filters.ordering} onChange={(e) => updateFilter('ordering', e.target.value)}>
-              <option value="-created_at">Сначала новые</option>
-              <option value="price">Сначала дешевле</option>
-              <option value="-price">Сначала дороже</option>
-              <option value="name">По названию</option>
-            </select>
+            <h2>Каталог</h2>
+            <input placeholder="Поиск по товарам" value={query} onChange={(e) => setQuery(e.target.value)} />
           </div>
           {error && <p className="note">{error}</p>}
-          {productsLoading && <p className="meta">Загружаем товары...</p>}
           <div className="catalog-grid">
-            {products.map((p) => {
-              const cartQuantity = getQuantityInCart(p.id)
-              const isInStock = p.is_in_stock || p.stock > 0
-              
-              return (
-                <article className="product-card" key={p.id}>
-                  <ProductMedia product={p} />
-                  <h3>{p.name}</h3>
-                  <p className="price">{p.price} ₽</p>
-                  
-                  <div className={`stock-badge ${getStockClass(p.stock_status)}`}>
-                    {p.in_stock_display || (p.stock > 0 ? `В наличии (${p.stock} шт.)` : 'Нет в наличии')}
-                  </div>
-                  
-                  <p className="meta">{p.category?.name || 'Без категории'} · {p.store_name || p.owner_username || 'магазин'}</p>
-                  <p className="desc">{p.description}</p>
-                  
-                  {isInStock ? (
-                    <div className="cart-controls">
-                      {cartQuantity > 0 ? (
-                        <div className="quantity-controls">
-                          <button 
-                            className="qty-btn"
-                            onClick={() => updateCartQuantity(p.id, cartQuantity - 1)}
-                          >
-                            -
-                          </button>
-                          <span className="qty-value">{cartQuantity}</span>
-                          <button 
-                            className="qty-btn"
-                            onClick={() => updateCartQuantity(p.id, cartQuantity + 1)}
-                            disabled={cartQuantity >= p.stock}
-                          >
-                            +
-                          </button>
-                        </div>
-                      ) : (
-                        <button 
-                          className="btn btn-accent add-to-cart-btn"
-                          onClick={() => updateCartQuantity(p.id, 1)}
-                        >
-                          В корзину
-                        </button>
-                      )}
-                    </div>
-                  ) : (
-                    <button className="btn btn-disabled" disabled>
-                      Нет в наличии
-                    </button>
-                  )}
-                </article>
-              )
-            })}
-          </div>
-          {!productsLoading && products.length === 0 && <p className="meta">По выбранным фильтрам товаров нет.</p>}
-          <div className="pagination-row">
-            <button className="btn btn-dark-outline" type="button" onClick={() => setPage((value) => Math.max(1, value - 1))} disabled={!pageMeta.previous}>
-              Назад
-            </button>
-            <span>Страница {page} из {totalPages}</span>
-            <button className="btn btn-dark-outline" type="button" onClick={() => setPage((value) => value + 1)} disabled={!pageMeta.next}>
-              Вперёд
-            </button>
+            {filtered.map((p) => (
+              <article className="product-card" key={p.id}>
+                <div className="mock-photo" />
+                <h3>{p.name}</h3>
+                <p className="price">{p.price} ₽</p>
+                <p className="meta">{p.category?.name || 'Без категории'} · продавец: {p.owner_username || 'пользователь'}</p>
+                <p className="desc">{p.description}</p>
+                <button className="btn btn-accent" onClick={() => addToCart(p.id)}>В корзину</button>
+              </article>
+            ))}
           </div>
         </section>
 
         <aside className="panel ai-panel">
-  {/* Существующий AI помощник */}
-  <h2>AI помощник</h2>
-  <textarea 
-    rows={5} 
-    value={aiQuestion} 
-    onChange={(e) => setAiQuestion(e.target.value)} 
-    placeholder="Например: помоги выбрать товар для офиса до 50 000 ₽"
-    disabled={aiLoading}
-  />
-  <button 
-    className="btn btn-light" 
-    onClick={askAI}
-    disabled={aiLoading || !aiQuestion.trim()}
-  >
-    {aiLoading ? ' Думаю...' : ' Спросить'}
-  </button>
-  
-  {aiLoading && (
-    <div className="ai-loading">
-      <div className="loading-spinner"></div>
-      <p>AI анализирует ваш запрос...</p>
-    </div>
-  )}
-  
-  {aiAnswer && !aiLoading && (
-    <div className="ai-answer">
-      <div className="ai-answer-header">Ответ AI</div>
-      <div className="ai-answer-content">
-        {aiAnswer.split('\n').filter((line) => line.trim()).slice(0, 6).map((line, i) => {
-          const cleanLine = line.replace(/\*\*/g, '').replace(/^[🤖🎁💖✅⚠️📦💡]\s*/u, '').trim()
-          return (
-            <p key={i} className={cleanLine.startsWith('•') || cleanLine.startsWith('-') ? 'list-item' : ''}>
-              {cleanLine}
-            </p>
-          )
-        })}
-      </div>
-      {aiChatQuestions.length > 0 && (
-        <div className="ai-followups">
-          <b>Уточнить:</b>
-          {aiChatQuestions.slice(0, 2).map((question) => (
-            <button key={question} className="chip-button" type="button" onClick={() => setAiQuestion(question)}>
-              {question}
-            </button>
-          ))}
-        </div>
-      )}
-      {aiChatRecommendations.length > 0 && (
-        <div className="recommendations-list compact">
-          {aiChatRecommendations.slice(0, 3).map((rec) => (
-            <div className="recommendation-card" key={rec.product_id}>
-              <div className="card-content">
-                <div className="card-header">
-                  <h4>{rec.name}</h4>
-                  <span className="price-badge medium">{rec.price} ₽</span>
-                </div>
-                <div className="reason">{rec.why_fits}</div>
-                <button className="btn-small" type="button" onClick={() => addProductFromAI(rec.product_id)}>
-                  В корзину
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-      {aiChatInteractionId && (
-        <div className="ai-feedback-row">
-          <button className="btn btn-dark-outline" type="button" onClick={() => sendAIFeedback(aiChatInteractionId, true)}>Помогло</button>
-          <button className="btn btn-dark-outline" type="button" onClick={() => sendAIFeedback(aiChatInteractionId, false, aiQuestion)}>Не помогло</button>
-        </div>
-      )}
-    </div>
-  )}
-</aside>
+          <h2>AI помощник</h2>
+          <textarea rows={5} value={aiQuestion} onChange={(e) => setAiQuestion(e.target.value)} placeholder="Например: помоги выбрать товар для офиса до 50 000 ₽" />
+          <button className="btn btn-light" onClick={askAI}>Спросить</button>
+          <p>{aiAnswer}</p>
+        </aside>
       </div>
     </>
   )
 }
 
-function AuthPage({ setAuth, setProfile, role = 'buyer' }) {
+function AuthPage({ onAuth }) {
   const [mode, setMode] = useState('login')
   const [error, setError] = useState('')
-  const [info, setInfo] = useState('')
-  const [form, setForm] = useState({ username: '', email: '', password: '', store_name: '' })
+  const [form, setForm] = useState({ username: '', email: '', password: '' })
   const navigate = useNavigate()
-  const isSeller = role === 'seller'
 
   const submit = async (e) => {
     e.preventDefault()
     setError('')
-    setInfo('')
-    const validationError = validateAuthForm(mode, form, role)
-    if (validationError) return setError(validationError)
-    const path = mode === 'login' ? '/auth/login/' : '/auth/register/'
-    const payload = mode === 'login'
-      ? { username: form.username, password: form.password }
-      : { ...form, role }
-    const res = await apiFetch(path, { method: 'POST', body: payload })
-    if (!res.ok) return setError(extractError(res.data))
+    const url = mode === 'login' ? `${API}/auth/login/` : `${API}/auth/register/`
+    const payload = mode === 'login' ? { username: form.username, password: form.password } : form
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) return setError(extractError(data))
 
-    const tokens = res.data.tokens || {}
-    if (!tokens.access || !tokens.refresh) return setError('Сервер не вернул JWT токены')
-
-    saveAuth(tokens)
-    setAuth(tokens)
-    if (res.data.user) setProfile(res.data.user)
-
-    if (mode === 'register') {
-      setInfo(res.data.message || 'Проверьте почту для подтверждения email')
-      if (isSeller) navigate('/account')
-      else navigate('/')
-      return
-    }
-
-    if (res.data.user?.role === 'seller') navigate('/account')
-    else navigate('/')
+    localStorage.setItem('token', data.token)
+    onAuth(data.token)
+    navigate('/account')
   }
 
   return (
     <section className="auth-wrap">
       <div className="panel auth-panel">
-        <div className="auth-role-badge">{isSeller ? 'Аккаунт продавца / магазина' : 'Аккаунт покупателя'}</div>
-        <div className="auth-tabs">
-          <button type="button" className={`auth-tab ${mode === 'login' ? 'active' : ''}`} onClick={() => setMode('login')}>Вход</button>
-          <button type="button" className={`auth-tab ${mode === 'register' ? 'active' : ''}`} onClick={() => setMode('register')}>Регистрация</button>
-        </div>
-        <h2>{mode === 'login' ? 'Вход' : isSeller ? 'Регистрация магазина' : 'Регистрация покупателя'}</h2>
-        <p className="meta auth-hint">
-          {isSeller
-            ? 'После регистрации вы сможете публиковать товары и получать заказы.'
-            : 'Покупайте товары, используйте AI-помощник и отслеживайте заказы.'}
-        </p>
+        <h2>{mode === 'login' ? 'Вход' : 'Регистрация продавца'}</h2>
         <form onSubmit={submit}>
           <input placeholder="Логин" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} required />
-          {mode === 'register' && (
-            <>
-              <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
-              {isSeller && (
-                <input placeholder="Название магазина" value={form.store_name} onChange={(e) => setForm({ ...form, store_name: e.target.value })} required />
-              )}
-            </>
-          )}
-          <input type="password" minLength={8} placeholder="Пароль (мин. 8 символов)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
-          {error && <p className="note error-note">{error}</p>}
-          {info && <p className="note success-note">{info}</p>}
+          {mode === 'register' && <input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />}
+          <input type="password" placeholder="Пароль (мин. 6 символов)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+          {error && <p className="note">{error}</p>}
           <button className="btn btn-accent" type="submit">{mode === 'login' ? 'Войти' : 'Создать аккаунт'}</button>
         </form>
-        <p className="meta auth-switch">
-          {isSeller ? (
-            <>Нужен аккаунт покупателя? <Link to="/auth/buyer">Регистрация покупателя</Link></>
-          ) : (
-            <>Хотите продавать? <Link to="/auth/seller">Стать продавцом</Link></>
-          )}
-        </p>
+        <button className="btn btn-outline" onClick={() => setMode(mode === 'login' ? 'register' : 'login')}>
+          {mode === 'login' ? 'Нет аккаунта? Регистрация' : 'Уже есть аккаунт? Войти'}
+        </button>
       </div>
     </section>
   )
 }
 
-function AccountPage({ auth, setAuth, profile, setProfile }) {
+function AccountPage({ token }) {
   const [categories, setCategories] = useState([])
   const [myProducts, setMyProducts] = useState([])
-  const [orders, setOrders] = useState([])
-  const [sellerOrders, setSellerOrders] = useState([])
   const [cat, setCat] = useState({ name: '', description: '' })
-  const [form, setForm] = useState({ 
-    name: '', 
-    description: '', 
-    price: '', 
-    category_id: '', 
-    specsText: '',
-    stock: '',
-    low_stock_threshold: ''
-  })
-  const [insights, setInsights] = useState('')
-  const [stats, setStats] = useState(null)
+  const [form, setForm] = useState({ name: '', description: '', price: '', category_id: '', specsText: '' })
   const [msg, setMsg] = useState('')
-  const [productImage, setProductImage] = useState(null)
-  const [productImagePreview, setProductImagePreview] = useState('')
-  
-  const [editingProduct, setEditingProduct] = useState(null)
-  const [editingStockValue, setEditingStockValue] = useState('')
-  const [editingPriceValue, setEditingPriceValue] = useState('')
-  const [editingField, setEditingField] = useState(null)
-  const [generatingDesc, setGeneratingDesc] = useState(false)
 
   const load = async () => {
-    const [me, c, o] = await Promise.all([
-      apiFetch('/auth/me/', { auth, setAuth }),
-      apiFetch('/categories/'),
-      apiFetch('/products/my-orders/?page_size=20', { auth, setAuth }),
+    const [cRes, pRes] = await Promise.all([
+      fetch(`${API}/categories/`),
+      fetch(`${API}/products/my-products/`, { headers: { Authorization: `Token ${token}` } })
     ])
-
-    if (!me.ok) {
+    if (pRes.status === 401) {
       setMsg('Сессия истекла. Войдите заново.')
       return
     }
-
-    setProfile(me.data || null)
-    setCategories(getList(c.data))
-    setOrders(getList(o.data))
-
-    if (me.data?.role === 'seller') {
-      const [p, so] = await Promise.all([
-        apiFetch('/products/my-products/', { auth, setAuth }),
-        apiFetch('/products/seller-orders/?page_size=20', { auth, setAuth }),
-      ])
-      setMyProducts(getList(p.data))
-      setSellerOrders(getList(so.data))
-    } else {
-      setMyProducts([])
-      setSellerOrders([])
-    }
+    const cData = await cRes.json().catch(() => [])
+    const pData = await pRes.json().catch(() => [])
+    setCategories(Array.isArray(cData) ? cData : [])
+    setMyProducts(Array.isArray(pData) ? pData : [])
   }
 
-  useEffect(() => { load() }, [auth.access])
+  useEffect(() => { load() }, [token])
 
   const addCategory = async (e) => {
     e.preventDefault()
-    if (cat.name.trim().length < 2) return setMsg('Название категории должно быть не короче 2 символов')
-    const res = await apiFetch('/categories/', { method: 'POST', body: cat, auth, setAuth })
-    if (!res.ok) return setMsg(extractError(res.data))
+    const res = await fetch(`${API}/categories/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` },
+      body: JSON.stringify(cat)
+    })
+    if (!res.ok) return setMsg('Не удалось создать категорию')
     setMsg('Категория создана')
     setCat({ name: '', description: '' })
     load()
   }
 
   const generateDescription = async () => {
-  if (!form.name.trim()) {
-    setMsg('Введите название товара перед генерацией')
-    return
-  }
-  
-  setGeneratingDesc(true)
-  setMsg('')
-  
-  try {
+    if (!form.name.trim()) return setMsg('Введите название товара перед генерацией')
     const selected = categories.find((c) => c.id === form.category_id)
-    
-    const res = await apiFetch('/ai/generate-description/', {
+    const res = await fetch(`${API}/ai/generate-description/`, {
       method: 'POST',
-      body: { 
-        name: form.name, 
-        category: selected?.name || '', 
-        specs: parseSpecs(form.specsText) 
-      },
-      auth,
-      setAuth,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: form.name, category: selected?.name || '', specs: parseSpecs(form.specsText) })
     })
-    
-    if (!res.ok) {
-      setMsg(extractError(res.data))
-      return
-    }
-    
-    let generatedText = ''
-    
-    if (res.data.description) {
-      // Формат: { description: { ... } }
-      if (typeof res.data.description === 'object') {
-        // Берем full_description или short_description
-        generatedText = res.data.description.full_description || 
-                       res.data.description.short_description || 
-                       JSON.stringify(res.data.description)
-      } 
-      // Формат: { description: "текст" }
-      else if (typeof res.data.description === 'string') {
-        generatedText = res.data.description
-      }
-    }
-    // Формат: { answer: "текст" }
-    else if (res.data.answer) {
-      generatedText = res.data.answer
-    }
-    // Формат: { full_description: "текст" }
-    else if (res.data.full_description) {
-      generatedText = res.data.full_description
-    }
-    
-    if (generatedText) {
-      setForm((prev) => ({ 
-        ...prev, 
-        description: generatedText 
-      }))
-      setMsg('Описание успешно сгенерировано и добавлено в поле!')
-    } else {
-      setMsg('Не удалось получить описание. Попробуйте еще раз.')
-    }
-  } catch (err) {
-    setMsg('Ошибка генерации. Попробуйте позже.')
-  } finally {
-    setGeneratingDesc(false)
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) return setMsg(extractError(data))
+    setForm((p) => ({ ...p, description: data.description || p.description }))
+    setMsg('Описание сгенерировано')
   }
-}
 
   const addProduct = async (e) => {
     e.preventDefault()
-    if (form.name.trim().length < 2) return setMsg('Название товара должно быть не короче 2 символов')
-    if (form.description.trim().length < 10) return setMsg('Описание должно быть не короче 10 символов')
-    if (!form.category_id) return setMsg('Выберите категорию')
-    
-    const priceNum = Number(form.price)
-    if (isNaN(priceNum) || priceNum <= 0) {
-      return setMsg('Цена должна быть больше нуля')
-    }
-
-    const stockNum = Number(form.stock)
-    if (!Number.isInteger(stockNum) || stockNum < 0) {
-      return setMsg('Количество товара должно быть неотрицательным числом')
-    }
-
-    const thresholdNum = form.low_stock_threshold ? Number(form.low_stock_threshold) : 5
-    if (!Number.isInteger(thresholdNum) || thresholdNum < 0) {
-      return setMsg('Порог низкого остатка должен быть неотрицательным числом')
-    }
-    
-    const payload = new FormData()
-    payload.append('name', form.name)
-    payload.append('description', form.description)
-    payload.append('price', String(priceNum))
-    payload.append('category', form.category_id)
-    payload.append('specs', JSON.stringify(parseSpecs(form.specsText)))
-    payload.append('stock', String(stockNum))
-    payload.append('low_stock_threshold', String(thresholdNum))
-    if (productImage) payload.append('image', productImage)
-
-    const res = await apiFetch('/products/', {
+    const res = await fetch(`${API}/products/`, {
       method: 'POST',
-      body: payload,
-      auth,
-      setAuth,
+      headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` },
+      body: JSON.stringify({
+        name: form.name,
+        description: form.description,
+        price: Number(form.price),
+        category_id: form.category_id,
+        specs: parseSpecs(form.specsText)
+      })
     })
-    if (!res.ok) return setMsg(extractError(res.data))
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) return setMsg(extractError(data))
     setMsg('Товар опубликован')
-    setForm({ name: '', description: '', price: '', category_id: '', specsText: '', stock: '', low_stock_threshold: '' })
-    setProductImage(null)
-    setProductImagePreview('')
+    setForm({ name: '', description: '', price: '', category_id: '', specsText: '' })
     load()
   }
-
-  const handleProductImageChange = (event) => {
-    const file = event.target.files?.[0]
-    if (!file) {
-      setProductImage(null)
-      setProductImagePreview('')
-      return
-    }
-    if (!file.type.startsWith('image/')) {
-      setMsg('Выберите файл изображения')
-      event.target.value = ''
-      return
-    }
-    setProductImage(file)
-    setProductImagePreview(URL.createObjectURL(file))
-  }
-  
-  const startEditingStock = (product) => {
-    setEditingProduct(product.id)
-    setEditingStockValue(product.stock.toString())
-    setEditingField('stock')
-  }
-  
-  const saveStockUpdate = async (productId) => {
-    const newStock = parseInt(editingStockValue)
-    
-    if (isNaN(newStock)) {
-      setMsg('Введите корректное число')
-      return
-    }
-    
-    if (newStock < 0) {
-      setMsg('Количество не может быть отрицательным')
-      return
-    }
-    
-    const res = await apiFetch(`/products/my-products/${productId}/`, {
-      method: 'PATCH',
-      body: { stock: newStock },
-      auth,
-      setAuth,
-    })
-    
-    if (!res.ok) {
-      setMsg(extractError(res.data))
-      return
-    }
-    
-    setMsg('Остаток успешно обновлен')
-    load()
-    cancelEditing()
-  }
-  
-  const startEditingPrice = (product) => {
-    setEditingProduct(product.id)
-    setEditingPriceValue(product.price.toString())
-    setEditingField('price')
-  }
-  
-  const savePriceUpdate = async (productId) => {
-    const newPrice = parseFloat(editingPriceValue)
-    
-    if (isNaN(newPrice)) {
-      setMsg('Введите корректную цену')
-      return
-    }
-    
-    if (newPrice < 0) {
-      setMsg('Цена не может быть отрицательной')
-      return
-    }
-    
-    const res = await apiFetch(`/products/my-products/${productId}/`, {
-      method: 'PATCH',
-      body: { price: newPrice },
-      auth,
-      setAuth,
-    })
-    
-    if (!res.ok) {
-      setMsg(extractError(res.data))
-      return
-    }
-    
-    setMsg('Цена успешно обновлена')
-    load()
-    cancelEditing()
-  }
-  
-  const cancelEditing = () => {
-    setEditingProduct(null)
-    setEditingStockValue('')
-    setEditingPriceValue('')
-    setEditingField(null)
-  }
-
-  const loadInsights = async () => {
-    const res = await apiFetch('/ai/market-insights/', { auth, setAuth })
-    if (!res.ok) return setMsg(extractError(res.data))
-    setInsights(res.data.insights || '')
-    setStats(res.data.stats || null)
-  }
-
-  const repeatOrder = async (orderId) => {
-    const res = await apiFetch(`/products/orders/${orderId}/repeat/`, {
-      method: 'POST',
-      auth,
-      setAuth,
-    })
-    if (!res.ok) return setMsg(extractError(res.data))
-    setMsg('Товары из заказа добавлены в корзину')
-  }
-
-  const updateOrderStatus = async (orderId, status) => {
-    const res = await apiFetch(`/products/orders/${orderId}/status/`, {
-      method: 'PATCH',
-      body: { status },
-      auth,
-      setAuth,
-    })
-    if (!res.ok) return setMsg(extractError(res.data))
-    setMsg('Статус заказа обновлён')
-    load()
-  }
-
-  const resendVerification = async () => {
-    const res = await apiFetch('/auth/resend-verification/', { method: 'POST', auth, setAuth })
-    setMsg(res.ok ? (res.data.message || 'Письмо отправлено') : extractError(res.data))
-  }
-
-  const isSeller = profile?.role === 'seller'
 
   return (
-    <div className="layout seller-layout">
+    <div className="layout">
       <section className="panel">
-        <h2>{isSeller ? 'Аккаунт продавца' : 'Аккаунт покупателя'}</h2>
-        {profile && (
-          <p className="meta">
-            {profile.store_name || profile.username}
-            {profile.email ? ` · ${profile.email}` : ''}
-            {profile.email_verified ? ' · email подтверждён' : ' · email не подтверждён'}
-          </p>
-        )}
-        {profile && !profile.email_verified && (
-          <div className="verify-banner">
-            <p>Подтвердите email, чтобы {isSeller ? 'публиковать товары и принимать заказы' : 'оформлять заказы'}.</p>
-            <button className="btn btn-light" type="button" onClick={resendVerification}>Отправить письмо повторно</button>
-          </div>
-        )}
+        <h2>Кабинет продавца</h2>
         {msg && <p className="note">{msg}</p>}
-
-        {!isSeller && (
-          <div className="form-block">
-            <h3>Мои данные</h3>
-            <p className="meta">Здесь собраны заказы и статус аккаунта. Для публикации товаров создайте аккаунт продавца.</p>
-            <Link className="btn btn-light" to="/auth/seller">Стать продавцом</Link>
-          </div>
-        )}
-
-        {isSeller && (
-        <>
         <form onSubmit={addCategory} className="form-block">
           <h3>1) Создать категорию</h3>
           <input required placeholder="Название категории" value={cat.name} onChange={(e) => setCat({ ...cat, name: e.target.value })} />
@@ -1041,1134 +258,104 @@ function AccountPage({ auth, setAuth, profile, setProfile }) {
           <h3>2) Разместить товар</h3>
           <input required placeholder="Название товара" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <input required type="number" min="0" step="0.01" placeholder="Цена" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
-          
-          <input 
-            required 
-            type="number" 
-            min="0" 
-            step="1" 
-            placeholder="Количество на складе (шт.)" 
-            value={form.stock} 
-            onChange={(e) => setForm({ ...form, stock: e.target.value })} 
-          />
-          <input 
-            type="number" 
-            min="0" 
-            step="1" 
-            placeholder="Порог низкого остатка (по умолчанию 5)" 
-            value={form.low_stock_threshold} 
-            onChange={(e) => setForm({ ...form, low_stock_threshold: e.target.value })} 
-          />
-          
           <select required value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })}>
             <option value="">Выберите категорию</option>
             {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
-          <label className="image-upload">
-            <span>Фото товара</span>
-            <input type="file" accept="image/*" onChange={handleProductImageChange} />
-            <small>JPG, PNG или WebP. Фото появится в карточке каталога.</small>
-          </label>
-          {productImagePreview && (
-            <div className="image-preview">
-              <img src={productImagePreview} alt="Предпросмотр товара" />
-              <button className="btn btn-dark-outline" type="button" onClick={() => { setProductImage(null); setProductImagePreview('') }}>
-                Убрать фото
-              </button>
-            </div>
-          )}
           <textarea rows={4} placeholder={'Характеристики\nЦвет: Черный\nПамять: 256 ГБ'} value={form.specsText} onChange={(e) => setForm({ ...form, specsText: e.target.value })} />
           <textarea required rows={6} placeholder="Описание" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           <div className="actions-row">
-            <button 
-              className="btn btn-outline" 
-              type="button" 
-              onClick={generateDescription}
-              disabled={generatingDesc}
-            >
-              {generatingDesc ? 'Генерация...' : 'Сгенерировать описание AI'}
-            </button>
+            <button className="btn btn-outline" type="button" onClick={generateDescription}>Сгенерировать описание AI</button>
             <button className="btn btn-accent" type="submit">Опубликовать товар</button>
           </div>
         </form>
-        </>
-        )}
       </section>
 
-      {isSeller && (
       <section className="panel">
         <h2>Мои товары</h2>
         <div className="catalog-grid">
           {myProducts.map((p) => (
             <article className="product-card" key={p.id}>
-              <ProductMedia product={p} />
+              <div className="mock-photo" />
               <h3>{p.name}</h3>
-              
-              <div className="price-info">
-                {editingProduct === p.id && editingField === 'price' ? (
-                  <div className="edit-field">
-                    <input 
-                      type="number" 
-                      value={editingPriceValue}
-                      onChange={(e) => setEditingPriceValue(e.target.value)}
-                      min="0"
-                      step="0.01"
-                      autoFocus
-                    />
-                    <div className="edit-buttons">
-                      <button className="btn-save" onClick={() => savePriceUpdate(p.id)}>Сохранить</button>
-                      <button className="btn-cancel" onClick={cancelEditing}>Отмена</button>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="price">
-                    {p.price} ₽
-                    <button 
-                      className="btn-edit-small" 
-                      onClick={() => startEditingPrice(p)}
-                      title="Редактировать цену"
-                    >
-                      ✏️
-                    </button>
-                  </p>
-                )}
-              </div>
-              
-              <div className="stock-info">
-                {editingProduct === p.id && editingField === 'stock' ? (
-                  <div className="edit-field">
-                    <input 
-                      type="number" 
-                      value={editingStockValue}
-                      onChange={(e) => setEditingStockValue(e.target.value)}
-                      min="0"
-                      step="1"
-                      autoFocus
-                    />
-                    <div className="edit-buttons">
-                      <button className="btn-save" onClick={() => saveStockUpdate(p.id)}>Сохранить</button>
-                      <button className="btn-cancel" onClick={cancelEditing}>Отмена</button>
-                    </div>
-                  </div>
-                ) : (
-                  <p className={`stock-value ${p.stock <= p.low_stock_threshold && p.stock > 0 ? 'low' : ''}`}>
-                    В наличии: {p.stock} шт.
-                    {p.stock <= p.low_stock_threshold && p.stock > 0 && 
-                      <span className="warning"> низкий остаток!</span>
-                    }
-                    {p.stock === 0 && <span className="out"> закончился</span>}
-                    <button 
-                      className="btn-edit-small" 
-                      onClick={() => startEditingStock(p)}
-                      title="Изменить количество"
-                    >
-                      ✏️
-                    </button>
-                  </p>
-                )}
-              </div>
-              
+              <p className="price">{p.price} ₽</p>
               <p className="meta">{p.category?.name}</p>
+              <p className="desc">{p.description}</p>
             </article>
           ))}
         </div>
-
-        <h2 style={{ marginTop: 16 }}>Входящие заказы</h2>
-        {sellerOrders.length === 0 && <p className="meta">Пока нет заказов с вашими товарами.</p>}
-        {sellerOrders.map((o) => (
-          <article className="product-card order-card" key={`seller-${o.id}`}>
-            <p><b>Заказ #{o.id}</b> · {o.total} ₽ · статус: {o.status}</p>
-            <p className="meta">{o.full_name}, {o.phone}, {o.city}</p>
-            {o.items?.length > 0 && (
-              <ul className="order-items">
-                {o.items.map((item) => (
-                  <li key={item.id}>{item.product_name} · {item.quantity} шт.</li>
-                ))}
-              </ul>
-            )}
-            <div className="actions-row">
-              {o.status === 'paid' && (
-                <button className="btn btn-accent" type="button" onClick={() => updateOrderStatus(o.id, 'shipped')}>Отправлен</button>
-              )}
-              {o.status === 'shipped' && (
-                <button className="btn btn-accent" type="button" onClick={() => updateOrderStatus(o.id, 'done')}>Завершён</button>
-              )}
-            </div>
-          </article>
-        ))}
-
-        <h2 style={{ marginTop: 16 }}>Мои покупки</h2>
-        {orders.map((o) => (
-          <article className="product-card" key={o.id}>
-            <p><b>Заказ #{o.id}</b> · {o.total} ₽ · статус: {o.status}</p>
-            <p className="meta">{o.full_name}, {o.phone}, {o.city}, {o.address}</p>
-            {o.items?.length > 0 && (
-              <ul className="order-items">
-                {o.items.map((item) => (
-                  <li key={item.id}>{item.product_name} · {item.quantity} шт. · {item.price} ₽</li>
-                ))}
-              </ul>
-            )}
-            <div className="actions-row">
-              <button className="btn btn-accent" type="button" onClick={() => repeatOrder(o.id)}>
-                Повторить заказ
-              </button>
-            </div>
-          </article>
-        ))}
       </section>
-      )}
-
-      {isSeller && (
-      <section className="panel">
-        <h2>AI анализатор спроса</h2>
-        <button className="btn btn-light" onClick={loadInsights}>Показать статистику и рекомендации</button>
-        {stats && (
-          <div>
-            <p className="meta">Товаров у продавца: {stats.seller_products_count}</p>
-            <p className="meta">Добавлений в корзину: {stats.total_cart_additions}</p>
-            <p className="meta">Товаров с низким остатком: {myProducts.filter(p => p.stock > 0 && p.stock <= p.low_stock_threshold).length}</p>
-            <p className="meta">Распроданных товаров: {myProducts.filter(p => p.stock === 0).length}</p>
-          </div>
-        )}
-        {insights && <p>{insights}</p>}
-      </section>
-      )}
-
-      {!isSeller && (
-        <section className="panel">
-          <h2>Мои заказы</h2>
-          {orders.length === 0 && <p className="meta">Пока нет заказов.</p>}
-          {orders.map((o) => (
-            <article className="product-card order-card" key={o.id}>
-              <p><b>Заказ #{o.id}</b> · {o.total} ₽ · статус: {o.status}</p>
-              <p className="meta">{o.full_name}, {o.phone}, {o.city}, {o.address}</p>
-              {o.items?.length > 0 && (
-                <ul className="order-items">
-                  {o.items.map((item) => (
-                    <li key={item.id}>{item.product_name} · {item.quantity} шт. · {item.price} ₽</li>
-                  ))}
-                </ul>
-              )}
-              <div className="actions-row">
-                <button className="btn btn-accent" type="button" onClick={() => repeatOrder(o.id)}>
-                  Повторить заказ
-                </button>
-              </div>
-            </article>
-          ))}
-        </section>
-      )}
     </div>
   )
 }
 
-function CartPage({ auth, setAuth, profile }) {
+function CartPage({ token }) {
   const [cart, setCart] = useState({ items: [], total: 0 })
-  const [msg, setMsg] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [checkoutData, setCheckoutData] = useState({ 
-    full_name: '', 
-    phone: '', 
-    city: '', 
-    address: '', 
-    comment: '' 
-  })
 
   const load = async () => {
-    if (!auth.access) return
-    const res = await apiFetch('/products/cart/', { auth, setAuth })
+    const res = await fetch(`${API}/products/cart/`, { headers: { Authorization: `Token ${token}` } })
     if (!res.ok) return
+    const data = await res.json().catch(() => ({ items: [], total: 0 }))
     setCart({
-      items: Array.isArray(res.data.items) ? res.data.items : [],
-      total: Number(res.data.total || 0),
+      items: Array.isArray(data.items) ? data.items : [],
+      total: Number(data.total || 0),
     })
   }
 
-  useEffect(() => { 
-    if (auth.access) load() 
-  }, [auth.access])
+  useEffect(() => { if (token) load() }, [token])
 
-  const updateCartQuantity = async (productId, newQuantity) => {
-    if (!auth.access) return
-    if (loading) return
-    
-    setLoading(true)
-    
-    if (newQuantity <= 0) {
-      // Удаляем товар из корзины
-      const item = cart.items.find(i => i.product.id === productId)
-      if (item) {
-        const res = await apiFetch(`/products/cart/${item.id}/`, { 
-          method: 'DELETE', 
-          auth, 
-          setAuth 
-        })
-        if (!res.ok) {
-          setMsg(extractError(res.data))
-        }
-        await load()
-      }
-      setLoading(false)
-      return
-    }
-
-    // Проверяем доступность товара
-    const product = cart.items.find(i => i.product.id === productId)?.product
-    if (product && newQuantity > product.stock) {
-      setMsg(`Недостаточно товара. В наличии: ${product.stock} шт.`)
-      setLoading(false)
-      return
-    }
-
-    // Обновляем количество через PATCH эндпоинт
-    const res = await apiFetch('/products/cart/update/', {
-      method: 'PATCH',
-      body: { product_id: productId, quantity: newQuantity },
-      auth,
-      setAuth,
-    })
-
-    if (!res.ok) {
-      setMsg(extractError(res.data))
-    } else {
-      await load()
-    }
-    
-    setLoading(false)
-  }
-
-  const removeItem = async (itemId, productId) => {
-    await updateCartQuantity(productId, 0)
-  }
-
-  const checkout = async () => {
-    setMsg('')
-    const validationError = validateCheckoutForm(checkoutData)
-    if (validationError) return setMsg(validationError)
-
-    if (profile && !profile.email_verified) {
-      setMsg('Подтвердите email перед оформлением заказа. Проверьте почту или запросите письмо повторно в профиле.')
-      return
-    }
-
-    setLoading(true)
-    
-    const unavailableItems = cart.items.filter(item => item.quantity > item.product.stock)
-    if (unavailableItems.length > 0) {
-      const names = unavailableItems.map(i => i.product.name).join(', ')
-      setMsg(`Товары недоступны в нужном количестве: ${names}. Обновите корзину.`)
-      setLoading(false)
-      return
-    }
-    
-    const res = await apiFetch('/products/cart/checkout/', { 
-      method: 'POST', 
-      body: {
-        ...checkoutData,
-        return_url: `${window.location.origin}/payment/success`,
-      },
-      auth, 
-      setAuth 
-    })
-    
-    if (!res.ok) {
-      if (res.data.error && res.data.error.includes('недоступен')) {
-        setMsg(`${res.data.error}. Обновите корзину.`)
-        load()
-      } else {
-        setMsg(extractError(res.data))
-      }
-      setLoading(false)
-      return
-    }
-
-    const payment = res.data.payment || {}
-    if (payment.confirmation_url) {
-      window.location.href = payment.confirmation_url
-      return
-    }
-
-    const orderId = res.data.order?.id
-    if (payment.status === 'succeeded' || payment.mock) {
-      setMsg(`Заказ #${orderId} оплачен на сумму ${Number(res.data.order?.total || 0).toFixed(2)} ₽`)
-    } else {
-      setMsg(`Заказ #${orderId} создан. Ожидается оплата.`)
-    }
+  const removeItem = async (id) => {
+    await fetch(`${API}/products/cart/${id}/`, { method: 'DELETE', headers: { Authorization: `Token ${token}` } })
     load()
-    setCheckoutData({ full_name: '', phone: '', city: '', address: '', comment: '' })
-    setLoading(false)
   }
 
-  if (!auth.access) {
-    return (
-      <section className="panel empty-state">
-        <h2>Корзина</h2>
-        <p>Войдите как покупатель, чтобы оформить заказ.</p>
-        <Link className="btn btn-accent" to="/auth/buyer">Войти / регистрация</Link>
-      </section>
-    )
-  }
+  if (!token) return <section className="panel"><p>Войдите в аккаунт, чтобы пользоваться корзиной.</p></section>
 
   return (
     <section className="panel">
       <h2>Корзина</h2>
-      {msg && <p className="note">{msg}</p>}
-      
-      {cart.items.length === 0 ? (
-        <p>Корзина пуста</p>
-      ) : (
-        <>
-          <div className="cart-items">
-            {cart.items.map((item) => (
-              <div className="cart-item" key={item.id}>
-                <div className="cart-item-info">
-                  <h3>{item.product.name}</h3>
-                  <p className="price">{item.product.price} ₽</p>
-                  <p className="meta">категория: {item.product.category?.name || 'Без категории'}</p>
-                  {item.quantity > item.product.stock && (
-                    <p className="error-meta">⚠️ В наличии только {item.product.stock} шт.</p>
-                  )}
-                </div>
-                
-                <div className="cart-item-controls">
-                  <div className="quantity-controls">
-                    <button 
-                      className="qty-btn"
-                      onClick={() => updateCartQuantity(item.product.id, item.quantity - 1)}
-                      disabled={loading}
-                    >
-                      -
-                    </button>
-                    <span className="qty-value">{item.quantity}</span>
-                    <button 
-                      className="qty-btn"
-                      onClick={() => updateCartQuantity(item.product.id, item.quantity + 1)}
-                      disabled={loading || item.quantity >= item.product.stock}
-                    >
-                      +
-                    </button>
-                  </div>
-                  <button 
-                    className="btn-remove"
-                    onClick={() => removeItem(item.id, item.product.id)}
-                    disabled={loading}
-                  >
-                    Удалить
-                  </button>
-                </div>
-                
-                <div className="cart-item-total">
-                  <span>Сумма: {(item.product.price * item.quantity).toFixed(2)} ₽</span>
-                </div>
-              </div>
-            ))}
+      {cart.items.map((item) => (
+        <article className="product-row" key={item.id}>
+          <div>
+            <h3>{item.product.name}</h3>
+            <p className="meta">{item.quantity} шт · {item.product.price} ₽</p>
           </div>
-          
-          <div className="cart-summary">
-            <h3>Итого: {Number(cart.total).toFixed(2)} ₽</h3>
-            
-            <div className="form-block">
-              <h3>Данные для доставки</h3>
-              <input 
-                placeholder="ФИО" 
-                value={checkoutData.full_name} 
-                onChange={(e) => setCheckoutData({ ...checkoutData, full_name: e.target.value })} 
-                minLength={3}
-                required
-              />
-              <input 
-                placeholder="Телефон" 
-                value={checkoutData.phone} 
-                onChange={(e) => setCheckoutData({ ...checkoutData, phone: e.target.value })} 
-                inputMode="tel"
-                pattern="[0-9+()\\-\\s]{7,20}"
-                required
-              />
-              <input 
-                placeholder="Город" 
-                value={checkoutData.city} 
-                onChange={(e) => setCheckoutData({ ...checkoutData, city: e.target.value })} 
-                minLength={2}
-                required
-              />
-              <input 
-                placeholder="Адрес" 
-                value={checkoutData.address} 
-                onChange={(e) => setCheckoutData({ ...checkoutData, address: e.target.value })} 
-                minLength={10}
-                required
-              />
-              <textarea 
-                rows={3} 
-                placeholder="Комментарий к заказу" 
-                value={checkoutData.comment} 
-                onChange={(e) => setCheckoutData({ ...checkoutData, comment: e.target.value })} 
-              />
-            </div>
-            
-            <button 
-              className="btn btn-accent" 
-              onClick={checkout} 
-              disabled={
-                loading || 
-                !cart.items.length || 
-                cart.items.some(item => item.quantity > item.product.stock) ||
-                !checkoutData.full_name ||
-                !checkoutData.phone ||
-                !checkoutData.city ||
-                !checkoutData.address
-              }
-            >
-              {loading ? 'Обработка...' : 'Оформить и оплатить'}
-            </button>
-          </div>
-        </>
-      )}
-    </section>
-  )
-}
-
-
-function AIPriceSearchWidget({ auth, setAuth, onAddToCart, onFeedback }) {
-  const [query, setQuery] = useState('')
-  const [bundleQuery, setBundleQuery] = useState('')
-  const [recommendations, setRecommendations] = useState(null)
-  const [personalRecommendations, setPersonalRecommendations] = useState(null)
-  const [bundle, setBundle] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [bundleLoading, setBundleLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [priceAnalysis, setPriceAnalysis] = useState(null)
-
-  useEffect(() => {
-    const loadPriceAnalysis = async () => {
-      const res = await apiFetch('/ai/price-analysis/')
-      if (res.ok) {
-        setPriceAnalysis(res.data)
-      }
-    }
-    loadPriceAnalysis()
-  }, [])
-
-  useEffect(() => {
-    const loadPersonal = async () => {
-      if (!auth?.access) {
-        setPersonalRecommendations(null)
-        return
-      }
-      const res = await apiFetch('/ai/personal-recommendations/', { auth, setAuth })
-      if (res.ok) setPersonalRecommendations(res.data)
-    }
-    loadPersonal()
-  }, [auth?.access])
-
-  const getRecommendations = async () => {
-    if (!query.trim()) return
-    
-    setLoading(true)
-    setError('')
-    setRecommendations(null)
-    
-    try {
-      const res = await apiFetch('/ai/semantic-search/', {
-        method: 'POST',
-        body: { query: query },
-        auth,
-        setAuth,
-      })
-      
-      if (res.ok) {
-        setRecommendations(res.data)
-      } else {
-        setError(extractError(res.data))
-      }
-    } catch (err) {
-      setError('Ошибка соединения. Попробуйте позже.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const getBundle = async () => {
-    if (!bundleQuery.trim()) return
-    setBundleLoading(true)
-    setError('')
-    setBundle(null)
-    const res = await apiFetch('/ai/bundle/', {
-      method: 'POST',
-      body: { query: bundleQuery },
-      auth,
-      setAuth,
-    })
-    if (res.ok) {
-      setBundle(res.data)
-    } else {
-      setError(extractError(res.data))
-    }
-    setBundleLoading(false)
-  }
-
-  const addBundleToCart = async () => {
-    if (!bundle?.items?.length) return
-    for (const item of bundle.items) {
-      const quantity = Number(item.quantity || 1)
-      for (let i = 0; i < quantity; i += 1) {
-        await onAddToCart(item.product_id, bundleQuery)
-      }
-    }
-  }
-
-  const renderRecommendationList = (data, title) => {
-    if (!data?.recommendations?.length) return null
-    return (
-      <div className="recommendations-list">
-        <div className="list-header">{title}</div>
-        {data.recommendations.map((rec, idx) => (
-          <div className="recommendation-card" key={`${title}-${rec.product_id}`}>
-            <div className="rank-badge">{idx + 1}</div>
-            <div className="card-content">
-              <div className="card-header">
-                <h4>{rec.name}</h4>
-                <span className={`price-badge ${rec.price_rating === 'бюджетный' ? 'budget' : rec.price_rating === 'премиум' ? 'premium' : 'medium'}`}>
-                  {rec.price_rating || 'подходит'}
-                </span>
-              </div>
-              <div className="price">{Number(rec.price || 0).toLocaleString()} ₽</div>
-              <div className="reason">
-                <span className="reason-label">Почему подходит:</span>
-                <span>{rec.why_fits}</span>
-              </div>
-              <button className="btn-small" type="button" onClick={() => onAddToCart && onAddToCart(rec.product_id, query)}>
-                В корзину
-              </button>
-            </div>
-          </div>
-        ))}
-        {data.interaction_id && (
-          <div className="ai-feedback-row">
-            <button className="btn btn-dark-outline" type="button" onClick={() => onFeedback(data.interaction_id, true)}>Помогло</button>
-            <button className="btn btn-dark-outline" type="button" onClick={() => onFeedback(data.interaction_id, false, query)}>Не помогло</button>
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  return (
-    <div className="ai-price-widget">
-      <div className="widget-header">
-        <h3>AI-поиск и персональные подборки</h3>
-      </div>
-      
-      {priceAnalysis && priceAnalysis.price_range && (
-        <div className="price-analysis-banner">
-          <div className="price-range">
-            <span> Цены в магазине:</span>
-            <span className="min-price">от {priceAnalysis.price_range.min}₽</span>
-            <span className="max-price">до {priceAnalysis.price_range.max}₽</span>
-            <span className="avg-price">средняя {priceAnalysis.price_range.avg}₽</span>
-          </div>
-          {priceAnalysis.insight && (
-            <p className="insight">💡 {priceAnalysis.insight}</p>
-          )}
-        </div>
-      )}
-      
-      <p className="widget-hint">Опишите задачу обычными словами: AI поймёт смысл, бюджет и сценарий использования</p>
-      
-      <div className="search-row">
-        <textarea
-          rows={2}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Например: лёгкий рюкзак для треккинга или ноутбук для работы до 50000 рублей"
-          disabled={loading}
-        />
-        <button 
-          className="btn btn-accent"
-          onClick={getRecommendations}
-          disabled={loading || !query.trim()}
-        >
-          {loading ? 'Ищем...' : 'Найти по смыслу'}
-        </button>
-      </div>
-
-      {recommendations?.clarifying_questions?.length > 0 && (
-        <div className="ai-followups">
-          <b>AI уточняет:</b>
-          {recommendations.clarifying_questions.map((question) => (
-            <button key={question} className="chip-button" type="button" onClick={() => setQuery(`${query}. ${question}`)}>
-              {question}
-            </button>
-          ))}
-        </div>
-      )}
-      
-      {error && <div className="error-message">{error}</div>}
-      
-      {loading && (
-        <div className="loading-state">
-          <div className="loading-spinner-small"></div>
-          <p>Анализирую запрос, историю и каталог...</p>
-        </div>
-      )}
-
-      {personalRecommendations && renderRecommendationList(personalRecommendations, 'Персонально для вас')}
-      
-      {recommendations && (
-        <div className="recommendations-result">
-          {recommendations.understanding && (
-            <div className="understanding-bubble">
-              <span className="icon">🤔</span>
-              <p>{recommendations.understanding}</p>
-            </div>
-          )}
-          
-          {recommendations.budget_found && recommendations.budget_amount && (
-            <div className="budget-info">
-              <span className="budget-label">Ваш бюджет:</span>
-              <span className="budget-value">{recommendations.budget_amount.toLocaleString()} ₽</span>
-            </div>
-          )}
-          
-          {recommendations.recommendations && recommendations.recommendations.length > 0 ? (
-            renderRecommendationList(recommendations, 'Вот что можно купить')
-          ) : (
-            <div className="no-results">
-              <p>😔 Не нашлось товаров под ваш запрос</p>
-              {recommendations.alternative_advice && (
-                <p className="advice">{recommendations.alternative_advice}</p>
-              )}
-            </div>
-          )}
-          
-          {recommendations.budget_advice && (
-            <div className="budget-advice">
-              <span className="advice-icon">💡</span>
-              <span>{recommendations.budget_advice}</span>
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className="bundle-builder">
-        <div className="widget-header">
-          <h3>Собрать комплект</h3>
-        </div>
-        <div className="search-row">
-          <textarea
-            rows={2}
-            value={bundleQuery}
-            onChange={(e) => setBundleQuery(e.target.value)}
-            placeholder="Например: собрать комплект к походу или подарок на день рождения"
-            disabled={bundleLoading}
-          />
-          <button className="btn btn-accent" type="button" onClick={getBundle} disabled={bundleLoading || !bundleQuery.trim()}>
-            {bundleLoading ? 'Собираю...' : 'Собрать'}
-          </button>
-        </div>
-        {bundle && (
-          <div className="bundle-result">
-            <h4>{bundle.title}</h4>
-            <p className="meta">{bundle.explanation}</p>
-            {bundle.clarifying_questions?.length > 0 && (
-              <div className="ai-followups">
-                {bundle.clarifying_questions.map((question) => (
-                  <button key={question} className="chip-button" type="button" onClick={() => setBundleQuery(`${bundleQuery}. ${question}`)}>
-                    {question}
-                  </button>
-                ))}
-              </div>
-            )}
-            {bundle.items?.map((item) => (
-              <div className="bundle-item" key={item.product_id}>
-                <b>{item.product?.name}</b>
-                <span>{item.role}</span>
-                <span>{Number(item.product?.price || 0).toLocaleString()} ₽ · {item.quantity} шт.</span>
-              </div>
-            ))}
-            {bundle.items?.length > 0 && (
-              <button className="btn btn-accent" type="button" onClick={addBundleToCart}>
-                Добавить комплект в корзину
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-function EmailVerificationBanner({ auth, setAuth, setProfile }) {
-  const [msg, setMsg] = useState('')
-  const resend = async () => {
-    const res = await apiFetch('/auth/resend-verification/', { method: 'POST', auth, setAuth })
-    setMsg(res.ok ? 'Письмо отправлено повторно' : extractError(res.data))
-  }
-  return (
-    <div className="verify-banner global-banner">
-      <span>Подтвердите email — без этого нельзя оформить заказ или публиковать товары.</span>
-      <button className="btn btn-light" type="button" onClick={resend}>Отправить снова</button>
-      {msg && <span className="meta">{msg}</span>}
-    </div>
-  )
-}
-
-function VerifyEmailPage({ auth, setAuth, setProfile }) {
-  const [status, setStatus] = useState('loading')
-  const [message, setMessage] = useState('')
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const token = params.get('token')
-    if (!token) {
-      setStatus('error')
-      setMessage('Ссылка подтверждения недействительна')
-      return
-    }
-    const verify = async () => {
-      const res = await apiFetch('/auth/verify-email/', { method: 'POST', body: { token } })
-      if (res.ok) {
-        setStatus('success')
-        setMessage(res.data.message || 'Email подтверждён')
-        if (res.data.user) setProfile(res.data.user)
-        if (auth.access) {
-          const me = await apiFetch('/auth/me/', { auth, setAuth })
-          if (me.ok) setProfile(me.data)
-        }
-      } else {
-        setStatus('error')
-        setMessage(extractError(res.data))
-      }
-    }
-    verify()
-  }, [])
-
-  return (
-    <section className="panel auth-wrap">
-      <div className="auth-panel">
-        <h2>Подтверждение email</h2>
-        {status === 'loading' && <p className="meta">Проверяем ссылку...</p>}
-        {status !== 'loading' && <p className={status === 'success' ? 'note success-note' : 'note error-note'}>{message}</p>}
-        <Link className="btn btn-accent" to="/">На главную</Link>
-        {status === 'success' && (
-          <button className="btn btn-light" type="button" onClick={() => navigate('/')}>Продолжить покупки</button>
-        )}
-      </div>
-    </section>
-  )
-}
-
-function BuyerOrdersPage({ auth, setAuth, profile }) {
-  const [orders, setOrders] = useState([])
-  const [msg, setMsg] = useState('')
-
-  const load = async () => {
-    const res = await apiFetch('/products/my-orders/?page_size=50', { auth, setAuth })
-    if (res.ok) setOrders(getList(res.data))
-  }
-
-  useEffect(() => { load() }, [auth.access])
-
-  const repeatOrder = async (orderId) => {
-    const res = await apiFetch(`/products/orders/${orderId}/repeat/`, { method: 'POST', auth, setAuth })
-    setMsg(res.ok ? 'Товары добавлены в корзину' : extractError(res.data))
-  }
-
-  return (
-    <section className="panel">
-      <h2>Мои заказы</h2>
-      {profile && <p className="meta">{profile.username}{profile.email ? ` · ${profile.email}` : ''}</p>}
-      {msg && <p className="note">{msg}</p>}
-      {orders.length === 0 && <p className="meta">Заказов пока нет. Выберите товары в каталоге.</p>}
-      {orders.map((o) => (
-        <article className="product-card order-card" key={o.id}>
-          <p><b>Заказ #{o.id}</b> · {o.total} ₽ · {o.status}</p>
-          <p className="meta">{o.full_name}, {o.phone}, {o.city}, {o.address}</p>
-          {o.items?.map((item) => (
-            <p className="meta" key={item.id}>{item.product_name} · {item.quantity} шт. · {item.price} ₽</p>
-          ))}
-          <button className="btn btn-accent" type="button" onClick={() => repeatOrder(o.id)}>Повторить заказ</button>
+          <button className="btn btn-outline" onClick={() => removeItem(item.id)}>Удалить</button>
         </article>
       ))}
+      <h3>Итого: {Number(cart.total).toFixed(2)} ₽</h3>
     </section>
-  )
-}
-
-function PaymentSuccessPage({ auth, setAuth }) {
-  const [info, setInfo] = useState('Проверяем статус оплаты...')
-  const params = new URLSearchParams(window.location.search)
-  const orderId = params.get('order_id')
-
-  useEffect(() => {
-    if (!orderId || !auth.access) {
-      setInfo('Заказ создан. Статус оплаты обновится автоматически.')
-      return
-    }
-    const check = async () => {
-      const res = await apiFetch(`/products/orders/${orderId}/payment/`, { auth, setAuth })
-      if (res.ok) {
-        setInfo(res.data.payment_status === 'succeeded'
-          ? `Оплата заказа #${orderId} прошла успешно`
-          : `Заказ #${orderId} ожидает подтверждения оплаты`)
-      }
-    }
-    check()
-  }, [orderId, auth.access])
-
-  return (
-    <section className="panel empty-state">
-      <h2>Оплата</h2>
-      <p>{info}</p>
-      <Link className="btn btn-accent" to="/my-orders">Мои заказы</Link>
-    </section>
-  )
-}
-
-function AdminPage({ auth, setAuth }) {
-  const [stats, setStats] = useState(null)
-  const [users, setUsers] = useState([])
-  const [orders, setOrders] = useState([])
-  const [msg, setMsg] = useState('')
-  const [userQuery, setUserQuery] = useState('')
-  const [orderStatus, setOrderStatus] = useState('all')
-
-  const load = async () => {
-    const [s, u, o] = await Promise.all([
-      apiFetch('/auth/admin/stats/', { auth, setAuth }),
-      apiFetch('/auth/admin/users/', { auth, setAuth }),
-      apiFetch('/auth/admin/orders/', { auth, setAuth }),
-    ])
-    if (s.ok) setStats(s.data)
-    if (u.ok) setUsers(Array.isArray(u.data) ? u.data : [])
-    if (o.ok) setOrders(Array.isArray(o.data) ? o.data : [])
-  }
-
-  useEffect(() => { load() }, [])
-
-  const updateStatus = async (orderId, status) => {
-    const res = await apiFetch(`/auth/admin/orders/${orderId}/`, {
-      method: 'PATCH',
-      body: { status },
-      auth,
-      setAuth,
-    })
-    setMsg(res.ok ? 'Статус обновлён' : extractError(res.data))
-    load()
-  }
-
-  const filteredUsers = users.filter((u) => {
-    const query = userQuery.trim().toLowerCase()
-    if (!query) return true
-    return [u.username, u.email, u.role, u.store_name]
-      .filter(Boolean)
-      .some((value) => String(value).toLowerCase().includes(query))
-  })
-
-  const filteredOrders = orders.filter((o) => orderStatus === 'all' || o.status === orderStatus)
-  const ordersByStatus = stats?.orders_by_status || {}
-
-  return (
-    <div className="layout admin-layout">
-      <section className="panel admin-hero">
-        <div className="panel-head">
-          <div>
-            <h2>Админ-панель</h2>
-            <p className="meta">Операционный обзор магазина, пользователей, заказов и AI-активности.</p>
-          </div>
-          <a className="btn btn-light" href="/admin/" target="_blank" rel="noreferrer">Django Admin</a>
-        </div>
-        {msg && <p className="note">{msg}</p>}
-        {stats && (
-          <div className="stats-grid">
-            <div className="stat-card stat-card-strong"><b>{formatMoney(stats.paid_revenue)}</b><span>Выручка оплаченных заказов</span></div>
-            <div className="stat-card"><b>{stats.orders_count}</b><span>Заказов всего</span></div>
-            <div className="stat-card"><b>{stats.orders_new}</b><span>Новых заказов</span></div>
-            <div className="stat-card"><b>{stats.users_count}</b><span>Пользователей</span></div>
-            <div className="stat-card"><b>{stats.sellers_count}</b><span>Продавцов</span></div>
-            <div className="stat-card"><b>{stats.products_count}</b><span>Товаров</span></div>
-            <div className="stat-card warning-stat"><b>{stats.low_stock_products}</b><span>Низкий остаток</span></div>
-            <div className="stat-card danger-stat"><b>{stats.out_of_stock_products}</b><span>Нет в наличии</span></div>
-            <div className="stat-card"><b>{stats.unverified_users_count}</b><span>Email не подтверждён</span></div>
-            <div className="stat-card"><b>{stats.ai_interactions}</b><span>AI запросов</span></div>
-          </div>
-        )}
-      </section>
-
-      {stats && (
-        <section className="panel admin-status-panel">
-          <h3>Воронка заказов</h3>
-          <div className="status-grid">
-            {ORDER_STATUSES.map(([value, label]) => (
-              <button
-                className={`status-card ${orderStatus === value ? 'active' : ''}`}
-                type="button"
-                key={value}
-                onClick={() => setOrderStatus(value)}
-              >
-                <b>{ordersByStatus[value] || 0}</b>
-                <span>{label}</span>
-              </button>
-            ))}
-            <button className={`status-card ${orderStatus === 'all' ? 'active' : ''}`} type="button" onClick={() => setOrderStatus('all')}>
-              <b>{stats.orders_count}</b>
-              <span>Все</span>
-            </button>
-          </div>
-        </section>
-      )}
-
-      <section className="panel">
-        <div className="panel-head">
-          <h3>Пользователи</h3>
-          <input
-            className="admin-search"
-            placeholder="Поиск по логину, email, роли или магазину"
-            value={userQuery}
-            onChange={(e) => setUserQuery(e.target.value)}
-          />
-        </div>
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr><th>Логин</th><th>Email</th><th>Роль</th><th>Магазин</th><th>Email</th><th>Дата</th></tr>
-            </thead>
-            <tbody>
-              {filteredUsers.map((u) => (
-                <tr key={u.id}>
-                  <td>{u.username}{u.is_staff ? ' (admin)' : ''}</td>
-                  <td>{u.email}</td>
-                  <td>{u.role === 'seller' ? 'продавец' : 'покупатель'}</td>
-                  <td>{u.store_name || '—'}</td>
-                  <td><span className={`pill ${u.email_verified ? 'pill-good' : 'pill-warn'}`}>{u.email_verified ? 'подтверждён' : 'не подтверждён'}</span></td>
-                  <td>{formatDate(u.date_joined)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {filteredUsers.length === 0 && <p className="meta">Пользователи не найдены.</p>}
-      </section>
-
-      <section className="panel admin-orders-panel">
-        <div className="panel-head">
-          <h3>Заказы</h3>
-          <select className="admin-filter" value={orderStatus} onChange={(e) => setOrderStatus(e.target.value)}>
-            <option value="all">Все статусы</option>
-            {ORDER_STATUSES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-          </select>
-        </div>
-        {filteredOrders.map((o) => (
-          <article className="product-card order-card" key={o.id}>
-            <div className="order-card-head">
-              <div>
-                <p><b>Заказ #{o.id}</b> · {formatMoney(o.total)} · {o.full_name}</p>
-                <p className="meta">{formatDate(o.created_at)} · {o.phone} · {o.city}, {o.address}</p>
-              </div>
-              <span className={`order-status order-status-${o.status}`}>{ORDER_STATUS_LABELS[o.status] || o.status}</span>
-            </div>
-            {o.items?.length > 0 && (
-              <ul className="order-items admin-order-items">
-                {o.items.map((item) => (
-                  <li key={item.id}>{item.product_name} · {item.quantity} шт. · {formatMoney(item.price)}</li>
-                ))}
-              </ul>
-            )}
-            <div className="actions-row">
-              {ORDER_STATUSES.map(([st, label]) => (
-                <button
-                  key={st}
-                  className={`btn ${o.status === st ? 'btn-accent' : 'btn-dark-outline'}`}
-                  type="button"
-                  onClick={() => updateStatus(o.id, st)}
-                  disabled={o.status === st}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </article>
-        ))}
-        {filteredOrders.length === 0 && <p className="meta">Заказов с выбранным статусом нет.</p>}
-      </section>
-
-      {stats?.recent_ai?.length > 0 && (
-        <section className="panel">
-          <h3>Последние AI-запросы</h3>
-          <div className="ai-log-list">
-            {stats.recent_ai.map((item) => (
-              <article className="ai-log-item" key={item.id}>
-                <span className="pill">{item.kind}</span>
-                <p>{item.query}</p>
-                <span className="meta">{formatDate(item.created_at)}</span>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
-    </div>
   )
 }
 
 export default function App() {
-  const [auth, setAuth] = useState(getAuth())
-  const [profile, setProfile] = useState(null)
-  const [theme, setTheme] = useState(getSavedTheme)
+  const [token, setToken] = useState(getToken())
 
   useEffect(() => {
     const check = async () => {
-      if (!auth.access) {
-        setProfile(null)
-        return
-      }
-      const res = await apiFetch('/auth/me/', { auth, setAuth })
+      if (!token) return
+      const res = await fetch(`${API}/auth/me/`, { headers: { Authorization: `Token ${token}` } })
       if (!res.ok) {
-        clearAuth()
-        setAuth({ access: '', refresh: '' })
-        setProfile(null)
-      } else {
-        setProfile(res.data)
+        localStorage.removeItem('token')
+        setToken('')
       }
     }
     check()
-  }, [auth.access])
-
-  useEffect(() => {
-    document.body.dataset.theme = theme
-    localStorage.setItem('theme', theme)
-  }, [theme])
+  }, [token])
 
   const onLogout = () => {
-    clearAuth()
-    setAuth({ access: '', refresh: '' })
-    setProfile(null)
+    localStorage.removeItem('token')
+    setToken('')
   }
-
-  const toggleTheme = () => {
-    setTheme((value) => (value === 'light' ? 'dark' : 'light'))
-  }
-
-  const isAuth = Boolean(auth.access)
 
   return (
     <div className="page">
-      <Header isAuth={isAuth} profile={profile} onLogout={onLogout} theme={theme} onToggleTheme={toggleTheme} />
-      {isAuth && profile && !profile.email_verified && (
-        <EmailVerificationBanner auth={auth} setAuth={setAuth} setProfile={setProfile} />
-      )}
+      <Header token={token} onLogout={onLogout} />
       <Routes>
-        <Route path="/" element={<ProductsPage auth={auth} setAuth={setAuth} />} />
-        <Route path="/auth" element={<Navigate to="/auth/buyer" replace />} />
-        <Route path="/auth/buyer" element={<AuthPage setAuth={setAuth} setProfile={setProfile} role="buyer" />} />
-        <Route path="/auth/seller" element={<AuthPage setAuth={setAuth} setProfile={setProfile} role="seller" />} />
-        <Route path="/verify-email" element={<VerifyEmailPage setProfile={setProfile} auth={auth} setAuth={setAuth} />} />
-        <Route path="/cart" element={<CartPage auth={auth} setAuth={setAuth} profile={profile} />} />
-        <Route path="/my-orders" element={isAuth ? <BuyerOrdersPage auth={auth} setAuth={setAuth} profile={profile} /> : <Navigate to="/auth/buyer" replace />} />
-        <Route path="/account" element={isAuth ? <AccountPage auth={auth} setAuth={setAuth} profile={profile} setProfile={setProfile} /> : <Navigate to="/auth/seller" replace />} />
-        <Route path="/admin" element={isAuth && profile?.is_staff ? <AdminPage auth={auth} setAuth={setAuth} /> : <Navigate to="/" replace />} />
-        <Route path="/payment/success" element={<PaymentSuccessPage auth={auth} setAuth={setAuth} />} />
+        <Route path="/" element={<ProductsPage token={token} />} />
+        <Route path="/auth" element={<AuthPage onAuth={setToken} />} />
+        <Route path="/cart" element={<CartPage token={token} />} />
+        <Route path="/account" element={token ? <AccountPage token={token} /> : <Navigate to="/auth" replace />} />
       </Routes>
     </div>
   )

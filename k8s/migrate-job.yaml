@@ -7,6 +7,18 @@ spec:
   template:
     spec:
       restartPolicy: Never
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16-alpine
+          command:
+            - sh
+            - -c
+            - until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 2; done
+          envFrom:
+            - configMapRef:
+                name: store-ai-config
+            - secretRef:
+                name: store-ai-secret
       containers:
         - name: migrate
           image: cr.yandex/<REGISTRY_ID>/store-ai-backend:latest

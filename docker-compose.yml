@@ -21,6 +21,7 @@ services:
       DEBUG: "0"
       DJANGO_SECRET_KEY: "change-me-local"
       ALLOWED_HOSTS: "*"
+      FRONTEND_URL: "${FRONTEND_URL:-http://127.0.0.1:8080}"
       DB_ENGINE: postgres
       POSTGRES_DB: store_ai
       POSTGRES_USER: store_ai
@@ -29,6 +30,15 @@ services:
       POSTGRES_PORT: "5432"
       OPENROUTER_API_KEY: "${OPENROUTER_API_KEY:-${OPENAI_API_KEY:-}}"
       OPENROUTER_MODEL: "${OPENROUTER_MODEL:-openrouter/free}"
+      DEFAULT_FROM_EMAIL: "${DEFAULT_FROM_EMAIL:-noreply@store-ai.local}"
+      EMAIL_BACKEND: "${EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}"
+      EMAIL_HOST: "${EMAIL_HOST:-}"
+      EMAIL_PORT: "${EMAIL_PORT:-587}"
+      EMAIL_HOST_USER: "${EMAIL_HOST_USER:-}"
+      EMAIL_HOST_PASSWORD: "${EMAIL_HOST_PASSWORD:-}"
+      EMAIL_USE_TLS: "${EMAIL_USE_TLS:-1}"
+      YOOKASSA_SHOP_ID: "${YOOKASSA_SHOP_ID:-}"
+      YOOKASSA_SECRET_KEY: "${YOOKASSA_SECRET_KEY:-}"
     depends_on:
       postgres:
         condition: service_healthy
@@ -37,6 +47,8 @@ services:
              gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     ports:
       - "8000:8000"
+    volumes:
+      - media_data:/app/media
 
   frontend:
     build:
@@ -49,3 +61,4 @@ services:
 
 volumes:
   postgres_data:
+  media_data:

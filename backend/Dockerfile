@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r /tmp/requirements.txt
 
 COPY backend /app
+RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 

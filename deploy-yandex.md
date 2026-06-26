@@ -35,7 +35,7 @@ docker push cr.yandex/$REGISTRY_ID/store-ai-frontend:latest
 
 ## 4. Prepare Kubernetes manifests
 
-Replace `<REGISTRY_ID>` in `k8s/backend.yaml`, `k8s/frontend.yaml`, and `k8s/migrate-job.yaml`.
+`deploy.sh` substitutes `<REGISTRY_ID>` while applying the app manifests. If you apply YAML manually, replace `<REGISTRY_ID>` in `k8s/backend.yaml`, `k8s/frontend.yaml`, and `k8s/migrate-job.yaml`.
 
 Create a real secret file from the example, but do not commit it:
 
@@ -69,10 +69,11 @@ kubectl apply -f k8s/namespace.yaml
 kubectl apply -f k8s/configmap.yaml
 kubectl apply -f k8s/secret.yaml
 kubectl apply -f k8s/postgres.yaml
-kubectl apply -f k8s/migrate-job.yaml
+kubectl -n store-ai wait --for=condition=available deploy/postgres --timeout=180s
+sed "s|<REGISTRY_ID>|$REGISTRY_ID|g" k8s/migrate-job.yaml | kubectl apply -f -
 kubectl -n store-ai wait --for=condition=complete job/backend-migrate --timeout=120s
-kubectl apply -f k8s/backend.yaml
-kubectl apply -f k8s/frontend.yaml
+sed "s|<REGISTRY_ID>|$REGISTRY_ID|g" k8s/backend.yaml | kubectl apply -f -
+sed "s|<REGISTRY_ID>|$REGISTRY_ID|g" k8s/frontend.yaml | kubectl apply -f -
 ```
 
 Get external IP:
@@ -85,4 +86,5 @@ kubectl -n store-ai get svc frontend
 
 - For production, prefer Managed Service for PostgreSQL instead of the in-cluster `postgres.yaml`.
 - The frontend calls `/api`, and nginx proxies it to the backend service.
+- Product images are stored on the `backend-media` PVC. For several backend replicas, move media to object storage first.
 - The backend image uses Python 3.11 because the local Python 3.14 venv caused slow Django startup.
